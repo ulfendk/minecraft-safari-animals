@@ -206,6 +206,7 @@ footer { margin-top: 56px; padding: 28px 0 40px; border-top: 1px solid var(--lin
       <div class="feature"><h3>Day and night</h3><p>Lions and hyenas nap through the day and hunt after dark. Grazers sleep at night.</p></div>
       <div class="feature"><h3>Ride them</h3><p>Tame and saddle zebras and ostriches, or an elephant that carries a chest and a passenger.</p></div>
       <div class="feature"><h3>Thorn hedges</h3><p>Plant thorn bushes to fence in your camp. Land animals can’t jump them and get scratched if they push through.</p></div>
+      <div class="feature"><h3>Migrations and mounds</h3><p>Wildebeest herds migrate by day. Termite mounds and watering holes dot the savanna, and meerkats dive into the mounds when danger comes.</p></div>
       <div class="feature"><h3>Field Guide</h3><p>Every player gets a Field Guide that fills in as you spot new animals.</p></div>
       <div class="feature"><h3>Families</h3><p>Every animal can be bred with its favourite food. Babies follow their parents around.</p></div>
     </div>

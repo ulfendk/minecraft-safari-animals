@@ -34,7 +34,17 @@ export default {
       {
         name: 'head', parent: 'body', pivot: [0, 5, -4],
         cubes: [
-          { origin: [-2, 4, -7], size: [4, 3, 3], mat: 'fur', marks: eyes(3, { back: 1, down: 1, color: '#1a120c' }) },
+          {
+            origin: [-2, 4, -7], size: [4, 3, 3], mat: 'fur',
+            marks: [
+              ...eyes(3, { back: 0, down: 1, w: 2, color: '#4a3424' }),
+              { face: 'front', x: 0, y: 1, color: '#4a3424' },
+              { face: 'front', x: 3, y: 1, color: '#4a3424' },
+              { face: 'front', x: 0, y: 0, color: '#0a0806' },
+              { face: 'front', x: 3, y: 0, color: '#0a0806' },
+              ...eyes(3, { back: 0, down: 0, color: '#0a0806' }),
+            ],
+          },
           { origin: [-1, 4, -9], size: [2, 2, 2], mat: 'snout', marks: [{ face: 'front', x: 0, y: 0, w: 2, color: '#1a120c' }] },
         ],
       },

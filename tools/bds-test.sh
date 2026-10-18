@@ -58,6 +58,7 @@ n=0
 ids=""
 for f in build/behavior_pack/entities/*.json; do
   id=$(basename "$f" .json)
+  grep -q '"is_spawnable": false' "$f" && continue
   ids="$ids $id"
   send summon "safari:$id" $(( (n % 6) * 6 )) -60 $(( (n / 6) * 6 ))
   n=$((n + 1))

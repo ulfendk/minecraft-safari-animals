@@ -37,12 +37,12 @@ export default {
         underside('#f4ead6', { y: 14, soft: 2, where: bone('body') }),
         spots('#1f1612', { size: 2, radius: 0.34, where: all(bone('body', 'head', ...LEGS), notFace('bottom')) }),
         // "Tear lines" from the eyes down to the mouth.
-        region('#1f1612', all(bone('head'), face('front'), ({ i, fw, j }) => j >= 2 && (i === 1 || i === fw - 2))),
+        region('#1f1612', all(bone('head'), face('front'), ({ i, fw, j }) => j >= 1 && (i === 1 || i === fw - 2))),
         mottle(0.05),
         fur(0.05),
       ],
     },
-    muzzle: { base: '#f4ead6', layers: [fur(0.04)] },
+    muzzle: { base: '#f4ead6', layers: [region('#1f1612', ({ face: f, i, fw }) => f === 'front' && (i === 0 || i === fw - 1)), fur(0.04)] },
     ear: '#b38a4c',
     tail: {
       base: '#dcae62',

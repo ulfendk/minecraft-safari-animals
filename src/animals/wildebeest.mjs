@@ -16,6 +16,20 @@ export default {
   grazes: true,
   sleeps: 'night',
   strollRange: 16,
+  // Migration: the script adds this group by day and moves a waypoint ahead of the herd.
+  extraGroups: {
+    'safari:migrating': {
+      'minecraft:behavior.nearest_attackable_target': {
+        priority: 6, must_see: false, reselect_targets: true, within_radius: 96,
+        entity_types: [{ filters: { test: 'is_family', subject: 'other', value: 'safari_marker' }, max_dist: 96 }],
+      },
+      'minecraft:behavior.move_towards_target': { priority: 6, speed_multiplier: 0.9, within_radius: 96 },
+    },
+  },
+  extraEvents: {
+    'safari:start_migration': { add: { component_groups: ['safari:migrating'] } },
+    'safari:stop_migration': { remove: { component_groups: ['safari:migrating'] } },
+  },
   spawn: [{ biomes: ['savanna'], weight: 6, group: [4, 8], blocks: ['grass_block'] }],
   loot: [
     { item: 'safari:raw_game_meat', min: 1, max: 3, smelts: true },

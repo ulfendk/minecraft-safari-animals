@@ -1,5 +1,5 @@
 // Custom items: definitions, pixel-art icons, recipes.
-import { pixelIcon } from './lib/texture.mjs';
+import { fur, pixelIcon, region } from './lib/texture.mjs';
 
 const MEAT = {
   '.': null, o: '#5a1f1a', r: '#b5413a', p: '#d9736b', w: '#f0d9c8',
@@ -50,6 +50,58 @@ export const items = [
       '................',
       '................',
     ], { '.': null, g: '#3d5a2a', y: '#5f8a3a', w: '#e9d8a6', k: '#7a4a22', p: '#f4ecd8' }),
+  },
+  {
+    id: 'safari_hat',
+    name: 'Safari Hat',
+    category: 'equipment',
+    stack: 1,
+    components: {
+      'minecraft:wearable': { slot: 'slot.armor.head', protection: 1 },
+      'minecraft:durability': { max_durability: 120 },
+      'minecraft:repairable': { repair_items: [{ items: ['minecraft:leather'], repair_amount: 40 }] },
+      'minecraft:enchantable': { slot: 'armor_head', value: 10 },
+    },
+    icon: pixelIcon([
+      '................',
+      '................',
+      '................',
+      '......kkkk......',
+      '....kkkkkkkk....',
+      '...kkhhhhhhkk...',
+      '...khhhhhhhhk...',
+      '..kkhhhhhhhhkk..',
+      '..kbbbbbbbbbbk..',
+      '.kkhhhhhhhhhhkk.',
+      'khhhhhhhhhhhhhhk',
+      'kkkkkkkkkkkkkkkk',
+      '................',
+      '................',
+      '................',
+      '................',
+    ], { '.': null, k: '#6e5a33', h: '#c9b07a', b: '#5a3a1e' }),
+    // Pith helmet sitting on the player's head (head top is at y=32).
+    attachable: {
+      model: {
+        bones: [
+          { name: 'head', pivot: [0, 24, 0] },
+          {
+            name: 'hat', parent: 'head', pivot: [0, 24, 0],
+            cubes: [
+              { origin: [-6, 30, -6], size: [12, 1, 12], mat: 'brim' },
+              { origin: [-4, 31, -4], size: [8, 1, 8], mat: 'band', inflate: 0.6 },
+              { origin: [-4, 32, -4], size: [8, 2, 8], mat: 'felt', inflate: 0.5 },
+              { origin: [-3, 34, -3], size: [6, 1, 6], mat: 'felt', inflate: 0.4 },
+            ],
+          },
+        ],
+      },
+      materials: {
+        brim: { base: '#bfa46c', layers: [fur(0.05)] },
+        felt: { base: '#c9b07a', layers: [region('#d8c08c', ({ face }) => face === 'top'), fur(0.05)] },
+        band: '#5a3a1e',
+      },
+    },
   },
   {
     id: 'raw_game_meat',
@@ -139,6 +191,16 @@ export const items = [
 ];
 
 export const recipes = [
+  {
+    'minecraft:recipe_shaped': {
+      description: { identifier: 'safari:safari_hat' },
+      tags: ['crafting_table'],
+      pattern: ['LLL', 'LWL'],
+      key: { L: { item: 'minecraft:leather' }, W: { item: 'minecraft:wheat' } },
+      result: { item: 'safari:safari_hat' },
+      unlock: [{ item: 'minecraft:leather' }],
+    },
+  },
   {
     'minecraft:recipe_shapeless': {
       description: { identifier: 'safari:field_guide' },

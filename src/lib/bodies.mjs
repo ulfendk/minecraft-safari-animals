@@ -4,13 +4,15 @@ import { frontEyes, legs4 } from './parts.mjs';
 /**
  * Big cats and hyenas. All sizes in pixels; widths should be even.
  * Returns a model spec with bones: root, body, head, (mane), ear_l, ear_r, tail, tail2, legs.
- * Materials used: fur, belly-free (painted by layers), muzzle, nose, paw, ear, tuft, mane, eye.
+ * Materials used: fur, muzzle, paw, ear, tail, tuft, mane, and with options: jaw, fang, brow.
+ * mane: true for a head mane, 'full' to continue it down the chest.
+ * jaw: a separate, slightly open lower jaw with fangs (a snarl).
  */
 export function felid({
   bodyW = 8, bodyH = 8, bodyL = 18, legH = 11, legW = 3,
   headW = 8, headH = 7, headD = 6, muzzleW, muzzleH, muzzleD = 2,
   tailL = 12, tuft = false, mane = false, earH = 2, earW = 2,
-  eyeColor = '#c8a23a', hump = 0, slope = 0,
+  eyeColor = '#c8a23a', hump = 0, slope = 0, jaw = false, jawOpen = 15, brow = false,
 } = {}) {
   const bottom = legH - 1;
   const top = bottom + bodyH;
@@ -35,21 +37,33 @@ export function felid({
       cubes: [
         {
           origin: [-headW / 2, hy, hzf], size: [headW, headH, headD], mat: 'fur',
-          marks: frontEyes(headW, { gap: Math.max(2, headW - 6), down: Math.max(1, headH - mh - 2), color: eyeColor, pupil: '#111111' }),
+          marks: frontEyes(headW, { gap: Math.max(2, headW - 6), down: brow ? 2 : Math.max(1, headH - mh - 2), color: eyeColor, pupil: '#111111' }),
         },
         {
-          origin: [-mw / 2, hy, hzf - muzzleD], size: [mw, mh, muzzleD], mat: 'muzzle',
+          origin: [-mw / 2, hy + (jaw ? 1 : 0), hzf - muzzleD], size: [mw, mh - (jaw ? 1 : 0), muzzleD], mat: 'muzzle',
           marks: [{ face: 'front', x: mw / 2 - 1, y: 0, w: 2, h: 1, color: '#3b2620' }],
         },
+        ...(brow ? [{ origin: [-headW / 2, hy + headH - 2, hzf - 1], size: [headW, 1, 1], mat: 'brow' }] : []),
       ],
     },
   ];
+  if (jaw) {
+    bones[2].cubes.push(
+      { origin: [-mw / 2, hy, hzf - muzzleD], size: [1, 1, 1], mat: 'fang' },
+      { origin: [mw / 2 - 1, hy, hzf - muzzleD], size: [1, 1, 1], mat: 'fang' },
+    );
+    bones.push({
+      name: 'jaw', parent: 'head', pivot: [0, hy + 1, hzf + 1], rotation: [jawOpen, 0, 0],
+      cubes: [{ origin: [-mw / 2, hy, hzf - muzzleD], size: [mw, 1, muzzleD + 1], mat: 'jaw' }],
+    });
+  }
   if (mane) {
     bones.push({
       name: 'mane', parent: 'head', pivot: [0, top - 1, zf],
       cubes: [
         { origin: [-headW / 2 - 2, hy - 3, hzf + 2], size: [headW + 4, headH + 5, 5], mat: 'mane' },
         { origin: [-headW / 2 - 1, hy - 4, hzf + 6], size: [headW + 2, headH + 4, 4], mat: 'mane' },
+        ...(mane === 'full' ? [{ origin: [-headW / 2, hy - 7, hzf + 3], size: [headW, 5, 7], mat: 'mane' }] : []),
       ],
     });
   }
@@ -92,7 +106,7 @@ export function pillarBody({ bodyW, bodyH, bodyL, legH, legW, bottomGap = 1 }) {
  * Knuckle-walking apes: tall chest, low hips, long front limbs (named leg_fl/leg_fr
  * so the quadruped walk applies; primate() animations treat them as arms).
  */
-export function ape({ faceColor = '#3a3030', chestW, chestH, chestD, hipW, hipH, hipD, armW, armH, legW, legH, headW, headH, headD, crest = false, ears = false }) {
+export function ape({ faceColor = '#3a3030', eyeColor = '#e8e0d0', pupilColor = '#2a1a10', chestW, chestH, chestD, hipW, hipH, hipD, armW, armH, legW, legH, headW, headH, headD, crest = false, ears = false }) {
   const base = legH - 1;
   const cz = -chestD; // chest front
   const top = base + chestH;
@@ -114,7 +128,7 @@ export function ape({ faceColor = '#3a3030', chestW, chestH, chestD, hipW, hipH,
           origin: [-headW / 2, hy, hz], size: [headW, headH, headD], mat: 'fur',
           marks: [
             { face: 'front', x: 0, y: 2, w: headW, h: headH - 2, color: faceColor },
-            ...frontEyes(headW, { gap: 2, down: 2, color: '#e8e0d0', pupil: '#2a1a10' }),
+            ...frontEyes(headW, { gap: 2, down: 2, color: eyeColor, pupil: pupilColor }),
           ],
         },
         // Heavy brow ridge and protruding muzzle.

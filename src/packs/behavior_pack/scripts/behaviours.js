@@ -16,7 +16,11 @@ function play(entity, anim, sound, pitch = 1, volume = 1.5) {
 
 function calls(now) {
   for (const lion of nearPlayers('safari:lion', 64)) {
-    if (!isBaby(lion) && chance(0.02) && ready(lion, 'roar', 600, now)) play(lion, 'roar', 'mob.ravager.roar', 0.55, 3);
+    if (isBaby(lion)) continue;
+    // A warning roar when a player comes close; lions attack at 7 blocks.
+    const close = lion.dimension.getPlayers({ location: lion.location, maxDistance: 12 }).length > 0;
+    if (close && ready(lion, 'warn', 300, now)) play(lion, 'roar', 'mob.ravager.roar', 0.5, 3);
+    else if (chance(0.02) && ready(lion, 'roar', 600, now)) play(lion, 'roar', 'mob.ravager.roar', 0.55, 3);
   }
   for (const tiger of nearPlayers('safari:tiger', 48)) {
     if (!isBaby(tiger) && chance(0.01) && ready(tiger, 'roar', 800, now)) play(tiger, 'roar', 'mob.ravager.roar', 0.65, 2.5);
@@ -58,6 +62,7 @@ function sentries(now) {
     if (threat && ready(m, 'alarm', 100, now)) {
       m.dimension.playSound('mob.fox.screech', m.location, { pitch: 2, volume: 1 });
       m.setProperty('safari:sentry', false);
+      hideInMound(m);
     } else if (ready(m, 'shift', 400 + Math.floor(Math.random() * 400), now) && chance(0.5)) {
       m.setProperty('safari:sentry', false);
     }
@@ -66,6 +71,46 @@ function sentries(now) {
     if (!guarded.has(m.id) && !isBaby(m) && chance(0.3)) {
       try { m.setProperty('safari:sentry', true); } catch { continue; }
       for (const n of m.dimension.getEntities({ type: 'safari:meerkat', location: m.location, maxDistance: 10 })) guarded.add(n.id);
+    }
+  }
+}
+
+/** Meerkats near a termite mound dive into it: they vanish for a while next to the mound. */
+function hideInMound(sentry) {
+  const { x, y, z } = sentry.location;
+  let mound;
+  for (let dx = -8; dx <= 8 && !mound; dx++)
+    for (let dz = -8; dz <= 8 && !mound; dz++)
+      for (let dy = -2; dy <= 2 && !mound; dy++) {
+        const b = sentry.dimension.getBlock({ x: Math.floor(x) + dx, y: Math.floor(y) + dy, z: Math.floor(z) + dz });
+        if (b?.typeId === 'safari:termite_mound') mound = b.location;
+      }
+  if (!mound) return;
+  for (const m of sentry.dimension.getEntities({ type: 'safari:meerkat', location: sentry.location, maxDistance: 10 })) {
+    m.teleport({ x: mound.x + 0.5 + (Math.random() - 0.5), y: mound.y, z: mound.z + 1.2 });
+    m.addEffect('invisibility', 200, { showParticles: false });
+    m.addEffect('slowness', 200, { amplifier: 5, showParticles: false });
+  }
+}
+
+/** By day, leopards climb a nearby tree and rest in the canopy. */
+function treeRest(now) {
+  const time = world.getTimeOfDay();
+  if (time < 1000 || time > 11000) return;
+  for (const leopard of nearPlayers('safari:leopard', 48)) {
+    if (isBaby(leopard) || !chance(0.15) || !ready(leopard, 'climb', 600, now)) continue;
+    const below = leopard.dimension.getBlock({ x: Math.floor(leopard.location.x), y: Math.floor(leopard.location.y) - 1, z: Math.floor(leopard.location.z) });
+    if (below?.typeId.includes('leaves')) continue; // already up a tree
+    for (let tries = 0; tries < 12; tries++) {
+      const px = Math.floor(leopard.location.x + (Math.random() - 0.5) * 12);
+      const pz = Math.floor(leopard.location.z + (Math.random() - 0.5) * 12);
+      const top = leopard.dimension.getTopmostBlock({ x: px, z: pz });
+      if (!top?.typeId.includes('leaves')) continue;
+      const rise = top.location.y - leopard.location.y;
+      if (rise < 2 || rise > 10) continue;
+      play(leopard, 'pounce', 'mob.cat.hiss', 0.6, 1);
+      leopard.teleport({ x: px + 0.5, y: top.location.y + 1, z: pz + 0.5 });
+      break;
     }
   }
 }
@@ -125,7 +170,9 @@ const CARCASS = new Set([
   'safari:rhino', 'safari:hippo', 'safari:kangaroo', 'minecraft:cow', 'minecraft:horse', 'minecraft:sheep',
 ]);
 
-function onDeath({ deadEntity }) {
+const HUNTERS = new Set(['safari:lion', 'safari:leopard', 'safari:cheetah', 'safari:wild_dog', 'safari:tiger', 'safari:crocodile', 'minecraft:player']);
+
+function onDeath({ deadEntity, damageSource }) {
   let typeId, location, dimension;
   try {
     ({ typeId, location, dimension } = deadEntity);
@@ -133,6 +180,12 @@ function onDeath({ deadEntity }) {
     return;
   }
   if (typeId === 'safari:baboon') dropLoot(deadEntity);
+  const killer = damageSource?.damagingEntity?.typeId;
+  if (killer && HUNTERS.has(killer) && killer !== 'safari:hyena') {
+    for (const h of dimension.getEntities({ type: 'safari:hyena', location, maxDistance: 24 })) {
+      dimension.playSound('mob.fox.screech', h.location, { pitch: 0.9, volume: 1.5 });
+    }
+  }
   if (!CARCASS.has(typeId) || dimension.id !== 'minecraft:overworld' || !chance(0.35)) return;
   const top = dimension.getTopmostBlock({ x: location.x, z: location.z });
   if (!top || top.location.y > location.y + 1) return; // under cover
@@ -152,7 +205,7 @@ function onDeath({ deadEntity }) {
 export function setupBehaviours() {
   system.runInterval(() => {
     const now = system.currentTick;
-    for (const step of [calls, displays, sentries, thieves]) {
+    for (const step of [calls, displays, sentries, thieves, treeRest]) {
       try {
         step(now);
       } catch (e) {

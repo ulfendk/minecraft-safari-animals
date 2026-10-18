@@ -46,8 +46,14 @@ export default {
         cubes: [
           { origin: [-3, 2, -16], size: [6, 4, 6], mat: 'scales' },
           { origin: [-2, 3, -25], size: [4, 2, 9], mat: 'snout', marks: teeth(9) },
-          { origin: [1, 6, -14], size: [2, 1, 2], mat: 'scales', marks: [{ face: 'front', x: 0, y: 0, w: 2, color: '#d9c13a' }] },
-          { origin: [-3, 6, -14], size: [2, 1, 2], mat: 'scales', marks: [{ face: 'front', x: 0, y: 0, w: 2, color: '#d9c13a' }] },
+          {
+            origin: [1, 6, -14], size: [2, 2, 2], mat: 'scales',
+            marks: [{ face: 'left', x: 0, y: 0, w: 2, h: 2, color: '#d9c13a' }, { face: 'left', x: 0, y: 0, h: 2, color: '#111111' }, { face: 'front', x: 1, y: 0, color: '#d9c13a' }],
+          },
+          {
+            origin: [-3, 6, -14], size: [2, 2, 2], mat: 'scales',
+            marks: [{ face: 'right', x: 0, y: 0, w: 2, h: 2, color: '#d9c13a' }, { face: 'right', x: 1, y: 0, h: 2, color: '#111111' }, { face: 'front', x: 0, y: 0, color: '#d9c13a' }],
+          },
         ],
       },
       { name: 'jaw', parent: 'head', pivot: [0, 3, -16], cubes: [{ origin: [-2, 2, -25], size: [4, 1, 9], mat: 'jaw' }] },

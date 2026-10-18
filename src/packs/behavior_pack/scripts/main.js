@@ -3,6 +3,8 @@ import { setupBehaviours } from './behaviours.js';
 import { setupFieldGuide } from './fieldguide.js';
 import { setupOstrichEggs } from './eggs.js';
 import { setupThorns } from './thorns.js';
+import { setupChimps } from './chimps.js';
+import { setupMigration } from './migration.js';
 import { selfTest } from './selftest.js';
 
 world.afterEvents.worldLoad.subscribe(() => {
@@ -10,6 +12,8 @@ world.afterEvents.worldLoad.subscribe(() => {
   setupFieldGuide();
   setupOstrichEggs();
   setupThorns();
+  setupChimps();
+  setupMigration();
   console.log('[Safari Animals] loaded');
 });
 

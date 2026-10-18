@@ -21,6 +21,18 @@ export default {
   breed: ['rotten_flesh', 'bone', 'safari:raw_game_meat'],
   tempt: ['rotten_flesh', 'bone', 'safari:raw_game_meat'],
   heal: [['rotten_flesh', 2], ['safari:raw_game_meat', 4]],
+  // Scavengers: they rush in and grab meat dropped by other hunters' kills.
+  extraComponents: {
+    'minecraft:shareables': {
+      singular_pickup: true,
+      items: ['safari:raw_game_meat', 'beef', 'porkchop', 'mutton', 'chicken', 'rabbit', 'rotten_flesh', 'bone'].map((item) => ({
+        item: item.includes(':') ? item : `minecraft:${item}`, priority: 0, max_amount: 1,
+      })),
+    },
+    'minecraft:equip_item': { can_wear_armor: false },
+    'minecraft:behavior.pickup_items': { priority: 4, max_dist: 16, goal_radius: 1.5, speed_multiplier: 1.3 },
+    'minecraft:behavior.eat_carried_item': { priority: 12, delay_before_eating: 60 },
+  },
   spawn: [{ biomes: ['savanna'], weight: 2, group: [3, 5], blocks: ['grass_block', 'coarse_dirt'] }],
   loot: [{ item: 'bone', min: 0, max: 2 }],
   sounds: { ambient: 'mob.fox.screech', hurt: 'mob.wolf.hurt', death: 'mob.wolf.death', pitch: [0.8, 1.0], interval: 15 },
