@@ -1,6 +1,6 @@
 import { quadruped } from '../lib/anim.mjs';
 import { eyes, legs4, nostrils } from '../lib/parts.mjs';
-import { fur, mottle } from '../lib/texture.mjs';
+import { fur, mottle, region } from '../lib/texture.mjs';
 
 export default {
   id: 'warthog',
@@ -27,7 +27,6 @@ export default {
         name: 'body', parent: 'root', pivot: [0, 10, 0],
         cubes: [
           { origin: [-4, 6, -7], size: [8, 7, 14], mat: 'hide' },
-          { origin: [-1, 13, -6], size: [2, 1, 10], mat: 'mane' },
         ],
       },
       {
@@ -42,8 +41,10 @@ export default {
         cubes: [
           { origin: [-3, 6, -13], size: [6, 6, 6], mat: 'hide', marks: eyes(6, { back: 2, down: 1 }) },
           { origin: [-2, 6, -16], size: [4, 3, 3], mat: 'snout', marks: nostrils(4, { down: 1 }) },
-          { origin: [2, 9, -15], size: [1, 3, 1], mat: 'tusk' },
-          { origin: [-3, 9, -15], size: [1, 3, 1], mat: 'tusk' },
+          { origin: [2, 8, -16], size: [1, 2, 1], mat: 'tusk' },
+          { origin: [3, 10, -16], size: [1, 2, 1], mat: 'tusk' },
+          { origin: [-3, 8, -16], size: [1, 2, 1], mat: 'tusk' },
+          { origin: [-4, 10, -16], size: [1, 2, 1], mat: 'tusk' },
           { origin: [3, 9, -12], size: [1, 2, 1], mat: 'hide' },
           { origin: [-4, 9, -12], size: [1, 2, 1], mat: 'hide' },
           { origin: [-1, 12, -11], size: [2, 1, 4], mat: 'mane' },
@@ -56,7 +57,7 @@ export default {
   },
 
   materials: {
-    hide: { base: '#6e6058', layers: [mottle(0.12), fur(0.1)] },
+    hide: { base: '#6e6058', layers: [region('#3a2c22', ({ cube, face: f, p }) => cube.bone === 'body' && f === 'top' && Math.abs(p[0]) < 1.2), mottle(0.12), fur(0.1)] },
     mane: { base: '#3a2c22', layers: [fur(0.12)] },
     snout: { base: '#8c7468', layers: [fur(0.05)] },
     tusk: '#efe6cf',

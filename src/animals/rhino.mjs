@@ -41,7 +41,8 @@ export default {
         cubes: [
           { origin: [-4, 13, -22], size: [8, 8, 11], mat: 'hide', marks: eyes(11, { back: 5, down: 3 }) },
           { origin: [-3, 12, -24], size: [6, 5, 3], mat: 'lip' },
-          { origin: [-1, 21, -22], size: [2, 6, 2], mat: 'horn', rotation: [-20, 0, 0], pivot: [0, 21, -21] },
+          { origin: [-1, 21, -22], size: [3, 4, 3], mat: 'horn', rotation: [-15, 0, 0], pivot: [0, 21, -21] },
+          { origin: [-1, 25, -21], size: [2, 4, 2], mat: 'horn', rotation: [-28, 0, 0], pivot: [0, 25, -20] },
           { origin: [-1, 21, -17], size: [2, 3, 2], mat: 'horn', rotation: [-10, 0, 0], pivot: [0, 21, -16] },
         ],
       },

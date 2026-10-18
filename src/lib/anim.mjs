@@ -142,8 +142,8 @@ export function bird(o) {
     idle: loop(3, bones({ [head]: { rotation: cycle(3, n, (p) => [3 * sin(p), 10 * sin(p, 0.3), 0]) } })),
     eat: loop(2, bones({ [neck]: { rotation: cycle(2, n, (p) => [70 + 8 * sin(p * 4), 0, 0]) } })),
     attack: once(0.5, bones({ [neck]: { rotation: { '0.0': [0, 0, 0], '0.2': [-25, 0, 0], '0.35': [40, 0, 0], '0.5': [0, 0, 0] } } })),
-    fly: loop(0.8, bones(flap(0.8, 35, 10), { [ll]: { rotation: [50, 0, 0] }, [lr]: { rotation: [50, 0, 0] } })),
-    glide: loop(3, bones(flap(3, 4, -5), { [ll]: { rotation: [50, 0, 0] }, [lr]: { rotation: [50, 0, 0] } })),
+    fly: loop(0.8, bones(flap(0.8, o.flapAmp ?? 35, o.flyBase ?? 10), { [ll]: { rotation: [50, 0, 0] }, [lr]: { rotation: [50, 0, 0] } })),
+    glide: loop(3, bones(flap(3, 4, o.glideBase ?? -5), { [ll]: { rotation: [50, 0, 0] }, [lr]: { rotation: [50, 0, 0] } })),
     sleep: hold(bones(
       { [body]: { position: [0, -(o.sleepDrop ?? 4), 0] } },
       { [ll]: { rotation: [-80, 0, 0], position: [0, -(o.sleepDrop ?? 4), 0] }, [lr]: { rotation: [-80, 0, 0], position: [0, -(o.sleepDrop ?? 4), 0] } },

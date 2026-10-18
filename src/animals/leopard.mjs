@@ -1,7 +1,7 @@
 import { quadruped } from '../lib/anim.mjs';
 import { felid } from '../lib/bodies.mjs';
 import { all, bone, LEGS, notFace } from '../lib/parts.mjs';
-import { fur, mottle, rosettes, spots, underside } from '../lib/texture.mjs';
+import { fur, mottle, rosettePixels, spots, underside } from '../lib/texture.mjs';
 
 export default {
   id: 'leopard',
@@ -36,7 +36,7 @@ export default {
       base: '#d9a95a',
       layers: [
         underside('#f2e6cc', { y: 10, soft: 2, where: bone('body') }),
-        rosettes('#2a1c12', { size: 3.4, inner: 0.24, outer: 0.4, centre: '#c08a40', where: all(bone('body'), notFace('bottom')) }),
+        rosettePixels('#2a1c12', { centre: '#bf8a42', cell: 4, gaps: 0.3, where: all(bone('body', 'tail'), notFace('bottom')) }),
         spots('#2a1c12', { size: 2, radius: 0.32, where: bone('head', ...LEGS) }),
         mottle(0.05),
         fur(0.05),

@@ -1,5 +1,5 @@
 import { quadruped } from '../lib/anim.mjs';
-import { fur, mottle, stripes, underside } from '../lib/texture.mjs';
+import { fur, mottle, region, stripes, underside } from '../lib/texture.mjs';
 
 const isBone = (...names) => ({ cube }) => names.includes(cube.bone);
 const notBottom = ({ face }) => face !== 'bottom';
@@ -111,12 +111,13 @@ export default {
         stripes('#1c1c1c', { axis: 1, period: 3, width: 0.45, warp: 1.2, where: (c) => isBone('neck', 'tail', 'leg_fl', 'leg_fr', 'leg_bl', 'leg_br')(c) && notBottom(c) }),
         stripes('#1c1c1c', { axis: 1, period: 2, width: 0.5, warp: 0.6, where: isBone('head') }),
         underside('#f3f0e7', { y: 12.5, soft: 2, where: isBone('body') }),
+        region('#1c1c1c', (c) => isBone('body')(c) && c.face === 'top' && Math.abs(c.p[0]) < 1),
         mottle(0.05),
         fur(0.05),
       ],
     },
     mane: { base: '#f3f0e7', layers: [stripes('#1c1c1c', { axis: 1, period: 2, width: 0.5, warp: 0 }), fur(0.06)] },
-    ear: { base: '#f3f0e7', layers: [stripes('#1c1c1c', { axis: 1, period: 2, width: 0.5, warp: 0 })] },
+    ear: { base: '#f3f0e7', layers: [stripes('#1c1c1c', { axis: 1, period: 2, width: 0.5, warp: 0 }), region('#1c1c1c', ({ p }) => p[1] > 35)] },
     muzzle: { base: '#2e2b29', layers: [fur(0.06)] },
     tuft: { base: '#161616', layers: [fur(0.1)] },
     hoof: '#2b2622',

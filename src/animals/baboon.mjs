@@ -1,5 +1,5 @@
 import { primate, quadruped } from '../lib/anim.mjs';
-import { all, bone, eyes, face, legs4 } from '../lib/parts.mjs';
+import { all, bone, face, legs4 } from '../lib/parts.mjs';
 import { fur, mottle, region } from '../lib/texture.mjs';
 
 export default {
@@ -42,8 +42,15 @@ export default {
       {
         name: 'head', parent: 'body', pivot: [0, 13, -6],
         cubes: [
-          { origin: [-2, 11, -10], size: [4, 4, 4], mat: 'fur', marks: eyes(4, { back: 0, down: 1, color: '#3a2618' }) },
-          { origin: [-1, 10, -14], size: [2, 3, 4], mat: 'face', marks: [{ face: 'front', x: 0, y: 0, w: 2, color: '#2a1d18' }] },
+          {
+            origin: [-2, 11, -10], size: [4, 4, 4], mat: 'fur',
+            marks: [{ face: 'front', x: 0, y: 1, w: 4, h: 3, color: '#4a3a34' }, { face: 'front', x: 0, y: 1, color: '#c88a2a' }, { face: 'front', x: 3, y: 1, color: '#c88a2a' }],
+          },
+          // Heavy brow and a long, bare, dog-like muzzle.
+          { origin: [-2, 14, -11], size: [4, 1, 1], mat: 'brow' },
+          { origin: [-1, 10, -15], size: [2, 2, 5], mat: 'face', marks: [{ face: 'front', x: 0, y: 0, w: 2, color: '#1e1512' }] },
+          { origin: [-1, 12, -14], size: [2, 1, 4], mat: 'face' },
+          { origin: [-2, 13, -8], size: [4, 2, 3], mat: 'mane' },
         ],
       },
       ...legs4({ x: 3, front: -5, back: 3, w: 2, h: 8, frontH: 9, foot: 0, mat: 'fur' }),
@@ -52,8 +59,9 @@ export default {
 
   materials: {
     fur: { base: '#7a6f4a', layers: [region('#c98a8a', all(bone('body'), face('back'), ({ p }) => p[1] < 10)), mottle(0.1, { scale: 3 }), fur(0.08)] },
-    mane: { base: '#8a805a', layers: [fur(0.12)] },
-    face: { base: '#4a3a34', layers: [fur(0.04)] },
+    mane: { base: '#9a9068', layers: [mottle(0.1, { scale: 2 }), fur(0.14)] },
+    face: { base: '#5a4640', layers: [region('#7a5e56', ({ face: f }) => f === 'top'), fur(0.04)] },
+    brow: '#3a2c26',
   },
 
   anims: {

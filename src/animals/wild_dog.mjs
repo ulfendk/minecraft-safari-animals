@@ -44,7 +44,12 @@ export default {
       ],
     },
     muzzle: '#1b1611',
-    ear: { base: '#2a2118', layers: [region('#4a3a2a', ({ face: f }) => f === 'front')] },
+    ear: {
+      base: '#2a2118',
+      layers: [
+        region('#5a4632', ({ face: f, i, j, fw }) => f === 'front' && i > 0 && i < fw - 1 && j > 0),
+      ],
+    },
     tail: { base: '#b07a3a', layers: [spots('#2a2118', { size: 2, radius: 0.35 })] },
     tuft: '#f2ece0',
     paw: '#3a2c1e',

@@ -3,6 +3,13 @@ import { felid } from '../lib/bodies.mjs';
 import { all, bone, LEGS, notFace } from '../lib/parts.mjs';
 import { fur, mottle, spots, underside } from '../lib/texture.mjs';
 
+/** Short bristly mane running along the back of the neck and shoulders. */
+function withMane(model) {
+  const body = model.bones.find((b) => b.name === 'body');
+  body.cubes.push({ origin: [-1, 17, -7], size: [2, 1, 6], mat: 'mane' });
+  return model;
+}
+
 export default {
   id: 'hyena',
   name: 'Hyena',
@@ -38,7 +45,7 @@ export default {
   sounds: { ambient: 'mob.fox.screech', hurt: 'mob.wolf.hurt', death: 'mob.wolf.death', pitch: [0.8, 1.0], interval: 15 },
   egg: ['#a8936b', '#3a2c20'],
 
-  model: felid({ bodyW: 6, bodyH: 7, bodyL: 14, legH: 10, legW: 2, headW: 6, headH: 5, headD: 5, muzzleW: 4, muzzleD: 3, tailL: 7, tuft: true, earH: 3, slope: 2, hump: 1, eyeColor: '#6b4a1e' }),
+  model: withMane(felid({ bodyW: 6, bodyH: 7, bodyL: 14, legH: 10, legW: 2, headW: 6, headH: 5, headD: 5, muzzleW: 4, muzzleD: 3, tailL: 7, tuft: true, earH: 3, slope: 2, hump: 1, eyeColor: '#6b4a1e' })),
 
   materials: {
     fur: {
@@ -51,6 +58,7 @@ export default {
       ],
     },
     muzzle: { base: '#3a2c20', layers: [fur(0.05)] },
+    mane: { base: '#3a2c20', layers: [fur(0.15)] },
     ear: '#5a4630',
     tail: '#a8936b',
     tuft: { base: '#2a2018', layers: [fur(0.1)] },

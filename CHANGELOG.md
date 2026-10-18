@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0] - 2026-10-18
+More lifelike animals:
+- All textures have baked shading for more depth: lighter on top, darker down the sides and underneath.
+- Elephant: new model with large rounded African ears, a domed forehead, a three-part curling trunk, curved tusks, a sagging belly and wrinkled skin.
+- Giraffe: neck that tapers from a thick base, sloping back, longer head, tufted ossicones, and reticulated patches with a fine cream network.
+- Wildebeest: long dark face with a broad muzzle, horns that curve out, down and up, a beard and a neck mane.
+- Vulture: hunched standing pose, pale ruff, bare head, hooked beak, banded wings that spread fully in flight.
+- Leopard: clear rosettes.
+- Baboon: long bare muzzle, heavy brow, amber eyes and a pale shoulder mane.
+- Meerkat: slimmer body and a long pointed snout.
+- Smaller fixes: wild dog ears, rhino horn, warthog tusks and mane, hyena mane, zebra ear tips and dorsal stripe.
+
 ## [0.2.3] - 2026-10-18
 - Lion: removed the eyebrows.
 - Tiger: fiercer look with a snarling jaw and fangs, a scowl of black stripes above the eyes, a bulkier build and a twitching tail.

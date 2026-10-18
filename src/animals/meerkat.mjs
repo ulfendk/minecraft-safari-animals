@@ -30,26 +30,27 @@ export default {
   model: {
     bones: [
       { name: 'root', pivot: [0, 0, 0] },
-      { name: 'body', parent: 'root', pivot: [0, 4, 2], cubes: [{ origin: [-2, 2, -4], size: [4, 4, 8], mat: 'fur' }] },
+      { name: 'body', parent: 'root', pivot: [0, 4, 2], cubes: [{ origin: [-2, 3, -4], size: [4, 3, 8], mat: 'fur' }] },
       {
         name: 'head', parent: 'body', pivot: [0, 5, -4],
         cubes: [
           {
             origin: [-2, 4, -7], size: [4, 3, 3], mat: 'fur',
             marks: [
-              ...eyes(3, { back: 0, down: 1, w: 2, color: '#4a3424' }),
-              { face: 'front', x: 0, y: 1, color: '#4a3424' },
-              { face: 'front', x: 3, y: 1, color: '#4a3424' },
+              // Small dark eye patches with black eyes.
+              { face: 'front', x: 0, y: 0, h: 2, color: '#4a3424' },
+              { face: 'front', x: 3, y: 0, h: 2, color: '#4a3424' },
               { face: 'front', x: 0, y: 0, color: '#0a0806' },
               { face: 'front', x: 3, y: 0, color: '#0a0806' },
               ...eyes(3, { back: 0, down: 0, color: '#0a0806' }),
             ],
           },
-          { origin: [-1, 4, -9], size: [2, 2, 2], mat: 'snout', marks: [{ face: 'front', x: 0, y: 0, w: 2, color: '#1a120c' }] },
+          // Long pointed snout with a dark tip.
+          { origin: [-1, 4, -10], size: [2, 2, 3], mat: 'snout', marks: [{ face: 'front', x: 0, y: 0, w: 2, color: '#1a120c' }] },
         ],
       },
-      { name: 'ear_l', parent: 'head', pivot: [2, 6, -5.5], cubes: [{ origin: [2, 5, -6], size: [1, 1, 1], mat: 'dark' }] },
-      { name: 'ear_r', parent: 'head', pivot: [-2, 6, -5.5], cubes: [{ origin: [-3, 5, -6], size: [1, 1, 1], mat: 'dark' }] },
+      { name: 'ear_l', parent: 'head', pivot: [2, 6, -4.5], cubes: [{ origin: [2, 5, -5], size: [1, 1, 1], mat: 'dark' }] },
+      { name: 'ear_r', parent: 'head', pivot: [-2, 6, -4.5], cubes: [{ origin: [-3, 5, -5], size: [1, 1, 1], mat: 'dark' }] },
       { name: 'tail', parent: 'body', pivot: [0, 4, 4], rotation: [60, 0, 0], cubes: [{ origin: [0, -2, 4], size: [1, 6, 1], mat: 'tail' }] },
       ...legs4({ x: 2, front: -3, back: 2, w: 1, d: 1, h: 3, foot: 0, mat: 'fur' }),
     ],
@@ -64,7 +65,7 @@ export default {
         fur(0.06),
       ],
     },
-    snout: '#bf9d6f',
+    snout: { base: '#d6b98a', layers: [fur(0.04)] },
     dark: '#3a2a1e',
     tail: { base: '#c9a777', layers: [region('#3a2a1e', ({ p }) => p[1] < -0.5)] },
   },

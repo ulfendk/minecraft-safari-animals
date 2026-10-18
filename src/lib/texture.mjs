@@ -6,12 +6,23 @@ import { forEachTexel } from './model.mjs';
 
 // ---------------------------------------------------------------- colours
 
+/** '#rgb', '#rrggbb' or '#rrggbbaa' (alpha 00 = transparent, e.g. for rounded ear corners). */
 export function hex(c) {
   if (Array.isArray(c)) return c;
-  const s = c.replace('#', '');
-  const n = parseInt(s.length === 3 ? s.replace(/./g, '$&$&') : s, 16);
-  return [(n >> 16) & 255, (n >> 8) & 255, n & 255, 255];
+  let s = c.replace('#', '');
+  if (s.length === 3) s = s.replace(/./g, '$&$&');
+  const n = parseInt(s.slice(0, 6), 16);
+  const a = s.length === 8 ? parseInt(s.slice(6, 8), 16) : 255;
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255, a];
 }
+
+export const TRANSPARENT = '#00000000';
+
+/** True for the texels in the corners of a face (for rounding off flat parts like ears). */
+export const corner = (r = 2) => ({ i, j, fw, fh }) => {
+  const dx = Math.min(i, fw - 1 - i), dy = Math.min(j, fh - 1 - j);
+  return dx + dy < r - 1 || (dx < r - 1 && dy < r - 1 && dx + dy < r);
+};
 
 export function mix(a, b, t) {
   t = Math.max(0, Math.min(1, t));
@@ -132,6 +143,27 @@ export const rosettes = (ring, { size = 4, inner = 0.2, outer = 0.36, centre, se
     return c;
   });
 
+/**
+ * Pixel-art rosettes laid out per face: 3x3 broken rings with a darker centre,
+ * on a staggered grid of `cell` x `cell` blocks. Crisper than `rosettes` at low resolution.
+ */
+export const rosettePixels = (ring, { centre, cell = 4, gaps = 0.25, seed = 51, where } = {}) =>
+  gate(where, (c, { i, j, face: f, cube }) => {
+    const fi = ['right', 'front', 'left', 'back', 'top', 'bottom'].indexOf(f);
+    const key = (cube.origin[0] * 31 + cube.origin[1] * 17 + cube.origin[2] * 7 + fi * 101) | 0;
+    for (let ci = Math.floor(i / cell) - 1; ci <= Math.floor(i / cell) + 1; ci++)
+      for (let cj = Math.floor(j / cell) - 1; cj <= Math.floor(j / cell) + 1; cj++) {
+        // Staggered grid: rings never touch, alternate rows shift by half a cell.
+        const cx = ci * cell + 1 + (Math.abs(cj) % 2 ? Math.floor(cell / 2) : 0);
+        const cy = cj * cell + 1;
+        if (hash(ci, cj, key, seed) < 0.12) continue; // the odd missing rosette
+        const dx = i - cx, dy = j - cy;
+        if (dx === 0 && dy === 0) return centre ? hex(centre) : c;
+        if (Math.max(Math.abs(dx), Math.abs(dy)) === 1 && hash(i, j, key, seed + 2) > gaps) return hex(ring);
+      }
+    return c;
+  });
+
 /** Giraffe patches: large cells of `color` separated by lines of the base colour. */
 export const patches = (color, { size = 5, line = 0.12, vary = 0.15, seed = 41, where } = {}) =>
   gate(where, (c, { p }) => {
@@ -153,7 +185,20 @@ export const region = (color, where) => (c, ctx) => (where(ctx) ? hex(color) : c
  * Cubes may carry `marks: [{ face, x, y, w?, h?, color }]` in face-local texels
  * (x from the left, y from the top as seen from outside), used for eyes, nostrils, etc.
  */
-export function paintTexture({ width, height, layout }, materials) {
+/**
+ * Baked shading that gives cubes volume: lighter towards the top of each side,
+ * darker towards the bottom and underneath. Applied before marks (eyes stay crisp).
+ */
+function bakedShade(c, ctx, amount) {
+  if (!amount) return c;
+  const { face, j, fh } = ctx;
+  if (face === 'top') return shade(c, 1 + amount * 0.35);
+  if (face === 'bottom') return shade(c, 1 - amount * 0.8);
+  const t = fh > 1 ? j / (fh - 1) : 0.5; // 0 at the top of the face, 1 at the bottom
+  return shade(c, 1 + amount * (0.45 - t));
+}
+
+export function paintTexture({ width, height, layout }, materials, { shading = 0.14 } = {}) {
   const png = new PNG({ width, height });
   png.data.fill(0);
   for (const cube of layout) {
@@ -163,6 +208,7 @@ export function paintTexture({ width, height, layout }, materials) {
     forEachTexel(cube, (px, py, ctx) => {
       let c = base;
       for (const layer of mat.layers ?? []) c = layer(c, ctx);
+      c = bakedShade(c, ctx, mat.shading ?? shading);
       for (const m of cube.marks ?? []) {
         if (m.face === ctx.face && ctx.i >= m.x && ctx.i < m.x + (m.w ?? 1) && ctx.j >= m.y && ctx.j < m.y + (m.h ?? 1)) {
           c = hex(m.color);

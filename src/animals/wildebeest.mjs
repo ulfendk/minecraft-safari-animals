@@ -1,6 +1,6 @@
 import { quadruped } from '../lib/anim.mjs';
 import { all, bone, eyes, face, legs4, nostrils } from '../lib/parts.mjs';
-import { fur, mottle, stripes } from '../lib/texture.mjs';
+import { fur, mottle, region, stripes } from '../lib/texture.mjs';
 
 export default {
   id: 'wildebeest',
@@ -53,22 +53,30 @@ export default {
         name: 'neck', parent: 'body', pivot: [0, 19, -8], rotation: [35, 0, 0],
         cubes: [
           { origin: [-2, 16, -13], size: [4, 8, 5], mat: 'hide' },
-          { origin: [-1, 22, -9], size: [2, 3, 4], mat: 'mane' },
-          { origin: [-1, 13, -13], size: [2, 3, 3], mat: 'mane' },
+          // Black mane along the top of the neck and a shaggy beard underneath.
+          { origin: [-1, 24, -12], size: [2, 1, 4], mat: 'mane' },
+          { origin: [-1, 12, -13], size: [2, 4, 4], mat: 'beard' },
         ],
       },
       {
         name: 'head', parent: 'neck', pivot: [0, 23, -11],
         cubes: [
-          { origin: [-2, 19, -19], size: [4, 5, 8], mat: 'face', marks: eyes(8, { back: 2, down: 1 }) },
-          { origin: [-5, 24, -13], size: [10, 2, 2], mat: 'horn' },
-          { origin: [-5, 26, -13], size: [1, 3, 1], mat: 'horn' },
-          { origin: [4, 26, -13], size: [1, 3, 1], mat: 'horn' },
-          { origin: [-2, 18, -19], size: [4, 1, 3], mat: 'face', marks: nostrils(4) },
+          // Long face that widens into a broad muzzle.
+          { origin: [-2, 18, -20], size: [4, 6, 9], mat: 'face', marks: eyes(9, { back: 2, down: 1, color: '#0e0b0a' }) },
+          { origin: [-3, 16, -22], size: [6, 3, 4], mat: 'muzzle', marks: nostrils(6, { down: 0, gap: 2, color: '#0e0b0a' }) },
+          // Horns: out to the sides, down, then up and in at the tips.
+          { origin: [2, 23, -14], size: [3, 2, 2], mat: 'horn' },
+          { origin: [5, 22, -14], size: [1, 2, 2], mat: 'horn' },
+          { origin: [5, 24, -14], size: [1, 2, 1], mat: 'horn' },
+          { origin: [4, 26, -14], size: [1, 1, 1], mat: 'horn' },
+          { origin: [-5, 23, -14], size: [3, 2, 2], mat: 'horn' },
+          { origin: [-6, 22, -14], size: [1, 2, 2], mat: 'horn' },
+          { origin: [-6, 24, -14], size: [1, 2, 1], mat: 'horn' },
+          { origin: [-5, 26, -14], size: [1, 1, 1], mat: 'horn' },
         ],
       },
-      { name: 'ear_l', parent: 'head', pivot: [2, 23, -11.5], cubes: [{ origin: [2, 22, -12], size: [2, 1, 1], mat: 'hide' }] },
-      { name: 'ear_r', parent: 'head', pivot: [-2, 23, -11.5], cubes: [{ origin: [-4, 22, -12], size: [2, 1, 1], mat: 'hide' }] },
+      { name: 'ear_l', parent: 'head', pivot: [2, 22, -11.5], rotation: [0, 0, -20], cubes: [{ origin: [2, 22, -12], size: [3, 1, 1], mat: 'hide' }] },
+      { name: 'ear_r', parent: 'head', pivot: [-2, 22, -11.5], rotation: [0, 0, 20], cubes: [{ origin: [-5, 22, -12], size: [3, 1, 1], mat: 'hide' }] },
       ...legs4({ x: 4, front: -8, back: 7, w: 3, h: 12, foot: 2 }),
     ],
   },
@@ -82,9 +90,11 @@ export default {
         fur(0.06),
       ],
     },
-    face: { base: '#3a3a3c', layers: [fur(0.06)] },
+    face: { base: '#2e2d2e', layers: [region('#55565a', ({ face: f }) => f === 'left' || f === 'right'), fur(0.06)] },
+    muzzle: { base: '#262526', layers: [fur(0.05)] },
+    beard: { base: '#1a1a1b', layers: [fur(0.15)] },
     mane: { base: '#1b1b1c', layers: [fur(0.1)] },
-    horn: { base: '#2c2a28', layers: [fur(0.04)] },
+    horn: { base: '#3a3632', layers: [region('#55504a', ({ p }) => p[1] > 24), fur(0.04)] },
     hoof: '#1f1c1a',
   },
 
