@@ -15,7 +15,9 @@ public class SafariAnimalsClient implements ClientModInitializer {
 		for (EntityType<? extends Mob> type : SafariRegistry.ANIMALS.values()) {
 			registerAnimal((EntityType<SafariAnimalType>) (EntityType<?>) type);
 		}
-		EntityRenderers.register(SafariRegistry.THROWN_SPEAR, SpearRenderer::new);
+		EntityRenderers.register(SafariRegistry.THROWN_SPEAR, ctx -> new SpearRenderer<>(ctx, "thrown_spear"));
+		EntityRenderers.register(SafariRegistry.THROWN_DART, ctx -> new SpearRenderer<>(ctx, "thrown_dart"));
+		EntityRenderers.register(SafariRegistry.THROWN_POISON_DART, ctx -> new SpearRenderer<>(ctx, "thrown_poison_dart"));
 		EntityRenderers.register(SafariRegistry.PEBBLE_ENTITY, ThrownItemRenderer::new);
 		EntityRenderers.register(SafariRegistry.THROWN_FRUIT, ThrownItemRenderer::new);
 	}

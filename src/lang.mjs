@@ -23,6 +23,7 @@ const FOODS = {
   sugar: ['Sugar', 'Sukker'], sugar_cane: ['Sugar Cane', 'Sukkerrør'], sweet_berries: ['Sweet Berries', 'Søde bær'],
   tropical_fish: ['Tropical Fish', 'Tropisk fisk'], wheat: ['Wheat', 'Hvede'], wheat_seeds: ['Wheat Seeds', 'Hvedefrø'],
   'safari:raw_game_meat': ['Raw Game Meat', 'Råt vildtkød'],
+  honeycomb: ['Honeycomb', 'Bikage'], slime_ball: ['Slimeball', 'Slimklump'], seagrass: ['Seagrass', 'Søgræs'], cactus: ['Cactus', 'Kaktus'], dandelion: ['Dandelion', 'Mælkebøtte'], brown_mushroom: ['Brown Mushroom', 'Brun svamp'], red_mushroom: ['Red Mushroom', 'Rød svamp'], lily_pad: ['Lily Pad', 'Åkandeblad'], honey_bottle: ['Honey Bottle', 'Honningflaske'], egg: ['Egg', 'Æg'],
 };
 export const foodKey = (item) => `${NS}.food.${item.replace(/^.*:/, '')}`;
 
@@ -32,6 +33,9 @@ const DA_EGG = {
   elephant: 'Elefant', rhino: 'Næsehorns', hippo: 'Flodheste', giraffe: 'Giraf', zebra: 'Zebra', gazelle: 'Gazelle',
   wildebeest: 'Gnu', warthog: 'Vortesvins', ostrich: 'Strudse', flamingo: 'Flamingo', vulture: 'Gribbe', crocodile: 'Krokodille',
   meerkat: 'Surikat', gorilla: 'Gorilla', chimpanzee: 'Chimpanse', baboon: 'Bavian', kangaroo: 'Kænguru', koala: 'Koala',
+  honey_badger: 'Honninggrævlings', porcupine: 'Hulepindsvins', piranha: 'Piraya', turtle: 'Flodskildpadde', tortoise: 'Landskildpadde',
+  electric_eel: 'Ål', river_dolphin: 'Delfin', anaconda: 'Anakonda', tarantula: 'Tarantel', scolopender: 'Skolopender',
+  poison_dart_frog: 'Pilegiftfrø', capybara: 'Flodsvins', tasmanian_devil: 'Pungdjævle', chameleon: 'Kamæleon', harpy_eagle: 'Harpyørne',
 };
 
 const UI = {
@@ -52,6 +56,8 @@ const UI = {
   'safari.guide.tame_with': ['Tame with:', 'Tæm med:'],
   'safari.baboon.stole': ['A baboon snatched your snack!', 'En bavian snuppede din mad!'],
   'safari.egg.placed': ['The ostrich egg will hatch soon...', 'Strudseægget klækker snart …'],
+  'action.interact.safari.poison_dart': ['Coat dart with poison', 'Giv pilen gift'],
+  'safari.dart.coated': ['You coat the dart with frog poison.', 'Du giver pilen frøgift.'],
 };
 
 /**

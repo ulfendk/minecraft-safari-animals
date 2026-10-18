@@ -18,13 +18,15 @@ const repo = process.env.GITHUB_REPOSITORY ?? process.env.SITE_REPO ?? 'ulfendk/
 const [owner, name] = repo.split('/');
 
 const GROUPS = {
-  predator: ['lion', 'tiger', 'leopard', 'cheetah', 'hyena', 'wild_dog', 'crocodile'],
+  predator: ['lion', 'tiger', 'leopard', 'cheetah', 'hyena', 'wild_dog', 'crocodile', 'honey_badger', 'tasmanian_devil', 'harpy_eagle'],
+  amazon: ['piranha', 'electric_eel', 'river_dolphin', 'anaconda', 'tarantula', 'scolopender', 'poison_dart_frog', 'capybara'],
+  reptile: ['tortoise', 'turtle', 'chameleon'],
   grazer: ['zebra', 'gazelle', 'wildebeest', 'warthog', 'giraffe'],
   giant: ['elephant', 'rhino', 'hippo'],
   bird: ['ostrich', 'flamingo', 'vulture'],
   primate: ['gorilla', 'chimpanzee', 'baboon'],
-  small: ['meerkat'],
-  marsupial: ['kangaroo', 'koala'],
+  marsupial: ['kangaroo', 'koala', 'tasmanian_devil'],
+  small: ['meerkat', 'porcupine'],
 };
 const groupOf = (id) => Object.entries(GROUPS).find(([, ids]) => ids.includes(id))?.[0] ?? 'other';
 
@@ -52,7 +54,7 @@ for (const a of animals) {
   await writeFile(join(OUT, 'img', 'animals', `${a.id}.png`), render(geo, tex, { yaw: 35, size: 320, hidden: new Set(['saddle', 'chest']) }));
   cards.push({ a, habitats: habitatsOf(a), group: groupOf(a.id) });
 }
-const order = ['lion', 'elephant', 'zebra', 'giraffe', 'rhino', 'hippo', 'cheetah', 'leopard', 'tiger', 'hyena', 'wild_dog', 'gazelle', 'wildebeest', 'warthog', 'ostrich', 'flamingo', 'vulture', 'crocodile', 'meerkat', 'gorilla', 'chimpanzee', 'baboon', 'kangaroo', 'koala'];
+const order = ['lion', 'elephant', 'zebra', 'giraffe', 'rhino', 'hippo', 'cheetah', 'leopard', 'tiger', 'hyena', 'wild_dog', 'gazelle', 'wildebeest', 'warthog', 'ostrich', 'flamingo', 'vulture', 'crocodile', 'meerkat', 'gorilla', 'chimpanzee', 'baboon', 'kangaroo', 'koala', 'tasmanian_devil', 'honey_badger', 'porcupine', 'tortoise', 'chameleon', 'capybara', 'anaconda', 'piranha', 'electric_eel', 'river_dolphin', 'turtle', 'poison_dart_frog', 'tarantula', 'scolopender', 'harpy_eagle'];
 cards.sort((x, y) => order.indexOf(x.a.id) - order.indexOf(y.a.id));
 
 for (const item of [...items, ...blocks.map((b) => ({ ...b, icon: b.texture }))]) {
@@ -140,6 +142,8 @@ header.hero { color: #fff8ec; background: linear-gradient(180deg, var(--hero-fro
 .btn:hover { transform: translateY(-1px); }
 .btn.ghost { background: transparent; color: #fff3df; box-shadow: inset 0 0 0 2px rgb(255 243 223 / .6); }
 .version { font-size: .95rem; color: #fbe9cf; }
+.which { margin: 16px 0 6px; background: rgb(0 0 0 / .22); border: 1px solid rgb(255 243 223 / .35); border-radius: 10px; padding: 10px 14px; max-width: 62ch; font-size: .95rem; color: #fff3df; }
+.which b { color: #fff; }
 .hero .langs { display: flex; justify-content: flex-end; margin-top: -28px; margin-bottom: 8px; }
 .hero .langs a { color: #fff3df; font-weight: 600; text-decoration: none; padding: 4px 12px; border-radius: 999px; box-shadow: inset 0 0 0 1.5px rgb(255 243 223 / .55); font-size: .9rem; }
 .hero .langs a:hover { background: rgb(255 255 255 / .12); }
@@ -193,6 +197,7 @@ footer { margin-top: 56px; padding: 28px 0 40px; border-top: 1px solid var(--lin
         <a class="btn" href="${dl('SafariAnimals-fabric.jar')}">⬇ ${esc(t.downloadJava)}</a>
         <a class="btn ghost" href="${releases}">${esc(t.allVersions)}</a>
       </div>
+      <p class="which">${t.which}</p>
       <p class="version" id="version">${esc(t.latestVersion)}: <strong>${esc(version)}</strong></p>
     </div>
   </div>

@@ -75,3 +75,8 @@ jar {
 		rename { "${it}_safari-animals" }
 	}
 }
+
+// `./gradlew runClientGameTest -Psafari.screenshot=lion,zebra` screenshots only those animals.
+tasks.matching { it.name == 'runClientGameTest' }.configureEach {
+	if (project.hasProperty('safari.screenshot')) jvmArgs "-Dsafari.screenshot=${project.property('safari.screenshot')}"
+}

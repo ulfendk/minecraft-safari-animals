@@ -1,6 +1,6 @@
 {
   "name": "safari-animals",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Safari Animals: a Minecraft Bedrock add-on with lions, elephants, zebras and other safari animals",
   "private": true,
   "type": "module",

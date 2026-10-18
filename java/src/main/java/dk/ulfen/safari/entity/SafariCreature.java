@@ -31,6 +31,10 @@ public interface SafariCreature extends GeoEntity {
 		return false;
 	}
 
+	default boolean isHiding() {
+		return false;
+	}
+
 	/** Play a one-shot animation on all clients, if this species has it. */
 	default void playAction(String name) {
 		if (species().hasAnimation(name)) triggerAnim("action", name);
@@ -62,6 +66,7 @@ public interface SafariCreature extends GeoEntity {
 	private static String pickMove(Mob e, Species s, double speed) {
 		SafariCreature c = (SafariCreature) e;
 		if (c.isResting() && s.hasAnimation("sleep")) return "sleep";
+		if (c.isHiding() && s.hasAnimation("hide")) return "hide";
 		if (s.flies() && !e.onGround() && !e.isInWater() && s.hasAnimation("fly")) return "fly";
 		if (e.isInWater() && !e.onGround() && s.hasAnimation("swim")) return "swim";
 		if (c.isSentry() && s.hasAnimation("stand")) return "stand";

@@ -7,14 +7,13 @@ import com.geckolib.renderer.base.RenderPassInfo;
 import com.mojang.math.Axis;
 
 import dk.ulfen.safari.SafariRegistry;
-import dk.ulfen.safari.entity.ThrownSpear;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 
-/** Thrown flint spear, pointing along its flight path. */
-public class SpearRenderer extends GeoEntityRenderer<ThrownSpear, EntityRenderState> {
-	public SpearRenderer(EntityRendererProvider.Context context) {
-		super(context, new DefaultedEntityGeoModel<>(SafariRegistry.id("thrown_spear")));
+/** Thrown spears and darts, pointing along their flight path. */
+public class SpearRenderer<T extends net.minecraft.world.entity.Entity & com.geckolib.animatable.GeoAnimatable> extends GeoEntityRenderer<T, EntityRenderState> {
+	public SpearRenderer(EntityRendererProvider.Context context, String model) {
+		super(context, new DefaultedEntityGeoModel<>(SafariRegistry.id(model)));
 	}
 
 	/**

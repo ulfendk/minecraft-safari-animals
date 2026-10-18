@@ -42,7 +42,8 @@ public final class SafariWorldgen {
 		for (Species s : SpeciesRegistry.all()) {
 			for (Species.Spawn spawn : s.spawns()) {
 				Predicate<BiomeSelectionContext> selector = spawn.biomes().stream().map(SafariWorldgen::biomes).reduce(Predicate::or).orElse(c -> false);
-				BiomeModifications.addSpawn(selector, MobCategory.CREATURE, SafariRegistry.ANIMALS.get(s.id()), spawn.weight(), spawn.min(), spawn.max());
+				MobCategory category = spawn.water() ? MobCategory.WATER_CREATURE : MobCategory.CREATURE;
+				BiomeModifications.addSpawn(selector, category, SafariRegistry.ANIMALS.get(s.id()), spawn.weight(), spawn.min(), spawn.max());
 			}
 		}
 		Predicate<BiomeSelectionContext> savanna = BiomeSelectors.tag(BiomeTags.IS_SAVANNA);

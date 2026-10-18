@@ -66,6 +66,61 @@ function baseComponents(a) {
         'minecraft:behavior.random_fly': { priority: 8, can_land_on_trees: true, avoid_damage_blocks: true, xz_dist: 24, y_dist: 8, y_offset: 2, speed_multiplier: 1.0 },
       });
       break;
+    case 'swim':
+      // Fully aquatic fish (like cod): can't leave the water, may swim in schools.
+      Object.assign(c, {
+        'minecraft:underwater_movement': { value: a.swimSpeed ?? 0.12 },
+        'minecraft:movement.sway': { sway_amplitude: 0 },
+        'minecraft:navigation.generic': { can_breach: false, can_walk: false, can_path_over_water: false, can_sink: false, can_swim: true, is_amphibious: false },
+        'minecraft:physics': { has_gravity: false },
+        'minecraft:breathable': { total_supply: 15, suffocate_time: 0, breathes_air: false, breathes_water: true },
+        'minecraft:behavior.random_swim': { priority: 8, interval: 0, xz_dist: 16, y_dist: 4, speed_multiplier: 1.0 },
+        'minecraft:behavior.swim_idle': { priority: 9 },
+        'minecraft:behavior.swim_wander': { priority: 9, interval: 0.1, look_ahead: 2 },
+      });
+      if (a.school) {
+        c['minecraft:flocking'] = {
+          in_water: true, match_variants: false, use_center_of_mass: true, low_flock_limit: 4, high_flock_limit: 8,
+          goal_weight: 2, loner_chance: 0.1, influence_radius: 3, breach_influence: 7, separation_weight: 1.75,
+          separation_threshold: 0.95, cohesion_weight: 2, cohesion_threshold: 1.95, innner_cohesion_threshold: 1.25,
+          min_height: 1.5, block_distance: 2, block_weight: 0.85,
+        };
+      }
+      delete c['minecraft:behavior.look_at_player'];
+      delete c['minecraft:behavior.random_look_around'];
+      delete c['minecraft:jump.static'];
+      break;
+    case 'dolphin':
+      // Air-breathing swimmers (like dolphins): surface to breathe, leap out of the water.
+      Object.assign(c, {
+        'minecraft:underwater_movement': { value: a.swimSpeed ?? 0.15 },
+        'minecraft:movement.basic': {},
+        'minecraft:navigation.generic': { is_amphibious: true, can_path_over_water: true, can_swim: true, can_walk: true, can_breach: false, can_jump: false },
+        'minecraft:breathable': { total_supply: 240, suffocate_time: 0, breathes_air: true, breathes_water: false, generates_bubbles: false },
+        'minecraft:can_climb': {},
+        'minecraft:behavior.swim_up_for_breath': { priority: 1 },
+        'minecraft:behavior.random_swim': { priority: 7, interval: 0, xz_dist: 20 },
+        'minecraft:behavior.random_breach': { priority: 6, interval: 50, xz_dist: 6, cooldown_time: 2.0 },
+        'minecraft:behavior.swim_with_entity': {
+          priority: 4, success_rate: 0.1, chance_to_stop: 0.0333, state_check_interval: 0.5, catch_up_threshold: 12.0,
+          match_direction_threshold: 2.0, catch_up_multiplier: 2.5, speed_multiplier: 1.5, search_range: 20.0, stop_distance: 5.0,
+          entity_types: [{ filters: { test: 'is_family', subject: 'other', value: 'player' } }],
+        },
+        'minecraft:physics': {},
+      });
+      break;
+    case 'climb':
+      // Wall climbers (like spiders).
+      Object.assign(c, {
+        'minecraft:movement.basic': {},
+        'minecraft:navigation.climb': { can_path_over_water: true, avoid_damage_blocks: true },
+        'minecraft:can_climb': {},
+        'minecraft:breathable': { total_supply: 15, suffocate_time: 0 },
+        'minecraft:behavior.float': { priority: 0 },
+        'minecraft:behavior.random_stroll': { priority: 8, speed_multiplier: 0.8, xz_dist: a.strollRange ?? 8 },
+        'minecraft:damage_sensor': { triggers: [{ cause: 'fall', deals_damage: 'no' }] },
+      });
+      break;
     case 'amphibious':
       Object.assign(c, {
         'minecraft:movement.amphibious': { max_turn: 10 },
@@ -325,9 +380,33 @@ function rideGroups(a) {
   };
 }
 
+/** Several features add damage-sensor rules; merge them into one list. */
+function addDamageTrigger(components, trigger) {
+  const ds = components['minecraft:damage_sensor'] ?? { triggers: [] };
+  ds.triggers = [...(Array.isArray(ds.triggers) ? ds.triggers : [ds.triggers]), trigger];
+  components['minecraft:damage_sensor'] = ds;
+}
+
 export function buildEntity(a) {
   const components = baseComponents(a);
   const groups = { ...lifeGroups(a), ...(a.ride ? rideGroups(a) : {}), ...(a.extraGroups ?? {}) };
+  const extraEvents = {};
+  const properties = { ...(a.properties ?? {}) };
+
+  if (a.poisonImmune) addDamageTrigger(components, { cause: 'magic', deals_damage: 'no' });
+
+  // Shell animals pull into their shell when hurt: they stop and take far less damage for a while.
+  if (a.hidesInShell) {
+    properties['safari:hiding'] = { type: 'bool', default: false, client_sync: true };
+    addDamageTrigger(components, { on_damage: { event: 'safari:hide', target: 'self' }, deals_damage: 'yes' });
+    groups['safari:hiding'] = {
+      'minecraft:movement': { value: 0 },
+      'minecraft:damage_sensor': { triggers: [{ cause: 'all', damage_multiplier: 0.2 }] },
+      'minecraft:timer': { looping: false, time: 6, time_down_event: { event: 'safari:unhide', target: 'self' } },
+    };
+    extraEvents['safari:hide'] = { add: { component_groups: ['safari:hiding'] }, set_property: { 'safari:hiding': true } };
+    extraEvents['safari:unhide'] = { remove: { component_groups: ['safari:hiding'] }, set_property: { 'safari:hiding': false } };
+  }
 
   if (a.ride) {
     components['minecraft:equippable'] = {
@@ -384,10 +463,13 @@ export function buildEntity(a) {
   if (a.variants) {
     a.variants.forEach((v, i) => {
       groups[`${NS}:variant_${i}`] = { 'minecraft:variant': { value: i } };
-      events[`${NS}:make_variant_${i}`] = { add: { component_groups: [`${NS}:variant_${i}`] } };
+      events[`${NS}:make_variant_${i}`] = {
+        remove: { component_groups: a.variants.map((_, j) => `${NS}:variant_${j}`).filter((_, j) => j !== i) },
+        add: { component_groups: [`${NS}:variant_${i}`] },
+      };
     });
   }
-  Object.assign(events, a.extraEvents ?? {});
+  Object.assign(events, extraEvents, a.extraEvents ?? {});
 
   return {
     format_version: '1.21.90',
@@ -397,7 +479,7 @@ export function buildEntity(a) {
         spawn_category: 'creature',
         is_spawnable: true,
         is_summonable: true,
-        ...(a.properties ? { properties: a.properties } : {}),
+        ...(Object.keys(properties).length ? { properties } : {}),
       },
       component_groups: groups,
       components,
@@ -428,15 +510,16 @@ export function buildSpawnRules(a) {
     };
     if (s.water) {
       delete cond['minecraft:spawns_on_surface'];
+      delete cond['minecraft:brightness_filter'];
       cond['minecraft:spawns_underwater'] = {};
-      cond['minecraft:height_filter'] = { min: 50, max: 70 };
+      cond['minecraft:height_filter'] = { min: 40, max: 70 };
     }
     return cond;
   });
   return {
     format_version: '1.8.0',
     'minecraft:spawn_rules': {
-      description: { identifier: `${NS}:${a.id}`, population_control: 'animal' },
+      description: { identifier: `${NS}:${a.id}`, population_control: (a.spawn ?? []).length && a.spawn.every((s) => s.water) ? 'water_animal' : 'animal' },
       conditions,
     },
   };

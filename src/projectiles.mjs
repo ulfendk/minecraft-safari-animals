@@ -30,7 +30,11 @@ export function buildProjectile(p) {
       components: {
         'minecraft:collision_box': { width: 0.25, height: 0.25 },
         'minecraft:projectile': {
-          on_hit: { impact_damage: { damage: p.damage, knockback: true }, remove_on_hit: {} },
+          on_hit: {
+            impact_damage: { damage: p.damage, knockback: true },
+            ...(p.effect ? { mob_effect: { effect: p.effect.effect, durationeasy: p.effect.ticks, durationnormal: p.effect.ticks, durationhard: p.effect.ticks, amplifier: p.effect.amplifier } } : {}),
+            remove_on_hit: {},
+          },
           power: p.power ?? 1.0,
           gravity: p.gravity ?? 0.04,
           ...(p.hitSound ? { hit_sound: p.hitSound } : {}),

@@ -12,6 +12,7 @@ function moveController(a, available) {
   const run = a.client?.runSpeed ?? 5;
   const candidates = [
     { name: 'sleeping', anim: 'sleep', cond: 'query.is_sleeping' },
+    ...(a.hidesInShell ? [{ name: 'hiding', anim: 'hide', cond: "query.property('safari:hiding')" }] : []),
     { name: 'flying', anim: 'fly', cond: '!query.is_on_ground && !query.is_in_water' },
     { name: 'swimming', anim: 'swim', cond: 'query.is_in_water' },
     { name: 'sitting', anim: 'sit', cond: 'query.is_sitting' },
@@ -64,14 +65,15 @@ export function buildClientEntity(a, animNames, egg) {
     if (v.texture) textures[`v${i}`] = `textures/entity/${NS}/${a.id}_${v.texture}`;
   });
   const animations = Object.fromEntries(animNames.map((n) => [n, anim(a.id, n)]));
-  animations.look_at_target = 'animation.safari.common.look_at_target';
+  const hasHead = a.model.bones.some((b) => b.name === 'head');
+  if (hasHead) animations.look_at_target = 'animation.safari.common.look_at_target';
   animations.move_controller = `controller.animation.safari.${a.id}.move`;
   const animate = ['move_controller'];
   if (animNames.includes('attack')) {
     animations.attack_controller = `controller.animation.safari.${a.id}.attack`;
     animate.push('attack_controller');
   }
-  animate.push({ look_at_target: '!query.is_sleeping' });
+  if (hasHead) animate.push({ look_at_target: '!query.is_sleeping' });
 
   return {
     format_version: '1.10.0',

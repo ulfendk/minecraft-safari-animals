@@ -56,6 +56,8 @@ public class SafariAnimal extends Animal implements SafariCreature {
 	private static final EntityDataAccessor<Boolean> RESTING = SynchedEntityData.defineId(SafariAnimal.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(SafariAnimal.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> SENTRY = SynchedEntityData.defineId(SafariAnimal.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> HIDING = SynchedEntityData.defineId(SafariAnimal.class, EntityDataSerializers.BOOLEAN);
+	private int hidingTicks;
 
 	private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 	private int eatTicks;
@@ -94,6 +96,7 @@ public class SafariAnimal extends Animal implements SafariCreature {
 		builder.define(RESTING, false);
 		builder.define(VARIANT, 0);
 		builder.define(SENTRY, false);
+		builder.define(HIDING, false);
 	}
 
 	@Override
@@ -106,6 +109,7 @@ public class SafariAnimal extends Animal implements SafariCreature {
 			return nav;
 		}
 		if (s.amphibious()) return new AmphibiousPathNavigation(this, level);
+		if (s.climbsWalls()) return new net.minecraft.world.entity.ai.navigation.WallClimberNavigation(this, level);
 		return super.createNavigation(level);
 	}
 
@@ -189,6 +193,11 @@ public class SafariAnimal extends Animal implements SafariCreature {
 	}
 
 	@Override
+	public boolean isHiding() {
+		return this.entityData.get(HIDING);
+	}
+
+	@Override
 	public int eatTicks() {
 		return this.eatTicks;
 	}
@@ -205,6 +214,16 @@ public class SafariAnimal extends Animal implements SafariCreature {
 		if (this.eatTicks > 0) this.eatTicks--;
 		if (this.isResting()) this.getNavigation().stop();
 		if (this.level() instanceof ServerLevel level) {
+			// Shell animals stay tucked in for a while after being hurt.
+			if (this.hidingTicks > 0) {
+				this.getNavigation().stop();
+				if (--this.hidingTicks == 0) this.entityData.set(HIDING, false);
+			}
+			// Chameleons take on the colour of what they stand on.
+			if (species().colourChange() && this.tickCount % 20 == 0) {
+				int colour = SafariDefences.camouflageFor(SafariDefences.blockBelow(this));
+				if (colour >= 0 && colour != getVariant()) setVariant(colour);
+			}
 			SafariBehaviours.tick(this, level);
 			layEggs(level);
 		}
@@ -222,15 +241,48 @@ public class SafariAnimal extends Animal implements SafariCreature {
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
 		setResting(false);
+		Species s = species();
+		if (s.hidesInShell()) {
+			if (isHiding()) damage *= 0.2F;
+			this.hidingTicks = 120;
+			this.entityData.set(HIDING, true);
+		}
 		boolean hurt = super.hurtServer(level, source, damage);
-		if (hurt) SafariBehaviours.onHurt(this, level, source);
+		if (hurt) {
+			SafariBehaviours.onHurt(this, level, source);
+			SafariDefences.onHurt(this, s, level, source);
+		}
 		return hurt;
+	}
+
+	@Override
+	public boolean canBeAffected(net.minecraft.world.effect.MobEffectInstance effect) {
+		return !SafariDefences.immuneTo(species(), effect) && super.canBeAffected(effect);
 	}
 
 	@Override
 	public boolean doHurtTarget(ServerLevel level, Entity target) {
 		playAction("attack");
-		return super.doHurtTarget(level, target);
+		boolean hit = super.doHurtTarget(level, target);
+		if (hit) SafariDefences.onBite(this, species(), level, target);
+		return hit;
+	}
+
+	/** Wiping a dart along a poison dart frog's skin coats it with poison. */
+	@Override
+	public net.minecraft.world.InteractionResult mobInteract(Player player, net.minecraft.world.InteractionHand hand) {
+		ItemStack held = player.getItemInHand(hand);
+		if (species().poisonous() && held.is(dk.ulfen.safari.SafariRegistry.DART)) {
+			if (!this.level().isClientSide()) {
+				held.consume(1, player);
+				ItemStack coated = new ItemStack(dk.ulfen.safari.SafariRegistry.POISON_DART);
+				if (!player.getInventory().add(coated)) this.spawnAtLocation((ServerLevel) this.level(), coated);
+				this.playSound(net.minecraft.sounds.SoundEvents.FROG_EAT, 1.0F, 1.4F);
+				player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("safari.dart.coated"));
+			}
+			return net.minecraft.world.InteractionResult.SUCCESS;
+		}
+		return super.mobInteract(player, hand);
 	}
 
 	@Override
@@ -240,7 +292,7 @@ public class SafariAnimal extends Animal implements SafariCreature {
 
 	@Override
 	public boolean onClimbable() {
-		return species().climbs() && this.horizontalCollision || super.onClimbable();
+		return (species().climbs() || species().climbsWalls()) && this.horizontalCollision || super.onClimbable();
 	}
 
 	@Override

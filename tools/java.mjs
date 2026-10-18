@@ -32,6 +32,15 @@ const BEDROCK_TO_JAVA_SOUNDS = {
   'mob.turtle.ambient': 'entity.turtle.ambient_land', 'mob.turtle.hurt': 'entity.turtle.hurt', 'mob.turtle.death': 'entity.turtle.death',
   'mob.panda.idle': 'entity.panda.ambient', 'mob.panda.hurt': 'entity.panda.hurt', 'mob.panda.death': 'entity.panda.death',
   'mob.panda.idle.aggressive': 'entity.panda.aggressive_ambient',
+  'mob.wolf.growl': 'entity.wolf.growl',
+  'mob.armadillo.ambient': 'entity.armadillo.ambient', 'mob.armadillo.hurt': 'entity.armadillo.hurt', 'mob.armadillo.death': 'entity.armadillo.death',
+  'mob.fish.hurt': 'entity.cod.hurt', 'mob.fish.death': 'entity.cod.death', 'mob.fish.flop': 'entity.cod.flop',
+  'mob.guardian.ambient': 'entity.guardian.ambient', 'mob.guardian.hit': 'entity.guardian.hurt', 'mob.guardian.death': 'entity.guardian.death',
+  'mob.dolphin.idle': 'entity.dolphin.ambient', 'mob.dolphin.hurt': 'entity.dolphin.hurt', 'mob.dolphin.death': 'entity.dolphin.death',
+  'mob.spider.say': 'entity.spider.ambient', 'mob.spider.death': 'entity.spider.death',
+  'mob.silverfish.say': 'entity.silverfish.ambient', 'mob.silverfish.hit': 'entity.silverfish.hurt', 'mob.silverfish.kill': 'entity.silverfish.death',
+  'mob.frog.ambient': 'entity.frog.ambient', 'mob.frog.hurt': 'entity.frog.hurt', 'mob.frog.death': 'entity.frog.death',
+  'mob.sniffer.idle': 'entity.sniffer.idle', 'mob.sniffer.hurt': 'entity.sniffer.hurt', 'mob.sniffer.death': 'entity.sniffer.death',
 };
 const VANILLA_PREY = new Set(['pig', 'chicken', 'parrot', 'rabbit', 'sheep', 'cow']);
 const ITEM_RENAMES = { deadbush: 'dead_bush' };
@@ -76,6 +85,7 @@ function hostileRule(a) {
     if (f.test === 'is_daytime') when = f.value ? 'day' : 'night';
     if (f.test === 'in_water' && f.subject === 'other') when = 'in_water';
   }
+  if (when === 'in_water' && (a.hostile.filters ?? []).some((f) => f.test === 'actor_health')) when = 'in_water_hurt';
   return { range: a.hostile.range ?? 8, when };
 }
 
@@ -84,7 +94,7 @@ function speciesRecord(a, animals, animNames) {
   const s = a.sounds ?? {};
   return {
     id: a.id,
-    kind: a.ride ? 'mount' : 'animal',
+    kind: a.ride ? 'mount' : a.movement === 'swim' || a.movement === 'dolphin' ? 'swimmer' : 'animal',
     width: a.size[0],
     height: a.size[1],
     health: a.health,
@@ -105,6 +115,16 @@ function speciesRecord(a, animals, animNames) {
     sleeps: a.sleeps ?? 'night',
     movement: a.movement ?? 'walk',
     flySpeed: a.flySpeed ?? 0.15,
+    swimSpeed: a.swimSpeed ?? 0.12,
+    school: !!a.school,
+    hidesInShell: !!a.hidesInShell,
+    poisonous: !!a.poisonous,
+    quills: !!a.quills,
+    poisonImmune: !!a.poisonImmune,
+    colourChange: !!a.colourChange,
+    shocks: !!a.shocks,
+    attackEffect: a.attack?.effect ?? null,
+    variantTextures: (a.variants ?? []).map((v) => v.texture ?? null),
     climbs: !!a.climbs,
     fallImmune: !!a.fallImmune || a.movement === 'fly',
     grazes: !!a.grazes,
@@ -131,7 +151,7 @@ function speciesRecord(a, animals, animNames) {
     idle: a.client?.idle ?? ['idle'],
     runSpeed: a.client?.runSpeed ?? 5,
     maneRule: a.client?.visibility?.mane ? 'variant0_adult' : null,
-    spawns: (a.spawn ?? []).map((sp) => ({ biomes: sp.biomes, weight: sp.weight ?? 5, min: sp.group?.[0] ?? 1, max: sp.group?.[1] ?? 1 })),
+    spawns: (a.spawn ?? []).map((sp) => ({ biomes: sp.biomes, weight: sp.weight ?? 5, min: sp.group?.[0] ?? 1, max: sp.group?.[1] ?? 1, water: !!sp.water })),
     layEgg: a.extraComponents?.['minecraft:spawn_entity'] ? javaItem(a.extraComponents['minecraft:spawn_entity'].entities.spawn_item) : null,
     scavenger: !!a.extraComponents?.['minecraft:behavior.pickup_items'],
     egg: a.egg,
@@ -237,6 +257,9 @@ export async function buildJava({ animals, geos, anims, textures, items, blocks,
     await write(join(A, 'geckolib', 'models', 'entity', `${a.id}.geo.json`), geos[a.id]);
     await write(join(A, 'geckolib', 'animations', 'entity', `${a.id}.animation.json`), anims[a.id]);
     await write(join(A, 'textures', 'entity', `${a.id}.png`), textures[a.id]);
+    for (const v of a.variants ?? []) {
+      if (v.texture) await write(join(A, 'textures', 'entity', `${a.id}_${v.texture}.png`), textures[`${a.id}_${v.texture}`]);
+    }
     await write(join(A, 'textures', 'item', `${a.id}_spawn_egg.png`), eggIcon(a.egg[0], a.egg[1], a.id.length));
     await itemModel(A, `${a.id}_spawn_egg`, 'minecraft:item/generated');
     await write(join(D, 'loot_table', 'entities', `${a.id}.json`), lootTable(a));

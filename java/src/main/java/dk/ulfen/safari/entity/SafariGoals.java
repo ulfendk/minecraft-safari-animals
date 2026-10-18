@@ -50,6 +50,7 @@ public final class SafariGoals {
 					case "day" -> level.isBrightOutside();
 					case "night" -> level.isDarkOutside();
 					case "in_water" -> target.isInWater();
+					case "in_water_hurt" -> target.isInWater() && target.getHealth() < 14;
 					default -> true;
 				}));
 		}

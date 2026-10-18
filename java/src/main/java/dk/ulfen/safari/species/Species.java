@@ -30,6 +30,16 @@ public record Species(
 	String sleeps,
 	String movement,
 	double flySpeed,
+	double swimSpeed,
+	boolean school,
+	boolean hidesInShell,
+	boolean poisonous,
+	boolean quills,
+	boolean poisonImmune,
+	boolean colourChange,
+	boolean shocks,
+	String attackEffect,
+	List<String> variantTextures,
 	boolean climbs,
 	boolean fallImmune,
 	boolean grazes,
@@ -57,7 +67,7 @@ public record Species(
 
 	public record Sounds(String ambient, String hurt, String death, float pitchMin, float pitchMax, int interval) {}
 
-	public record Spawn(List<String> biomes, int weight, int min, int max) {}
+	public record Spawn(List<String> biomes, int weight, int min, int max, boolean water) {}
 
 	public boolean isMount() {
 		return "mount".equals(kind);
@@ -69,6 +79,23 @@ public record Species(
 
 	public boolean amphibious() {
 		return "amphibious".equals(movement);
+	}
+
+	public boolean isSwimmer() {
+		return "swimmer".equals(kind);
+	}
+
+	/** Air-breathing swimmers (river dolphins) have to surface. */
+	public boolean breathesAir() {
+		return "dolphin".equals(movement);
+	}
+
+	public boolean climbsWalls() {
+		return "climb".equals(movement);
+	}
+
+	public boolean waterOnly() {
+		return !spawns.isEmpty() && spawns.stream().allMatch(Spawn::water);
 	}
 
 	public boolean attacks() {

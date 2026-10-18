@@ -113,4 +113,56 @@ public class SafariGameTests {
 		if (!zebra.isTamed()) helper.fail("Zebra could not be tamed");
 		helper.succeed();
 	}
+
+	/** Touching a poison dart frog poisons the attacker; porcupine quills hurt it. */
+	@GameTest(maxTicks = 20)
+	public void touchDefences(GameTestHelper helper) {
+		Mob frog = spawn(helper, "poison_dart_frog", new BlockPos(2, 1, 2));
+		Mob porcupine = spawn(helper, "porcupine", new BlockPos(5, 1, 5));
+		Mob zombie1 = helper.spawn(net.minecraft.world.entity.EntityTypes.PIG, new BlockPos(2, 1, 4)); // undead mobs are immune to poison
+		Mob zombie2 = helper.spawn(net.minecraft.world.entity.EntityTypes.ZOMBIE, new BlockPos(5, 1, 3));
+		zombie1.setNoAi(true);
+		zombie2.setNoAi(true);
+		frog.hurtServer(helper.getLevel(), helper.getLevel().damageSources().mobAttack(zombie1), 1.0F);
+		float before = zombie2.getHealth();
+		porcupine.hurtServer(helper.getLevel(), helper.getLevel().damageSources().mobAttack(zombie2), 1.0F);
+		if (!zombie1.hasEffect(MobEffects.POISON)) helper.fail("Frog did not poison its attacker");
+		if (zombie2.getHealth() >= before) helper.fail("Porcupine quills did not hurt the attacker");
+		helper.succeed();
+	}
+
+	/** A tortoise pulls into its shell when hurt and then takes much less damage. */
+	@GameTest(maxTicks = 20)
+	public void tortoiseHides(GameTestHelper helper) {
+		SafariAnimal tortoise = (SafariAnimal) spawn(helper, "tortoise", new BlockPos(3, 1, 3));
+		tortoise.hurtServer(helper.getLevel(), helper.getLevel().damageSources().generic(), 1.0F);
+		if (!tortoise.isHiding()) helper.fail("Tortoise did not hide");
+		float before = tortoise.getHealth();
+		tortoise.setInvulnerableTime(0);
+		tortoise.hurtServer(helper.getLevel(), helper.getLevel().damageSources().generic(), 10.0F);
+		if (before - tortoise.getHealth() > 2.5F) helper.fail("Hiding tortoise took full damage: " + (before - tortoise.getHealth()));
+		helper.succeed();
+	}
+
+	/** A chameleon on sand turns sand-coloured. */
+	@GameTest(maxTicks = 100)
+	public void chameleonCamouflage(GameTestHelper helper) {
+		helper.setBlock(new BlockPos(3, 0, 3), net.minecraft.world.level.block.Blocks.SAND);
+		SafariAnimal chameleon = (SafariAnimal) spawn(helper, "chameleon", new BlockPos(3, 1, 3));
+		chameleon.setNoAi(false);
+		chameleon.setVariant(0);
+		helper.succeedWhen(() -> {
+			chameleon.teleportTo(helper.absoluteVec(new Vec3(3.5, 1, 3.5)).x, helper.absoluteVec(new Vec3(3.5, 1, 3.5)).y, helper.absoluteVec(new Vec3(3.5, 1, 3.5)).z);
+			if (chameleon.getVariant() != 2) helper.fail("Chameleon is not sand-coloured yet");
+		});
+	}
+
+	/** Honey badgers shrug off poison. */
+	@GameTest(maxTicks = 20)
+	public void honeyBadgerIsPoisonImmune(GameTestHelper helper) {
+		Mob badger = spawn(helper, "honey_badger", new BlockPos(3, 1, 3));
+		badger.addEffect(new MobEffectInstance(MobEffects.POISON, 100));
+		if (badger.hasEffect(MobEffects.POISON)) helper.fail("Honey badger was poisoned");
+		helper.succeed();
+	}
 }

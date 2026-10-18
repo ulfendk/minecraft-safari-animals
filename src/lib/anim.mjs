@@ -243,3 +243,118 @@ export function animationFile(id, anims) {
   for (const [name, a] of Object.entries(anims)) out[`animation.safari.${id}.${name}`] = a;
   return { format_version: '1.8.0', animations: out };
 }
+
+/** Fish: side-to-side tail beat; the body follows a little. */
+export function fish(o = {}) {
+  const body = o.body ?? 'body', tail = o.tail ?? 'tail', jaw = o.jaw;
+  const n = 8;
+  const beat = (len, amp) => bones(
+    { [tail]: { rotation: cycle(len, n, (p) => [0, amp * sin(p), 0]) } },
+    { [body]: { rotation: cycle(len, n, (p) => [0, amp * 0.25 * sin(p, 0.5), 0]) } },
+  );
+  return {
+    swim: loop(0.6, beat(0.6, 25)),
+    idle: loop(1.6, beat(1.6, 10)),
+    attack: once(0.4, bones(
+      { [body]: { position: { '0.0': [0, 0, 0], '0.15': [0, 0, -2], '0.4': [0, 0, 0] } } },
+      jaw ? { [jaw]: { rotation: { '0.0': [0, 0, 0], '0.1': [30, 0, 0], '0.25': [0, 0, 0], '0.4': [0, 0, 0] } } } : {},
+    )),
+  };
+}
+
+/** Long bodies made of a chain of segments (snakes, eels, centipedes): a travelling wave. */
+export function serpent(o) {
+  const segs = o.segments; // head first
+  const n = 8;
+  const wave = (len, amp) => Object.fromEntries(segs.map((s, i) => [s, { rotation: cycle(len, n, (p) => [0, amp * sin(p, -i * 0.18), 0]) }]));
+  return {
+    walk: loop(1.4, wave(1.4, o.amp ?? 18)),
+    run: loop(0.8, wave(0.8, (o.amp ?? 18) * 1.3)),
+    swim: loop(1.2, wave(1.2, (o.amp ?? 18) * 1.4)),
+    idle: loop(4, bones(
+      wave(4, 4),
+      o.tongue ? { [o.tongue]: { scale: { '0.0': [1, 1, 0], '2.6': [1, 1, 0], '2.8': [1, 1, 1], '3.0': [1, 1, 0], '4.0': [1, 1, 0] } } } : {},
+    )),
+    attack: once(0.6, bones(
+      { [segs[0]]: { rotation: { '0.0': [0, 0, 0], '0.15': [-25, 0, 0], '0.3': [15, 0, 0], '0.6': [0, 0, 0] }, position: { '0.0': [0, 0, 0], '0.2': [0, 1, -4], '0.6': [0, 0, 0] } } },
+      o.jaw ? { [o.jaw]: { rotation: { '0.0': [0, 0, 0], '0.15': [40, 0, 0], '0.35': [0, 0, 0] } } } : {},
+    )),
+  };
+}
+
+/** Eight-legged walkers: legs swing in alternating sets (L1 R2 L3 R4 vs R1 L2 R3 L4). */
+export function arachnid(o) {
+  const legs = o.legs; // [{ bone, side: 1|-1, index: 0..3 }]
+  const n = 8;
+  const swing = (len, amp) => Object.fromEntries(legs.map(({ bone, side, index }) => {
+    const phase = (index + (side > 0 ? 0 : 1)) % 2 ? 0.5 : 0;
+    return [bone, { rotation: cycle(len, n, (p) => [0, amp * sin(p, phase), side * 8 * Math.max(0, sin(p, phase + 0.25))]) }];
+  }));
+  return {
+    walk: loop(0.6, swing(0.6, 18)),
+    run: loop(0.35, swing(0.35, 24)),
+    idle: loop(4, o.fangs ? { [o.fangs]: { rotation: cycle(4, 8, (p) => [4 * Math.max(0, sin(p * 2)), 0, 0]) } } : {}),
+    attack: once(0.6, bones(
+      Object.fromEntries(legs.filter((l) => l.index === 0).map(({ bone, side }) => [bone, { rotation: { '0.0': [0, 0, 0], '0.2': [0, 0, side * -45], '0.6': [0, 0, 0] } }])),
+      { [o.body ?? 'body']: { rotation: { '0.0': [0, 0, 0], '0.2': [-15, 0, 0], '0.6': [0, 0, 0] } } },
+    )),
+  };
+}
+
+/** Frogs: hop with the hind legs, puff the throat when idle. */
+export function frog(o = {}) {
+  const body = o.body ?? 'body';
+  const ll = o.legL ?? 'leg_bl', lr = o.legR ?? 'leg_br', fl = o.armL ?? 'leg_fl', fr = o.armR ?? 'leg_fr';
+  const hop = (len, h) => ({
+    [body]: { position: { '0.00': [0, 0, 0], [(len * 0.4).toFixed(2)]: [0, h, 0], [len.toFixed(2)]: [0, 0, 0] }, rotation: { '0.00': [0, 0, 0], [(len * 0.3).toFixed(2)]: [-15, 0, 0], [len.toFixed(2)]: [0, 0, 0] } },
+    [ll]: { rotation: { '0.00': [0, 0, 0], [(len * 0.3).toFixed(2)]: [60, 0, 0], [len.toFixed(2)]: [0, 0, 0] } },
+    [lr]: { rotation: { '0.00': [0, 0, 0], [(len * 0.3).toFixed(2)]: [60, 0, 0], [len.toFixed(2)]: [0, 0, 0] } },
+    [fl]: { rotation: { '0.00': [0, 0, 0], [(len * 0.5).toFixed(2)]: [-30, 0, 0], [len.toFixed(2)]: [0, 0, 0] } },
+    [fr]: { rotation: { '0.00': [0, 0, 0], [(len * 0.5).toFixed(2)]: [-30, 0, 0], [len.toFixed(2)]: [0, 0, 0] } },
+  });
+  return {
+    walk: loop(0.5, hop(0.5, 2)),
+    run: loop(0.35, hop(0.35, 3)),
+    idle: loop(3, o.throat ? { [o.throat]: { scale: { '0.0': [1, 1, 1], '1.0': [1, 1, 1], '1.3': [1.3, 1.4, 1.3], '1.6': [1, 1, 1], '3.0': [1, 1, 1] } } } : {}),
+  };
+}
+
+/** Shelled animals: slow plod, and pull head, legs and tail into the shell. */
+export function shelled(o) {
+  const L = { fl: 'leg_fl', fr: 'leg_fr', bl: 'leg_bl', br: 'leg_br', ...(o.legs ?? {}) };
+  const head = o.head ?? 'head', tail = o.tail;
+  const n = 8;
+  const plod = (len, amp) => Object.fromEntries(Object.entries(L).map(([k, bone]) => {
+    const off = { fl: 0, br: 0, fr: 0.5, bl: 0.5 }[k];
+    return [bone, { rotation: cycle(len, n, (p) => [amp * sin(p, off), 0, 0]) }];
+  }));
+  const tuck = (dz) => ({ position: [0, 0, dz] });
+  return {
+    walk: loop(o.walkLength ?? 2.0, bones(plod(o.walkLength ?? 2.0, 15), { [head]: { rotation: cycle(o.walkLength ?? 2.0, n, (p) => [0, 6 * sin(p), 0]) } })),
+    swim: loop(1.4, plod(1.4, 35)),
+    idle: loop(6, { [head]: { rotation: cycle(6, n, (p) => [3 * sin(p), 15 * sin(p, 0.3), 0]) } }),
+    hide: hold(bones(
+      { [head]: tuck(o.headTuck ?? 4) },
+      { [L.fl]: { position: [o.legTuckX ?? -1, 1, 1] }, [L.fr]: { position: [-(o.legTuckX ?? -1), 1, 1] } },
+      { [L.bl]: { position: [o.legTuckX ?? -1, 1, -1] }, [L.br]: { position: [-(o.legTuckX ?? -1), 1, -1] } },
+      tail ? { [tail]: tuck(-2) } : {},
+    )),
+    sleep: hold(bones({ [head]: tuck(2) })),
+  };
+}
+
+/** River dolphins: up-and-down fluke strokes. */
+export function cetacean(o = {}) {
+  const tail = o.tail ?? 'tail', fluke = o.fluke ?? 'fluke', body = o.body ?? 'body';
+  const n = 8;
+  const stroke = (len, amp) => bones(
+    { [tail]: { rotation: cycle(len, n, (p) => [amp * sin(p), 0, 0]) } },
+    { [fluke]: { rotation: cycle(len, n, (p) => [amp * 0.8 * sin(p, -0.15), 0, 0]) } },
+    { [body]: { rotation: cycle(len, n, (p) => [amp * 0.15 * sin(p, 0.5), 0, 0]) } },
+  );
+  return {
+    swim: loop(0.9, stroke(0.9, 22)),
+    idle: loop(2.4, stroke(2.4, 8)),
+    walk: loop(0.9, stroke(0.9, 22)),
+  };
+}

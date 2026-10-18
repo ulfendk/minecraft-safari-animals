@@ -9,8 +9,11 @@ import dk.ulfen.safari.block.ThornBushBlock;
 import dk.ulfen.safari.entity.Pebble;
 import dk.ulfen.safari.entity.SafariAnimal;
 import dk.ulfen.safari.entity.SafariMount;
+import dk.ulfen.safari.entity.SafariSwimmer;
+import dk.ulfen.safari.entity.ThrownDart;
 import dk.ulfen.safari.entity.ThrownFruit;
 import dk.ulfen.safari.entity.ThrownSpear;
+import dk.ulfen.safari.item.BlowgunItem;
 import dk.ulfen.safari.item.FieldGuideItem;
 import dk.ulfen.safari.item.OstrichEggItem;
 import dk.ulfen.safari.item.PebbleItem;
@@ -58,6 +61,8 @@ public final class SafariRegistry {
 	public static EntityType<ThrownSpear> THROWN_SPEAR;
 	public static EntityType<Pebble> PEBBLE_ENTITY;
 	public static EntityType<ThrownFruit> THROWN_FRUIT;
+	public static EntityType<ThrownDart> THROWN_DART;
+	public static EntityType<ThrownDart> THROWN_POISON_DART;
 
 	public static Block THORN_BUSH;
 	public static Block TERMITE_MOUND;
@@ -74,6 +79,9 @@ public final class SafariRegistry {
 	public static Item FLINT_KNIFE;
 	public static Item SLING;
 	public static Item PEBBLE;
+	public static Item BLOWGUN;
+	public static Item DART;
+	public static Item POISON_DART;
 
 	private SafariRegistry() {}
 
@@ -98,7 +106,12 @@ public final class SafariRegistry {
 	private static void registerEntities() {
 		for (Species s : SpeciesRegistry.all()) {
 			EntityType<? extends Mob> type;
-			if (s.isMount()) {
+			if (s.isSwimmer()) {
+				EntityType<SafariSwimmer> t = entity(s.id(), EntityType.Builder.<SafariSwimmer>of(SafariSwimmer::new, MobCategory.WATER_CREATURE).sized(s.width(), s.height()).clientTrackingRange(8));
+				FabricDefaultAttributeRegistry.register(t, SafariSwimmer.createAttributes(s));
+				SpawnPlacements.register(t, SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, net.minecraft.world.entity.animal.fish.WaterAnimal::checkSurfaceWaterAnimalSpawnRules);
+				type = t;
+			} else if (s.isMount()) {
 				EntityType<SafariMount> t = entity(s.id(), EntityType.Builder.<SafariMount>of(SafariMount::new, MobCategory.CREATURE).sized(s.width(), s.height()).clientTrackingRange(10));
 				FabricDefaultAttributeRegistry.register(t, SafariMount.createAttributes(s));
 				SpawnPlacements.register(t, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, SafariAnimal::checkSpawn);
@@ -114,6 +127,8 @@ public final class SafariRegistry {
 		}
 		THROWN_SPEAR = entity("thrown_spear", EntityType.Builder.<ThrownSpear>of(ThrownSpear::new, MobCategory.MISC).noLootTable().sized(0.5F, 0.5F).clientTrackingRange(4).updateInterval(20));
 		PEBBLE_ENTITY = entity("thrown_pebble", EntityType.Builder.<Pebble>of(Pebble::new, MobCategory.MISC).noLootTable().sized(0.25F, 0.25F).clientTrackingRange(4).updateInterval(10));
+		THROWN_DART = entity("thrown_dart", EntityType.Builder.<ThrownDart>of(ThrownDart::new, MobCategory.MISC).noLootTable().sized(0.25F, 0.25F).clientTrackingRange(4).updateInterval(20));
+		THROWN_POISON_DART = entity("thrown_poison_dart", EntityType.Builder.<ThrownDart>of(ThrownDart::new, MobCategory.MISC).noLootTable().sized(0.25F, 0.25F).clientTrackingRange(4).updateInterval(20));
 		THROWN_FRUIT = entity("thrown_fruit", EntityType.Builder.<ThrownFruit>of(ThrownFruit::new, MobCategory.MISC).noLootTable().sized(0.25F, 0.25F).clientTrackingRange(4).updateInterval(10));
 	}
 
@@ -166,6 +181,9 @@ public final class SafariRegistry {
 		FLINT_KNIFE = item("flint_knife", Item::new, new Item.Properties().sword(ToolMaterial.STONE, 2.0F, -1.6F).durability(120).repairable(Items.FLINT));
 		SLING = item("sling", SlingItem::new, new Item.Properties().durability(200));
 		PEBBLE = item("pebble", PebbleItem::new, new Item.Properties().stacksTo(64));
+		BLOWGUN = item("blowgun", BlowgunItem::new, new Item.Properties().durability(150));
+		DART = item("dart", Item::new, new Item.Properties().stacksTo(64));
+		POISON_DART = item("poison_dart", Item::new, new Item.Properties().stacksTo(64).component(net.minecraft.core.component.DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true));
 	}
 
 	private static void registerCreativeTab() {
@@ -174,7 +192,7 @@ public final class SafariRegistry {
 			.icon(() -> new ItemStack(SPAWN_EGGS.get("lion")))
 			.displayItems((params, out) -> {
 				SPAWN_EGGS.values().forEach(out::accept);
-				for (Item i : new Item[] {FIELD_GUIDE, SAFARI_HAT, FLINT_SPEAR, STONE_CLUB, FLINT_KNIFE, SLING, PEBBLE,
+				for (Item i : new Item[] {FIELD_GUIDE, SAFARI_HAT, FLINT_SPEAR, STONE_CLUB, FLINT_KNIFE, SLING, PEBBLE, BLOWGUN, DART, POISON_DART,
 					RAW_GAME_MEAT, COOKED_GAME_MEAT, OSTRICH_EGG, FRIED_OSTRICH_EGG, ZEBRA_HIDE}) out.accept(i);
 				out.accept(THORN_BUSH);
 				out.accept(TERMITE_MOUND);

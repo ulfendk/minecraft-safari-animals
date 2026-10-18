@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.6.0] - 2026-10-18
+15 new animals (Bedrock and Java):
+- Honey badger (fearless and immune to poison), porcupine (quills hurt attackers), Tasmanian devil.
+- Amazon: piranha (schools, frenzy on hurt swimmers), electric eel (stunning shock), Amazon river dolphin (surfaces to breathe), green anaconda (constricts), tarantula and giant centipede (climb walls, venomous), poison dart frog (three colour morphs, poisonous to touch), capybara, harpy eagle.
+- Tortoise and river turtle: pull into their shells when hurt and take much less damage.
+- Chameleon: changes colour to match what it stands on.
+- Blowgun (pusterør) with darts. Wipe a dart on a poison dart frog to make a poison dart.
+- Website: clear guidance on which edition to download (Bedrock for iPad, phones, consoles and Windows; Java for Mac & PC).
+
 ## [0.5.0] - 2026-10-18
 Java Edition:
 - Safari Animals is now also a Fabric mod for Minecraft Java 26.3 (needs Fabric API and GeckoLib). It has the same 24 animals, models, textures, animations, items, weapons, blocks and world generation as the Bedrock add-on.

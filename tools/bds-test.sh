@@ -60,7 +60,14 @@ for f in build/behavior_pack/entities/*.json; do
   id=$(basename "$f" .json)
   grep -q '"is_spawnable": false' "$f" && continue
   ids="$ids $id"
-  send summon "safari:$id" $(( (n % 6) * 6 )) -60 $(( (n / 6) * 6 ))
+  x=$(( (n % 6) * 6 )); z=$(( (n / 6) * 6 ))
+  # Water animals get a small pool so they don't suffocate before the check.
+  y=-60
+  if grep -qE '"breathes_air": false|minecraft:behavior.swim_up_for_breath' "$f"; then
+    send fill $x -62 $z $((x + 2)) -60 $((z + 2)) water
+    y=-61
+  fi
+  send summon "safari:$id" $((x + 1)) $y $((z + 1))
   n=$((n + 1))
 done
 send setblock 40 -60 40 safari:thorn_bush

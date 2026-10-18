@@ -27,7 +27,7 @@ public class SafariRenderer<T extends Mob & SafariCreature> extends GeoEntityRen
 	private final Species species;
 
 	public SafariRenderer(EntityRendererProvider.Context context, EntityType<? extends T> type) {
-		super(context, new DefaultedEntityGeoModel<>(BuiltInRegistries.ENTITY_TYPE.getKey(type)));
+		super(context, new VariantModel<>(BuiltInRegistries.ENTITY_TYPE.getKey(type), SpeciesRegistry.of(type)));
 		this.species = SpeciesRegistry.of(type);
 		this.shadowRadius = Math.min(1.2F, this.species.width() * 0.5F);
 	}
@@ -51,6 +51,28 @@ public class SafariRenderer<T extends Mob & SafariCreature> extends GeoEntityRen
 		hide(snapshots, "chest", !chested);
 		// Lions: only adult males (variant 0) have a mane.
 		if ("variant0_adult".equals(this.species.maneRule())) hide(snapshots, "mane", variant != 0 || baby);
+	}
+
+	/** Picks the texture for the animal's colour variant (chameleons, poison dart frogs). */
+	private static class VariantModel<T extends com.geckolib.animatable.GeoAnimatable> extends DefaultedEntityGeoModel<T> {
+		private final net.minecraft.resources.Identifier[] textures;
+
+		VariantModel(net.minecraft.resources.Identifier id, Species species) {
+			super(id);
+			java.util.List<String> names = species.variantTextures() == null ? java.util.List.of() : species.variantTextures();
+			this.textures = new net.minecraft.resources.Identifier[names.size()];
+			for (int i = 0; i < names.size(); i++) {
+				String suffix = names.get(i) == null ? "" : "_" + names.get(i);
+				this.textures[i] = id.withPath("textures/entity/" + id.getPath() + suffix + ".png");
+			}
+		}
+
+		@Override
+		public net.minecraft.resources.Identifier getTextureResource(com.geckolib.renderer.base.GeoRenderState renderState) {
+			Integer variant = renderState.getGeckolibData(VARIANT);
+			if (variant != null && variant > 0 && variant < this.textures.length) return this.textures[variant];
+			return super.getTextureResource(renderState);
+		}
 	}
 
 	private static void hide(BoneSnapshots snapshots, String bone, boolean hidden) {

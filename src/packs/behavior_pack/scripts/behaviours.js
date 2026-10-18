@@ -215,3 +215,56 @@ export function setupBehaviours() {
   }, TICK);
   world.afterEvents.entityDie.subscribe(onDeath);
 }
+
+// ---------------------------------------------------------------- touch defences and colour
+
+/** Poison dart frogs poison whoever touches them; porcupine quills hurt melee attackers. */
+function onHurt({ hurtEntity, damageSource }) {
+  const attacker = damageSource?.damagingEntity;
+  let type;
+  try { type = hurtEntity.typeId; } catch { return; }
+  const melee = damageSource?.cause === 'entityAttack' && attacker && attacker !== hurtEntity;
+  try {
+    if (type === 'safari:poison_dart_frog' && melee) {
+      attacker.addEffect('poison', 120, { amplifier: 1 });
+    } else if (type === 'safari:porcupine' && melee) {
+      attacker.applyDamage(2, { cause: 'thorns', damagingEntity: hurtEntity });
+      hurtEntity.dimension.playSound('mob.armadillo.hurt', hurtEntity.location, { pitch: 1.4 });
+    }
+    // Electric eels give off a visible, crackling shock when they bite.
+    if (attacker?.typeId === 'safari:electric_eel') {
+      const at = hurtEntity.location;
+      hurtEntity.dimension.playSound('random.fizz', at, { pitch: 1.6, volume: 1 });
+      for (let i = 0; i < 6; i++) {
+        hurtEntity.dimension.spawnParticle('minecraft:electric_spark_particle', { x: at.x + Math.random() - 0.5, y: at.y + Math.random(), z: at.z + Math.random() - 0.5 });
+      }
+    }
+  } catch {
+    // Entity gone or particle unavailable.
+  }
+}
+
+/** Chameleons take on the colour of what they are standing on. */
+const CHAMELEON_COLOURS = [
+  { variant: 2, test: (id) => /sand|sandstone|terracotta/.test(id) },
+  { variant: 1, test: (id) => /log|wood|dirt|podzol|mud|planks|stripped|mangrove_roots|coarse/.test(id) },
+  { variant: 0, test: (id) => /leaves|grass|vine|moss|azalea|bamboo|fern/.test(id) },
+];
+function camouflage() {
+  for (const c of nearPlayers('safari:chameleon', 32)) {
+    let below;
+    try {
+      const l = c.location;
+      below = c.dimension.getBlock({ x: Math.floor(l.x), y: Math.floor(l.y - 0.2), z: Math.floor(l.z) })?.typeId ?? '';
+    } catch { continue; }
+    const match = CHAMELEON_COLOURS.find((m) => m.test(below));
+    if (!match) continue;
+    const current = c.getComponent('minecraft:variant')?.value ?? 0;
+    if (current !== match.variant) c.triggerEvent(`safari:make_variant_${match.variant}`);
+  }
+}
+
+export function setupDefences() {
+  world.afterEvents.entityHurt.subscribe(onHurt);
+  system.runInterval(camouflage, 20);
+}

@@ -52,6 +52,16 @@ const pebbleIcon = icon([
   ...[[9, 10], [10, 10], [9, 11], [10, 11], [11, 11]].map(([x, y]) => [x, y, (x + y) % 2 ? STONE_DARK : STONE]),
 ]);
 
+const BAMBOO = '#7a9a3a', BAMBOO_DARK = '#5a7a2a', KAPOK = '#f2efe4', POISON = '#2a64d8';
+
+// Blowgun: a long bamboo tube with a mouthpiece band.
+const blowgunIcon = icon([...diag(0, 15, BAMBOO), ...diag(1, 14, BAMBOO_DARK, 1), [2, 13, '#3a2a18'], [3, 13, '#3a2a18'], [3, 12, '#3a2a18']]);
+// Dart: thin bamboo sliver with a tuft of kapok fluff at the back.
+const dartIcon = (tip) => icon([
+  ...diag(4, 12, '#c9b27a'), ...diag(12, 14, tip),
+  [3, 12, KAPOK], [4, 12, KAPOK], [3, 11, KAPOK], [2, 12, KAPOK], [3, 13, KAPOK], [4, 13, KAPOK],
+]);
+
 const melee = (damage, durability) => ({
   'minecraft:damage': damage,
   'minecraft:durability': { max_durability: durability },
@@ -110,6 +120,44 @@ export const weaponItems = [
     },
   },
   {
+    id: 'blowgun',
+    name: 'Blowgun',
+    category: 'equipment',
+    stack: 1,
+    icon: blowgunIcon,
+    components: {
+      'minecraft:durability': { max_durability: 150 },
+      'minecraft:hand_equipped': true,
+      // Poison darts first, then plain ones.
+      'minecraft:shooter': {
+        ammunition: [
+          { item: 'safari:poison_dart', use_offhand: true, search_inventory: true, use_in_creative: true },
+          { item: 'safari:dart', use_offhand: true, search_inventory: true, use_in_creative: true },
+        ],
+        max_draw_duration: 0.6,
+        scale_power_by_draw_duration: true,
+        charge_on_draw: false,
+      },
+      'minecraft:use_modifiers': { use_duration: 3600, movement_modifier: 0.6 },
+    },
+  },
+  {
+    id: 'dart',
+    name: 'Dart',
+    category: 'equipment',
+    stack: 64,
+    icon: dartIcon('#8a7a5a'),
+    components: { 'minecraft:projectile': { projectile_entity: 'safari:thrown_dart' } },
+  },
+  {
+    id: 'poison_dart',
+    name: 'Poison Dart',
+    category: 'equipment',
+    stack: 64,
+    icon: dartIcon(POISON),
+    components: { 'minecraft:projectile': { projectile_entity: 'safari:thrown_poison_dart' }, 'minecraft:glint': true },
+  },
+  {
     id: 'pebble',
     name: 'Pebble',
     category: 'equipment',
@@ -165,6 +213,25 @@ export const weaponRecipes = [
     },
   },
   {
+    'minecraft:recipe_shaped': {
+      description: { identifier: 'safari:blowgun' },
+      tags: ['crafting_table'],
+      pattern: ['BBB'],
+      key: { B: { item: 'minecraft:bamboo' } },
+      result: { item: 'safari:blowgun' },
+      unlock: [{ item: 'minecraft:bamboo' }],
+    },
+  },
+  {
+    'minecraft:recipe_shapeless': {
+      description: { identifier: 'safari:dart' },
+      tags: ['crafting_table'],
+      ingredients: [{ item: 'minecraft:bamboo' }, { item: 'minecraft:feather' }],
+      result: { item: 'safari:dart', count: 4 },
+      unlock: [{ item: 'minecraft:bamboo' }],
+    },
+  },
+  {
     'minecraft:recipe_shapeless': {
       description: { identifier: 'safari:pebbles_from_cobblestone' },
       tags: ['crafting_table'],
@@ -183,6 +250,20 @@ export const weaponRecipes = [
     },
   },
 ];
+
+/** A slim dart pointing towards -z, with kapok fluff at the back. */
+function dartModel() {
+  return {
+    bones: [{
+      name: 'body', pivot: [0, 0, 0],
+      cubes: [
+        { origin: [0, 0, -4], size: [1, 1, 7], mat: 'shaft' },
+        { origin: [0, 0, -5], size: [1, 1, 1], mat: 'tip' },
+        { origin: [-1, -1, 3], size: [3, 3, 1], mat: 'fluff' },
+      ],
+    }],
+  };
+}
 
 /** Projectiles thrown by the weapons. Models point their tip towards -z (the direction of travel). */
 export const weaponProjectiles = [
@@ -205,6 +286,30 @@ export const weaponProjectiles = [
       }],
     },
     materials: { shaft: '#7a5230', binding: '#8a5a34', flint: { base: '#3c3d42', layers: [] } },
+  },
+  {
+    id: 'thrown_dart',
+    name: 'Dart',
+    damage: 2,
+    power: 2.4,
+    gravity: 0.03,
+    rotate: true,
+    hitSound: 'random.bowhit',
+    model: dartModel(),
+    materials: { shaft: '#c9b27a', tip: '#8a7a5a', fluff: KAPOK },
+  },
+  {
+    id: 'thrown_poison_dart',
+    name: 'Poison Dart',
+    damage: 1,
+    power: 2.4,
+    gravity: 0.03,
+    rotate: true,
+    hitSound: 'random.bowhit',
+    // Poison from a poison dart frog: a few seconds of strong poison.
+    effect: { effect: 'poison', ticks: 140, amplifier: 1 },
+    model: dartModel(),
+    materials: { shaft: '#c9b27a', tip: POISON, fluff: KAPOK },
   },
   {
     id: 'thrown_pebble',

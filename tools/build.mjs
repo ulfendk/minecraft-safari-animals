@@ -136,7 +136,9 @@ export async function build({ quiet = false } = {}) {
     java.textures[a.id] = await paintTextureCached(geo, a);
     for (const v of a.variants ?? []) {
       if (v.texture) {
-        await write(join(RP, 'textures', 'entity', NS, `${a.id}_${v.texture}.png`), paintTexture(geo, { ...a.materials, ...v.materials }));
+        const variantTexture = paintTexture(geo, { ...a.materials, ...v.materials });
+        await write(join(RP, 'textures', 'entity', NS, `${a.id}_${v.texture}.png`), variantTexture);
+        java.textures[`${a.id}_${v.texture}`] = variantTexture;
       }
     }
 
