@@ -8,6 +8,7 @@ import { buildEntity, buildLoot, buildSpawnRules } from '../src/lib/behavior.mjs
 import { buildAnimationControllers, buildClientEntity, buildEntitySounds, buildRenderController } from '../src/lib/client.mjs';
 import { MIN_ENGINE, NS, PACK_NAME, SCRIPT_SERVER_VERSION, SCRIPT_UI_VERSION } from '../src/lib/constants.mjs';
 import { packIcon } from '../src/lib/icon.mjs';
+import { langEntries, LOCALES, missingFoods } from '../src/lang.mjs';
 import { guideEntry } from '../src/lib/info.mjs';
 import { render } from './render.mjs';
 import { buildGeometry } from '../src/lib/model.mjs';
@@ -116,7 +117,6 @@ export async function build({ quiet = false } = {}) {
   await write(join(RP, 'pack_icon.png'), icon);
 
   const animals = await loadAnimals();
-  const lang = [`pack.description=${pkg.description} (v${pkg.version})`];
   const entitySounds = {};
   const report = [];
 
@@ -149,8 +149,6 @@ export async function build({ quiet = false } = {}) {
     await write(join(RP, 'textures', 'ui', NS, `${a.id}.png`), render(geo.geometry, await paintTextureCached(geo, a), { yaw: 35, size: 64, hidden }));
 
     entitySounds[`${NS}:${a.id}`] = buildEntitySounds(a);
-    lang.push(`entity.${NS}:${a.id}.name=${a.name}`);
-    lang.push(`item.spawn_egg.entity.${NS}:${a.id}.name=${a.name} Spawn Egg`);
     report.push(`${a.id} (${geo.width}x${geo.height})`);
   }
 
@@ -165,8 +163,6 @@ export async function build({ quiet = false } = {}) {
       format_version: '1.8.0',
       render_controllers: { [`controller.render.safari.${p.id}`]: { geometry: 'Geometry.default', materials: [{ '*': 'Material.default' }], textures: ['Texture.default'] } },
     });
-    lang.push(`entity.${NS}:${p.id}.name=${p.name}`);
-    lang.push(`item.spawn_egg.entity.${NS}:${p.id}.name=${p.name}`);
   }
 
   for (const h of helpers) {
@@ -179,8 +175,6 @@ export async function build({ quiet = false } = {}) {
       format_version: '1.8.0',
       render_controllers: { [`controller.render.safari.${h.id}`]: { geometry: 'Geometry.default', materials: [{ '*': 'Material.default' }], textures: ['Texture.default'] } },
     });
-    lang.push(`entity.${NS}:${h.id}.name=${h.name}`);
-    lang.push(`item.spawn_egg.entity.${NS}:${h.id}.name=${h.name}`);
   }
 
   // Animal data for the scripts (Field Guide, behaviours).
@@ -193,7 +187,6 @@ export async function build({ quiet = false } = {}) {
     await write(join(BP, 'items', `${item.id}.json`), buildItem(item));
     await write(join(RP, 'textures', 'items', NS, `${item.id}.png`), item.icon);
     itemTextures[`${NS}_${item.id}`] = { textures: `textures/items/${NS}/${item.id}` };
-    lang.push(`item.${NS}:${item.id}.name=${item.name}`);
     if (item.attachable) {
       // Worn items: a 3D model attached to the player.
       const geo = buildGeometry(`geometry.safari.${item.id}`, item.attachable.model);
@@ -223,7 +216,6 @@ export async function build({ quiet = false } = {}) {
     await write(join(RP, 'textures', 'blocks', NS, `${block.id}.png`), block.texture);
     terrain[`${NS}_${block.id}`] = { textures: `textures/blocks/${NS}/${block.id}` };
     blockSounds[`${NS}:${block.id}`] = { sound: block.sound ?? 'stone' };
-    lang.push(`tile.${NS}:${block.id}.name=${block.name}`);
   }
   await write(join(RP, 'textures', 'terrain_texture.json'), {
     resource_pack_name: 'safari', texture_name: 'atlas.terrain', padding: 8, num_mip_levels: 4, texture_data: terrain,
@@ -246,18 +238,22 @@ export async function build({ quiet = false } = {}) {
   await write(join(RP, 'sounds.json'), { entity_sounds: { entities: entitySounds } });
 
   // Language
-  const extraLang = await readFile(join(ROOT, 'src', 'packs', 'en_US.extra.lang'), 'utf8').catch(() => '');
-  const langText = lang.join('\n') + '\n' + extraLang;
-  for (const pack of [BP, RP]) {
-    await write(join(pack, 'texts', 'en_US.lang'), langText);
-    await write(join(pack, 'texts', 'languages.json'), ['en_US']);
+  const missing = missingFoods(animals);
+  if (missing.length) throw new Error(`Add translations for these foods in src/lang.mjs: ${missing.join(', ')}`);
+  for (const locale of LOCALES) {
+    const entries = langEntries(locale, {
+      animals, items, blocks, extraEntities: [...projectiles, ...helpers], description: pkg.description, version: pkg.version,
+    });
+    const text = entries.map(([k, v]) => `${k}=${v}`).join('\n') + '\n';
+    for (const pack of [BP, RP]) await write(join(pack, 'texts', `${locale}.lang`), text);
   }
+  for (const pack of [BP, RP]) await write(join(pack, 'texts', 'languages.json'), LOCALES);
 
   if (!quiet) console.log(`Built ${animals.length} animals: ${report.join(', ')}\nItems: ${items.map((i) => i.id).join(', ')}`);
   return { animals, version: pkg.version };
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   build().catch((e) => {
     console.error(e);
     process.exit(1);

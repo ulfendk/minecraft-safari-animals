@@ -32,13 +32,18 @@ function spot() {
       if (!animal) continue;
       seen.add(id);
       changed = true;
-      player.onScreenDisplay.setActionBar({ rawtext: [{ translate: 'safari.guide.spotted', with: [animal.name] }] });
+      player.onScreenDisplay.setActionBar({ rawtext: [{ translate: 'safari.guide.spotted', with: { rawtext: [nameOf(animal)] } }] });
       player.playSound('random.orb', { pitch: 1.4 });
       if (seen.size === ANIMALS.length) player.playSound('random.levelup');
     }
     if (changed) player.setDynamicProperty(SEEN, JSON.stringify([...seen]));
   }
 }
+
+// All visible text goes through lang keys so it follows the player's language.
+const nameOf = (a) => ({ translate: `entity.safari:${a.id}.name` });
+const list = (keys) => keys.flatMap((key, i) => (i ? [{ text: ', ' }, { translate: key }] : [{ translate: key }]));
+const line = (label, keys) => (keys.length ? [{ text: '\n§2' }, { translate: label }, { text: '§r ' }, ...list(keys)] : []);
 
 function openIndex(player) {
   const seen = seenSet(player);
@@ -47,7 +52,7 @@ function openIndex(player) {
     .body({ translate: 'safari.guide.intro' });
   const order = [...ANIMALS].sort((a, b) => a.name.localeCompare(b.name));
   for (const a of order) {
-    if (seen.has(a.id)) form.button(a.name, `textures/ui/safari/${a.id}`);
+    if (seen.has(a.id)) form.button(nameOf(a), `textures/ui/safari/${a.id}`);
     else form.button('§8???');
   }
   form.show(player).then((res) => {
@@ -59,17 +64,17 @@ function openIndex(player) {
 }
 
 function openEntry(player, a) {
-  const lines = [
-    a.text,
-    '',
-    `§2Lives in:§r ${a.habitats.join(', ') || '—'}`,
-    `§2Traits:§r ${a.tags.join(', ')}`,
-    a.food.length ? `§2Breed with:§r ${a.food.join(', ')}` : '',
-    a.tame.length ? `§2Tame with:§r ${a.tame.join(', ')}` : '',
-  ].filter((l, i) => l !== '' || i === 1);
+  const body = [
+    { translate: `safari.guide.entry.${a.id}` },
+    { text: '\n' },
+    ...line('safari.guide.lives_in', a.habitats.map((h) => `safari.habitat.${h}`)),
+    ...line('safari.guide.traits', a.tags.map((t) => `safari.tag.${t}`)),
+    ...line('safari.guide.breed_with', a.food.map((f) => `safari.food.${f}`)),
+    ...line('safari.guide.tame_with', a.tame.map((f) => `safari.food.${f}`)),
+  ];
   new ActionFormData()
-    .title(a.name)
-    .body(lines.join('\n'))
+    .title(nameOf(a))
+    .body({ rawtext: body })
     .button({ translate: 'safari.guide.back' }, `textures/ui/safari/${a.id}`)
     .show(player)
     .then((res) => {

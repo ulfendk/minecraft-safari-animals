@@ -249,6 +249,34 @@ for (const [entity, def] of Object.entries(sounds?.entity_sounds?.entities ?? {}
   }
 }
 
+// Languages: every locale has exactly the keys English has, all non-empty,
+// and every key the Field Guide builds from its data exists.
+const readLang = async (file) => new Map(
+  (await readFile(file, 'utf8')).split('\n').filter((l) => l.includes('=')).map((l) => [l.slice(0, l.indexOf('=')), l.slice(l.indexOf('=') + 1)]),
+);
+const locales = await json(join(RP, 'texts', 'languages.json')) ?? [];
+const english = await readLang(join(RP, 'texts', 'en_US.lang'));
+for (const locale of locales) {
+  for (const pack of [BP, RP]) {
+    const file = join(pack, 'texts', `${locale}.lang`);
+    if (!(await exists(file))) { err(`${file}: missing`); continue; }
+    const l = await readLang(file);
+    for (const k of english.keys()) if (!l.get(k)) err(`${file}: missing or empty "${k}"`);
+    for (const k of l.keys()) if (!english.has(k)) err(`${file}: "${k}" is not in en_US.lang`);
+  }
+}
+const dataSrc = await readFile(join(BP, 'scripts', 'data.js'), 'utf8');
+const guideData = JSON.parse(dataSrc.slice(dataSrc.indexOf('['), dataSrc.lastIndexOf(']') + 1));
+for (const a of guideData) {
+  const keys = [
+    `safari.guide.entry.${a.id}`,
+    ...a.habitats.map((h) => `safari.habitat.${h}`),
+    ...a.tags.map((t) => `safari.tag.${t}`),
+    ...[...a.food, ...a.tame].map((f) => `safari.food.${f}`),
+  ];
+  for (const k of keys) if (!english.has(k)) err(`Field Guide (${a.id}) uses missing lang key ${k}`);
+}
+
 // Manifests
 for (const pack of [BP, RP]) {
   const m = await json(join(pack, 'manifest.json'));

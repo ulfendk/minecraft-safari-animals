@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.2.2] - 2026-10-18
+- Danish in-game texts: animal and item names, spawn eggs, the Field Guide and all messages. Minecraft picks the language automatically when the game is set to Danish.
+
 ## [0.2.1] - 2026-10-18
 - The pack names in Minecraft now show the version, e.g. "Safari Animals v0.2.1 (Behavior)".
 - The website is now also in Danish: https://ulfendk.github.io/minecraft-safari-animals/da/
