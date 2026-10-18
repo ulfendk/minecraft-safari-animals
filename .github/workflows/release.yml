@@ -1,0 +1,80 @@
+# Push a tag like v0.2.0 (matching package.json) to publish a GitHub Release
+# with the .mcaddon and .mcpack files attached.
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Check tag matches package.json
+        run: |
+          version=$(node -p "require('./package.json').version")
+          tag="${GITHUB_REF_NAME#v}"
+          if [ "${tag%%-*}" != "$version" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package.json version $version"; exit 1
+          fi
+      - run: npm run build
+      - run: npm run validate
+      - name: Bedrock Dedicated Server smoke test
+        run: tools/bds-test.sh
+      - run: npm run package
+      - name: Unversioned copies (for the website's "latest" download links)
+        run: |
+          v=$(node -p "require('./package.json').version")
+          cp "dist/SafariAnimals-$v.mcaddon" dist/SafariAnimals.mcaddon
+          cp "dist/SafariAnimals_BP-$v.mcpack" dist/SafariAnimals_BP.mcpack
+          cp "dist/SafariAnimals_RP-$v.mcpack" dist/SafariAnimals_RP.mcpack
+      - run: npm run preview
+      - name: Release notes
+        run: node tools/release-notes.mjs "$GITHUB_REF_NAME" > release-notes.md
+      - uses: softprops/action-gh-release@v3
+        with:
+          body_path: release-notes.md
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          files: |
+            dist/*.mcaddon
+            dist/*.mcpack
+            build/preview/sheet.png
+
+  pages:
+    # Refresh the website so it shows the new version.
+    needs: release
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run site
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: build/site/
+      - id: deploy
+        uses: actions/deploy-pages@v5

@@ -1,0 +1,14 @@
+// Prints the CHANGELOG.md section for a tag (e.g. v0.2.0) plus install notes.
+import { readFileSync } from 'node:fs';
+
+const tag = process.argv[2] ?? '';
+const version = tag.replace(/^v/, '').split('-')[0];
+const changelog = readFileSync('CHANGELOG.md', 'utf8');
+const match = changelog.match(new RegExp(`^## \\[?${version.replace(/\./g, '\\.')}\\]?[^\\n]*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))`, 'm'));
+
+console.log(match ? match[1].trim() : `Release ${tag}`);
+console.log(`
+### Install
+- **Windows, Android, iOS:** download \`SafariAnimals-${version}.mcaddon\` and open it. Minecraft imports both packs.
+- Then edit or create a world and turn on **Safari Animals** under *Behavior Packs*. The resource pack is turned on automatically.
+- The \`.mcpack\` files are the same packs separately, e.g. for servers.`);

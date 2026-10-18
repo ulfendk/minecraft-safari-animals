@@ -1,0 +1,18 @@
+import { system, world } from '@minecraft/server';
+import { setupBehaviours } from './behaviours.js';
+import { setupFieldGuide } from './fieldguide.js';
+import { setupOstrichEggs } from './eggs.js';
+import { setupThorns } from './thorns.js';
+import { selfTest } from './selftest.js';
+
+world.afterEvents.worldLoad.subscribe(() => {
+  setupBehaviours();
+  setupFieldGuide();
+  setupOstrichEggs();
+  setupThorns();
+  console.log('[Safari Animals] loaded');
+});
+
+system.afterEvents.scriptEventReceive.subscribe((event) => {
+  if (event.id === 'safari:selftest') selfTest(event.message);
+});
