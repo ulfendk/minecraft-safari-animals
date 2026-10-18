@@ -50,7 +50,7 @@ until docker logs "$NAME" 2>&1 | grep -q "Server started"; do
   sleep 5
 done
 
-send() { docker exec "$NAME" send-command "$@"; }
+send() { docker exec -u 0 "$NAME" send-command "$@"; }
 send tickingarea add circle 0 0 0 3 safari_test true
 sleep 5
 # Summon in a 6-wide grid that stays inside the ticking area.
