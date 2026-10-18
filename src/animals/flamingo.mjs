@@ -1,5 +1,4 @@
 import { bird } from '../lib/anim.mjs';
-import { eyes } from '../lib/parts.mjs';
 import { fur, mottle, region } from '../lib/texture.mjs';
 
 export default {
@@ -35,7 +34,14 @@ export default {
       {
         name: 'head', parent: 'neck', pivot: [0, 28, -4],
         cubes: [
-          { origin: [-1, 28, -7], size: [2, 2, 3], mat: 'feathers', marks: eyes(3, { back: 1, down: 0, color: '#f2d64b' }) },
+          {
+            origin: [-1, 28, -7], size: [2, 2, 3], mat: 'feathers',
+            // Yellow eye with a black pupil on each side of the head.
+            marks: [
+              { face: 'right', x: 0, y: 0, color: '#f2d64b' }, { face: 'right', x: 1, y: 0, color: '#111111' },
+              { face: 'left', x: 2, y: 0, color: '#f2d64b' }, { face: 'left', x: 1, y: 0, color: '#111111' },
+            ],
+          },
           { origin: [-1, 27, -9], size: [2, 2, 2], mat: 'beak' },
           { origin: [-1, 25, -9], size: [2, 2, 1], mat: 'beaktip' },
         ],

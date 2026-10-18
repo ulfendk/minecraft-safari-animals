@@ -34,7 +34,7 @@ export default {
 
   model: felid({
     bodyW: 10, bodyH: 9, bodyL: 20, legH: 11, legW: 4, headW: 8, headH: 7, headD: 6, muzzleW: 4, muzzleH: 4, muzzleD: 3,
-    tailL: 13, tuft: true, mane: 'full', hump: 1, jaw: true, jawOpen: 18, brow: true, eyeColor: '#e0a020',
+    tailL: 13, tuft: true, mane: 'full', hump: 1, jaw: true, jawOpen: 18, eyeColor: '#e0a020',
   }),
 
   materials: {
@@ -56,7 +56,6 @@ export default {
     mane: { base: '#5a3418', layers: [gradient('#2a170b', { axis: 1, from: 22, to: 8 }), mottle(0.18, { scale: 2.5 }), fur(0.14)] },
     jaw: { base: '#c49452', layers: [region('#a8443c', face('top'))] },
     fang: '#f4efe2',
-    brow: '#7a5230',
     paw: '#b88a4a',
   },
 

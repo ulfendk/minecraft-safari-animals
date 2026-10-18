@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.3] - 2026-10-18
+- Lion: removed the eyebrows.
+- Tiger: fiercer look with a snarling jaw and fangs, a scowl of black stripes above the eyes, a bulkier build and a twitching tail.
+- Flamingo: eyes now have black pupils.
+
 ## [0.2.2] - 2026-10-18
 - Danish in-game texts: animal and item names, spawn eggs, the Field Guide and all messages. Minecraft picks the language automatically when the game is set to Danish.
 

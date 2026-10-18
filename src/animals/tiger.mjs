@@ -28,8 +28,12 @@ export default {
   loot: [{ item: 'leather', min: 0, max: 2 }],
   sounds: { ambient: 'mob.polarbear.warning', hurt: 'mob.polarbear.hurt', death: 'mob.polarbear.death', pitch: [0.7, 0.8], interval: 30 },
   egg: ['#e07a2a', '#1d1410'],
+  client: { idle: ['idle', 'snarl'] },
 
-  model: felid({ bodyW: 8, bodyH: 9, bodyL: 20, legH: 11, legW: 3, headW: 8, headH: 7, headD: 7, tailL: 14, eyeColor: '#d6b33a' }),
+  model: felid({
+    bodyW: 10, bodyH: 9, bodyL: 20, legH: 11, legW: 4, headW: 8, headH: 7, headD: 7, muzzleW: 4, muzzleH: 4, muzzleD: 3,
+    tailL: 14, hump: 1, jaw: true, jawOpen: 20, eyeColor: '#f0c020',
+  }),
 
   materials: {
     fur: {
@@ -40,6 +44,8 @@ export default {
         stripes(BLACK, { axis: 1, period: 3, width: 0.3, warp: 1, where: all(bone('tail', ...LEGS), notFace('bottom')) }),
         stripes(BLACK, { axis: 0, period: 3, width: 0.3, warp: 0.8, where: all(bone('head'), face('top', 'left', 'right')) }),
         region('#f3ead9', all(bone('head'), face('front'), ({ i, fw, j }) => j >= 3 && (i < 2 || i >= fw - 2))),
+        // A scowl: black stripes slanting down towards the nose above the eyes.
+        region(BLACK, all(bone('head'), face('front'), ({ i, j }) => (j === 0 && [1, 2, 5, 6].includes(i)) || (j === 1 && (i === 3 || i === 4)) || (j === 0 && (i === 3 || i === 4)))),
         mottle(0.05),
         fur(0.05),
       ],
@@ -48,10 +54,16 @@ export default {
     ear: { base: '#e07a2a', layers: [region('#f3ead9', ({ face: f }) => f === 'front'), region(BLACK, ({ face: f }) => f === 'back')] },
     tail: { base: '#e07a2a', layers: [stripes(BLACK, { axis: 1, period: 2.5, width: 0.4, warp: 0 })] },
     paw: '#d9cdb8',
+    jaw: { base: '#e07a2a', layers: [region('#a8443c', face('top')), region('#f3ead9', face('bottom'))] },
+    fang: '#f4efe2',
   },
 
   anims: {
     ...quadruped({ tail: ['tail', 'tail2'], ears: ['ear_l', 'ear_r'], swing: 28, sleepDrop: 8, legFold: 80, walkLength: 1.1, runLength: 0.45 }),
-    roar: extras.roar({ head: 'head' }),
+    roar: extras.roar({ head: 'head', jaw: 'jaw' }),
+    snarl: { loop: true, animation_length: 2, bones: {
+      jaw: { rotation: { '0.00': [0, 0, 0], '1.00': [8, 0, 0], '2.00': [0, 0, 0] } },
+      tail2: { rotation: { '0.00': [0, 0, 0], '0.50': [0, 25, 0], '1.00': [0, -15, 0], '1.50': [0, 20, 0], '2.00': [0, 0, 0] } },
+    } },
   },
 };
