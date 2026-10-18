@@ -22,7 +22,7 @@ cp -R build/resource_pack "$DATA/resource_packs/safari_rp"
 echo "[{\"pack_id\":\"$(uuid behavior_pack)\",\"version\":$(version behavior_pack)}]" > "$DATA/worlds/$LEVEL/world_behavior_packs.json"
 echo "[{\"pack_id\":\"$(uuid resource_pack)\",\"version\":$(version resource_pack)}]" > "$DATA/worlds/$LEVEL/world_resource_packs.json"
 
-docker run -d --name "$NAME" \
+docker run -d --name "$NAME" --cap-add SYS_PTRACE \
   -e EULA=TRUE \
   -e LEVEL_NAME="$LEVEL" \
   -e LEVEL_TYPE=FLAT \
