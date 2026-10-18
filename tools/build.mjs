@@ -66,7 +66,7 @@ function manifests(version) {
   const bp = {
     format_version: 2,
     header: {
-      name: `${PACK_NAME} (Behavior)`,
+      name: `${PACK_NAME} v${version} (Behavior)`,
       description: 'pack.description',
       uuid: UUID.bpHeader,
       version: v,
@@ -86,7 +86,7 @@ function manifests(version) {
   const rp = {
     format_version: 2,
     header: {
-      name: `${PACK_NAME} (Resources)`,
+      name: `${PACK_NAME} v${version} (Resources)`,
       description: 'pack.description',
       uuid: UUID.rpHeader,
       version: v,
@@ -116,7 +116,7 @@ export async function build({ quiet = false } = {}) {
   await write(join(RP, 'pack_icon.png'), icon);
 
   const animals = await loadAnimals();
-  const lang = [`pack.description=${pkg.description}`];
+  const lang = [`pack.description=${pkg.description} (v${pkg.version})`];
   const entitySounds = {};
   const report = [];
 

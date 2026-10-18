@@ -15,7 +15,7 @@ export const guide = {
   hippo: 'Spends its days in the water and grazes at night. Hippos defend their river, so don’t swim near one.',
   hyena: 'Hyenas hunt in cackling packs after dark and scavenge whatever they can. Lions are their great rivals.',
   leopard: 'A solitary, spotted hunter that climbs trees and rests in them during the day.',
-  lion: 'Prides of lions nap through the heat of the day and hunt zebras and antelope at night. Only males have a mane.',
+  lion: 'Prides of lions nap through the heat of the day and hunt zebras and antelope at night. Only males have a mane. Get too close and a lion roars a warning, then attacks.',
   meerkat: 'Tiny burrowers living in busy groups. One always stands guard on its hind legs, watching for danger.',
   ostrich: 'The biggest bird of all can’t fly but runs incredibly fast. Tame and saddle one for a speedy ride. It also lays huge eggs.',
   rhino: 'Short-sighted and short-tempered. Rhinos charge anyone who walks right up to them.',

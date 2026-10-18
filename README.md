@@ -2,7 +2,7 @@
 
 A Minecraft **Bedrock Edition** add-on with 24 safari and exotic animals: lions, elephants, zebras, giraffes, rhinos, hippos, cheetahs, African wild dogs, kangaroos and more.
 
-**Download and info: https://ulfendk.github.io/minecraft-safari-animals/**
+**Download and info: https://ulfendk.github.io/minecraft-safari-animals/** (på dansk: https://ulfendk.github.io/minecraft-safari-animals/da/)
 
 ![All animals](https://ulfendk.github.io/minecraft-safari-animals/img/animals/lion.png)
 

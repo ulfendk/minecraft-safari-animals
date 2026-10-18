@@ -3,7 +3,7 @@ import { guide } from '../guide.mjs';
 
 const BIOME_NAMES = {
   savanna: 'Savanna', jungle: 'Jungle', desert: 'Desert', swamp: 'Swamp', mangrove: 'Mangrove swamp',
-  river: 'Rivers', beach: 'Beaches', mesa: 'Badlands', plains: 'Plains',
+  river: 'Rivers', beach: 'Beaches', mesa: 'Badlands', plains: 'Plains', forest: 'Forest',
 };
 
 const itemName = (id) => id.replace(/^.*:/, '').replace(/_/g, ' ');

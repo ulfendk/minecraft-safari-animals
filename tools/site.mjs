@@ -10,6 +10,7 @@ import { guide } from '../src/guide.mjs';
 import { habitats as habitatsOf, tags } from '../src/lib/info.mjs';
 import { items } from '../src/items.mjs';
 import { blocks } from '../src/blocks.mjs';
+import { LANGUAGES, STRINGS } from '../src/i18n.mjs';
 
 const OUT = 'build/site';
 const RP = 'build/resource_pack';
@@ -63,28 +64,48 @@ await writeFile(join(OUT, 'favicon.png'), upscale(PNG.sync.write(PNG.sync.read(a
 const releases = `https://github.com/${repo}/releases`;
 const dl = (file) => `${releases}/latest/download/${file}`;
 
-const animalHtml = cards.map(({ a, habitats, group }) => `
+const ROOT_URL = `https://${owner}.github.io/${name}/`;
+
+/** Builds the page for one language. Pages for other languages live in a subfolder. */
+function page(lang) {
+  const L = LANGUAGES[lang];
+  const t = STRINGS[lang];
+  const up = L.dir ? '../' : '';
+  const link = (href) => (text) => `<a href="${href}">${esc(text)}</a>`;
+  const animalName = (a) => t.names?.[a.id] ?? a.name;
+  const tr = (map, s) => map?.[s] ?? s;
+
+  const animalHtml = cards.map(({ a, habitats, group }) => `
       <article class="card" data-group="${group}"${a.ride ? ' data-ride="1"' : ''}>
-        <div class="portrait"><img src="img/animals/${a.id}.png" alt="${esc(a.name)}" loading="lazy" width="320" height="320"></div>
+        <div class="portrait"><img src="${up}img/animals/${a.id}.png" alt="${esc(animalName(a))}" loading="lazy" width="320" height="320"></div>
         <div class="card-body">
-          <h3>${esc(a.name)}</h3>
-          <p class="where">${habitats.map(esc).join(' · ')}</p>
-          <p>${esc(guide[a.id] ?? '')}</p>
-          <ul class="tags">${tags(a).map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
+          <h3>${esc(animalName(a))}</h3>
+          <p class="where">${habitats.map((h) => esc(tr(t.habitats, h))).join(' · ')}</p>
+          <p>${esc(t.guide?.[a.id] ?? guide[a.id] ?? '')}</p>
+          <ul class="tags">${tags(a).map((x) => `<li>${esc(tr(t.tags, x))}</li>`).join('')}</ul>
         </div>
       </article>`).join('');
 
-const itemHtml = [...items, ...blocks].map((i) => `
-        <li><img src="img/items/${i.id}.png" alt="" width="48" height="48"><span>${esc(i.name)}</span></li>`).join('');
+  const itemHtml = [...items, ...blocks].map((i) => `
+        <li><img src="${up}img/items/${i.id}.png" alt="" width="48" height="48"><span>${esc(t.items?.[i.id] ?? i.name)}</span></li>`).join('');
+
+  const switcher = Object.entries(LANGUAGES)
+    .filter(([code]) => code !== lang)
+    .map(([code, other]) => `<a class="lang" href="${up}${other.dir ? other.dir + '/' : ''}" hreflang="${other.htmlLang}" lang="${other.htmlLang}">${esc(other.label)}</a>`)
+    .join('');
+  const alternates = Object.values(LANGUAGES)
+    .map((other) => `<link rel="alternate" hreflang="${other.htmlLang}" href="${ROOT_URL}${other.dir ? other.dir + '/' : ''}">`)
+    .join('\n');
 
 const html = `<!doctype html>
-<html lang="en">
+<html lang="${L.htmlLang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Safari Animals – Minecraft Bedrock add-on</title>
-<meta name="description" content="${animals.length} safari animals for Minecraft Bedrock Edition: lions, elephants, zebras, giraffes, rhinos and more. Free download.">
-<link rel="icon" href="favicon.png">
+<title>${esc(t.title)}</title>
+<meta name="description" content="${esc(t.description(animals.length))}">
+${alternates}
+<link rel="icon" href="${up}favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500&display=swap" rel="stylesheet">
@@ -119,6 +140,9 @@ header.hero { color: #fff8ec; background: linear-gradient(180deg, var(--hero-fro
 .btn:hover { transform: translateY(-1px); }
 .btn.ghost { background: transparent; color: #fff3df; box-shadow: inset 0 0 0 2px rgb(255 243 223 / .6); }
 .version { font-size: .95rem; color: #fbe9cf; }
+.hero .langs { display: flex; justify-content: flex-end; margin-top: -28px; margin-bottom: 8px; }
+.hero .langs a { color: #fff3df; font-weight: 600; text-decoration: none; padding: 4px 12px; border-radius: 999px; box-shadow: inset 0 0 0 1.5px rgb(255 243 223 / .55); font-size: .9rem; }
+.hero .langs a:hover { background: rgb(255 255 255 / .12); }
 .version strong { color: #fff; }
 main section { padding: 48px 0 8px; }
 h2 { font-size: 2rem; margin: 0 0 8px; }
@@ -157,71 +181,56 @@ footer { margin-top: 56px; padding: 28px 0 40px; border-top: 1px solid var(--lin
 </head>
 <body>
 <header class="hero">
+  <nav class="langs wrap" aria-label="Language">${switcher}</nav>
   <div class="wrap">
-    <img class="icon" src="img/icon.png" alt="" width="160" height="160">
+    <img class="icon" src="${up}img/icon.png" alt="" width="160" height="160">
     <div>
       <h1>Safari Animals</h1>
-      <p>${animals.length} safari animals for Minecraft Bedrock Edition. Lions hunt zebras, elephants carry your stuff, and meerkats keep watch.</p>
+      <p>${esc(t.tagline(animals.length))}</p>
       <div class="actions">
-        <a class="btn" id="download" href="${dl(`SafariAnimals.mcaddon`)}">⬇ Download .mcaddon</a>
-        <a class="btn ghost" href="${releases}">All versions</a>
+        <a class="btn" id="download" href="${dl(`SafariAnimals.mcaddon`)}">⬇ ${esc(t.download)}</a>
+        <a class="btn ghost" href="${releases}">${esc(t.allVersions)}</a>
       </div>
-      <p class="version" id="version">Latest version: <strong>${esc(version)}</strong></p>
+      <p class="version" id="version">${esc(t.latestVersion)}: <strong>${esc(version)}</strong></p>
     </div>
   </div>
 </header>
 <main class="wrap">
   <section id="install">
-    <h2>Install</h2>
+    <h2>${esc(t.install)}</h2>
     <ol class="steps">
-      <li><strong>Download</strong> <a href="${dl('SafariAnimals.mcaddon')}">SafariAnimals.mcaddon</a> on your Windows PC, Android phone or tablet, or iPhone or iPad.</li>
-      <li><strong>Open the file.</strong> Minecraft starts and imports both packs.</li>
-      <li><strong>Create or edit a world.</strong> Under <em>Behavior Packs</em>, turn on <em>Safari Animals</em>. The resource pack is added automatically.</li>
-      <li><strong>Explore</strong> a savanna, jungle, river or swamp, or use spawn eggs from the creative inventory.</li>
+${t.steps(`<a href="${dl('SafariAnimals.mcaddon')}">SafariAnimals.mcaddon</a>`).map((step) => `      <li>${step}</li>`).join('\n')}
     </ol>
-    <p class="note">Running a server? Use the separate <a href="${dl('SafariAnimals_BP.mcpack')}">behavior pack</a> and <a href="${dl('SafariAnimals_RP.mcpack')}">resource pack</a>. Xbox, PlayStation and Switch can’t import add-ons from files, but you can join a world or Realm that has the add-on.</p>
+    <p class="note">${t.serverNote(link(dl('SafariAnimals_BP.mcpack')), link(dl('SafariAnimals_RP.mcpack')))}</p>
   </section>
 
   <section id="animals">
-    <h2>The animals</h2>
-    <p class="lede">Every animal has its own model, animations and sounds. They have babies, react to each other, and follow a day and night routine.</p>
-    <div class="filters" role="group" aria-label="Filter animals">
-      <button aria-pressed="true" data-filter="all">All</button>
-      <button aria-pressed="false" data-filter="predator">Predators</button>
-      <button aria-pressed="false" data-filter="grazer">Grazers</button>
-      <button aria-pressed="false" data-filter="giant">Giants</button>
-      <button aria-pressed="false" data-filter="bird">Birds</button>
-      <button aria-pressed="false" data-filter="primate">Primates</button>
-      <button aria-pressed="false" data-filter="marsupial">Marsupials</button>
-      <button aria-pressed="false" data-filter="ride">Rideable</button>
+    <h2>${esc(t.animals)}</h2>
+    <p class="lede">${esc(t.animalsLede)}</p>
+    <div class="filters" role="group" aria-label="${esc(t.filterLabel)}">
+${Object.entries(t.filters).map(([key, label], i) => `      <button aria-pressed="${i === 0}" data-filter="${key}">${esc(label)}</button>`).join('\n')}
     </div>
     <div class="grid" id="grid">${animalHtml}
     </div>
   </section>
 
   <section id="features">
-    <h2>A living savanna</h2>
+    <h2>${esc(t.featuresTitle)}</h2>
     <div class="features">
-      <div class="feature"><h3>Predators and prey</h3><p>Lions, cheetahs, hyenas and crocodiles hunt. Zebras, gazelles and wildebeest flee in herds when they spot one.</p></div>
-      <div class="feature"><h3>Day and night</h3><p>Lions and hyenas nap through the day and hunt after dark. Grazers sleep at night.</p></div>
-      <div class="feature"><h3>Ride them</h3><p>Tame and saddle zebras and ostriches, or an elephant that carries a chest and a passenger.</p></div>
-      <div class="feature"><h3>Thorn hedges</h3><p>Plant thorn bushes to fence in your camp. Land animals can’t jump them and get scratched if they push through.</p></div>
-      <div class="feature"><h3>Migrations and mounds</h3><p>Wildebeest herds migrate by day. Termite mounds and watering holes dot the savanna, and meerkats dive into the mounds when danger comes.</p></div>
-      <div class="feature"><h3>Field Guide</h3><p>Every player gets a Field Guide that fills in as you spot new animals.</p></div>
-      <div class="feature"><h3>Families</h3><p>Every animal can be bred with its favourite food. Babies follow their parents around.</p></div>
+${t.features.map(([title, text]) => `      <div class="feature"><h3>${esc(title)}</h3><p>${esc(text)}</p></div>`).join('\n')}
     </div>
   </section>
 
   <section id="items">
-    <h2>New items and blocks</h2>
+    <h2>${esc(t.itemsTitle)}</h2>
     <ul class="items">${itemHtml}
     </ul>
   </section>
 </main>
 <footer>
   <div class="wrap">
-    <p>Safari Animals is free and open source. <a href="https://github.com/${repo}">Source code on GitHub</a> · <a href="https://github.com/${repo}/issues">Report a problem</a></p>
-    <p>Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft.</p>
+    <p>${t.footerSource(link(`https://github.com/${repo}`), link(`https://github.com/${repo}/issues`))}</p>
+    <p>${esc(t.footerLegal)}</p>
   </div>
 </footer>
 <script>
@@ -239,14 +248,21 @@ fetch('https://api.github.com/repos/${owner}/${name}/releases/latest')
   .then((r) => (r.ok ? r.json() : null))
   .then((rel) => {
     if (!rel || !rel.tag_name) return;
-    const date = new Date(rel.published_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-    document.getElementById('version').innerHTML = 'Latest version: <strong>' + rel.tag_name.replace(/^v/, '') + '</strong> · released ' + date;
+    const date = new Date(rel.published_at).toLocaleDateString('${L.dateLocale}', { year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById('version').innerHTML = '${t.latestVersion}: <strong>' + rel.tag_name.replace(/^v/, '') + '</strong> · ${t.released} ' + date;
   })
   .catch(() => {});
 </script>
 </body>
 </html>
 `;
-await writeFile(join(OUT, 'index.html'), html);
+  return html;
+}
+
+for (const [lang, L] of Object.entries(LANGUAGES)) {
+  const dir = join(OUT, L.dir);
+  await mkdir(dir, { recursive: true });
+  await writeFile(join(dir, 'index.html'), page(lang));
+}
 await writeFile(join(OUT, '.nojekyll'), '');
-console.log(`Site written to ${OUT}/ (${animals.length} animals, repo ${repo})`);
+console.log(`Site written to ${OUT}/ (${animals.length} animals, ${Object.keys(LANGUAGES).join(' + ')}, repo ${repo})`);

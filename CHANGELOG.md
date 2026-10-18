@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.2.1] - 2026-10-18
+- The pack names in Minecraft now show the version, e.g. "Safari Animals v0.2.1 (Behavior)".
+- The website is now also in Danish: https://ulfendk.github.io/minecraft-safari-animals/da/
+
 ## [0.2.0] - 2026-10-18
 - Lions are fiercer: a bulkier redesign with a dark mane, snarl and fangs. Adults roar a warning, then attack players who come within 7 blocks.
 - Termite mounds grow in savannas and badlands. Meerkats hide in them when their sentry raises the alarm.
