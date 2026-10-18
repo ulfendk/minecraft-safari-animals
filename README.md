@@ -1,6 +1,6 @@
 # Safari Animals
 
-A Minecraft **Bedrock Edition** add-on with 24 safari and exotic animals: lions, elephants, zebras, giraffes, rhinos, hippos, cheetahs, African wild dogs, kangaroos and more.
+A Minecraft **Bedrock Edition** add-on and **Java Edition** (Fabric) mod with 24 safari and exotic animals: lions, elephants, zebras, giraffes, rhinos, hippos, cheetahs, African wild dogs, kangaroos and more.
 
 **Download and info: https://ulfendk.github.io/minecraft-safari-animals/** (på dansk: https://ulfendk.github.io/minecraft-safari-animals/da/)
 
@@ -24,6 +24,11 @@ A Minecraft **Bedrock Edition** add-on with 24 safari and exotic animals: lions,
 
 Requires Minecraft Bedrock 1.21.90 or newer.
 
+### Java Edition
+1. Install [Fabric Loader](https://fabricmc.net/use/installer/) for Minecraft 26.3.
+2. Download `safari-animals-fabric-<version>.jar` from the [latest release](https://github.com/ulfendk/minecraft-safari-animals/releases/latest), plus [Fabric API](https://modrinth.com/mod/fabric-api) and [GeckoLib](https://modrinth.com/mod/geckolib).
+3. Put all three in your `mods` folder.
+
 ## Development
 Everything is generated from code. Models, textures and animations come from the specs in `src/animals/`.
 
@@ -35,7 +40,15 @@ npm run preview    # renders every animal to build/preview/*.png
 npm run package    # dist/*.mcaddon and *.mcpack
 npm run site       # the website, in build/site/
 npm run test:server  # loads the packs in a Bedrock Dedicated Server (needs Docker)
+
+cd java                       # Java edition (needs JDK 25; run `npm run build` first)
+./gradlew build               # the Fabric mod jar in java/build/libs
+./gradlew runGameTest         # server-side game tests
+./gradlew runClientGameTest   # starts a client and screenshots every animal
+./gradlew runClient           # play it
 ```
+
+The Java edition reuses everything generated from the specs (GeckoLib reads the Bedrock model and animation formats). `tools/java.mjs` writes its resources to `java/src/generated/resources`; the behaviour lives in `java/src/main/java` and is driven by the generated `species.json`.
 
 | Path | What it is |
 | --- | --- |
@@ -43,7 +56,8 @@ npm run test:server  # loads the packs in a Bedrock Dedicated Server (needs Dock
 | `src/lib/` | Generators: model + UV packing, procedural textures, animations, entity JSON |
 | `src/packs/` | Hand-written pack files, including the Script API code in `behavior_pack/scripts/` |
 | `src/items.mjs`, `src/blocks.mjs` | Custom items, blocks, recipes and world generation |
-| `tools/` | Build, validation, preview renderer, packaging, website, server test |
+| `tools/` | Build, validation, preview renderer, packaging, website, server test, Java resources |
+| `java/` | The Fabric mod (Java edition) |
 
 ### Adding an animal
 Copy a similar spec in `src/animals/` (the body builders in `src/lib/bodies.mjs` help). Run `npm run preview <id>` and look at `build/preview/<id>.png`, then add a line to `src/guide.mjs`.

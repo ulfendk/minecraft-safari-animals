@@ -67,10 +67,35 @@ jobs:
       - name: Bedrock Dedicated Server smoke test
         run: tools/bds-test.sh
 
+  java:
+    # Java edition: generate resources from the shared specs, build the Fabric mod, run its game tests.
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: gradle
+      - name: Build and run game tests
+        working-directory: java
+        run: ./gradlew --no-daemon build runGameTest
+      - uses: actions/upload-artifact@v7
+        with:
+          name: SafariAnimals-fabric
+          path: java/build/libs/*.jar
+          if-no-files-found: error
+
   pages:
     # Publishes the website from main once the server test passes.
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    needs: [build, server-test]
+    needs: [build, server-test, java]
     runs-on: ubuntu-24.04
     permissions:
       pages: write

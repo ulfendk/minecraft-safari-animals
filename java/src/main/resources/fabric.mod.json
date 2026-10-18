@@ -1,0 +1,27 @@
+{
+	"schemaVersion": 1,
+	"id": "safari",
+	"version": "${version}",
+	"name": "Safari Animals",
+	"description": "Lions, elephants, zebras, giraffes and 20 more safari animals, plus stone age weapons.",
+	"authors": ["ulfendk"],
+	"contact": {
+		"homepage": "https://ulfendk.github.io/minecraft-safari-animals/",
+		"sources": "https://github.com/ulfendk/minecraft-safari-animals",
+		"issues": "https://github.com/ulfendk/minecraft-safari-animals/issues"
+	},
+	"license": "MIT",
+	"icon": "assets/safari/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": ["dk.ulfen.safari.SafariAnimals"],
+		"client": ["dk.ulfen.safari.client.SafariAnimalsClient"]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*",
+		"geckolib": ">=5.5"
+	}
+}

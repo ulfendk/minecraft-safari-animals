@@ -7,10 +7,19 @@ export const LANGUAGES = {
 };
 
 const en = {
-  title: 'Safari Animals – Minecraft Bedrock add-on',
-  description: (n) => `${n} safari animals for Minecraft Bedrock Edition: lions, elephants, zebras, giraffes, rhinos and more. Free download.`,
-  tagline: (n) => `${n} safari animals for Minecraft Bedrock Edition. Lions hunt zebras, elephants carry your stuff, and meerkats keep watch.`,
-  download: 'Download .mcaddon',
+  title: 'Safari Animals – Minecraft add-on and mod',
+  description: (n) => `${n} safari animals for Minecraft Bedrock and Java Edition: lions, elephants, zebras, giraffes, rhinos and more. Free download.`,
+  tagline: (n) => `${n} safari animals for Minecraft Bedrock and Java Edition. Lions hunt zebras, elephants carry your stuff, and meerkats keep watch.`,
+  download: 'Bedrock (.mcaddon)',
+  downloadJava: 'Java (Fabric)',
+  bedrockTitle: 'Bedrock Edition',
+  javaTitle: 'Java Edition',
+  javaSteps: (jar, fabric, api, gecko) => [
+    `<strong>Install</strong> ${fabric} for Minecraft 26.3.`,
+    `<strong>Download</strong> ${jar}, plus ${api} and ${gecko}.`,
+    '<strong>Put all three files</strong> in your <em>mods</em> folder and start Minecraft with the Fabric profile.',
+    '<strong>Explore</strong> or find the animals and items in the <em>Safari Animals</em> creative tab.',
+  ],
   allVersions: 'All versions',
   latestVersion: 'Latest version',
   released: 'released',
@@ -42,10 +51,19 @@ const en = {
 };
 
 const da = {
-  title: 'Safari Animals – tilføjelse til Minecraft Bedrock',
-  description: (n) => `${n} safaridyr til Minecraft Bedrock Edition: løver, elefanter, zebraer, giraffer, næsehorn og meget mere. Gratis download.`,
-  tagline: (n) => `${n} safaridyr til Minecraft Bedrock Edition. Løver jager zebraer, elefanter bærer dine ting, og surikater holder vagt.`,
-  download: 'Hent .mcaddon',
+  title: 'Safari Animals – tilføjelse og mod til Minecraft',
+  description: (n) => `${n} safaridyr til Minecraft Bedrock og Java Edition: løver, elefanter, zebraer, giraffer, næsehorn og meget mere. Gratis download.`,
+  tagline: (n) => `${n} safaridyr til Minecraft Bedrock og Java Edition. Løver jager zebraer, elefanter bærer dine ting, og surikater holder vagt.`,
+  download: 'Bedrock (.mcaddon)',
+  downloadJava: 'Java (Fabric)',
+  bedrockTitle: 'Bedrock Edition',
+  javaTitle: 'Java Edition',
+  javaSteps: (jar, fabric, api, gecko) => [
+    `<strong>Installér</strong> ${fabric} til Minecraft 26.3.`,
+    `<strong>Hent</strong> ${jar} samt ${api} og ${gecko}.`,
+    '<strong>Læg alle tre filer</strong> i din <em>mods</em>-mappe, og start Minecraft med Fabric-profilen.',
+    '<strong>Gå på opdagelse</strong>, eller find dyrene og genstandene på fanen <em>Safaridyr</em> i kreativ tilstand.',
+  ],
   allVersions: 'Alle versioner',
   latestVersion: 'Nyeste version',
   released: 'udgivet',

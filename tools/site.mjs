@@ -151,6 +151,7 @@ h2 { font-size: 2rem; margin: 0 0 8px; }
 .steps li { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 16px 16px 56px; position: relative; }
 .steps li::before { counter-increment: s; content: counter(s); position: absolute; left: 16px; top: 14px; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-weight: 700; }
 .note { color: var(--muted); font-size: .92rem; }
+h3.edition { margin: 18px 0 10px; font: 700 1.15rem/1.2 system-ui, -apple-system, "Segoe UI", sans-serif; }
 .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; }
 .filters button { font: inherit; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 6px 14px; border-radius: 999px; cursor: pointer; }
 .filters button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
@@ -189,6 +190,7 @@ footer { margin-top: 56px; padding: 28px 0 40px; border-top: 1px solid var(--lin
       <p>${esc(t.tagline(animals.length))}</p>
       <div class="actions">
         <a class="btn" id="download" href="${dl(`SafariAnimals.mcaddon`)}">⬇ ${esc(t.download)}</a>
+        <a class="btn" href="${dl('SafariAnimals-fabric.jar')}">⬇ ${esc(t.downloadJava)}</a>
         <a class="btn ghost" href="${releases}">${esc(t.allVersions)}</a>
       </div>
       <p class="version" id="version">${esc(t.latestVersion)}: <strong>${esc(version)}</strong></p>
@@ -198,10 +200,20 @@ footer { margin-top: 56px; padding: 28px 0 40px; border-top: 1px solid var(--lin
 <main class="wrap">
   <section id="install">
     <h2>${esc(t.install)}</h2>
+    <h3 class="edition">${esc(t.bedrockTitle)}</h3>
     <ol class="steps">
 ${t.steps(`<a href="${dl('SafariAnimals.mcaddon')}">SafariAnimals.mcaddon</a>`).map((step) => `      <li>${step}</li>`).join('\n')}
     </ol>
     <p class="note">${t.serverNote(link(dl('SafariAnimals_BP.mcpack')), link(dl('SafariAnimals_RP.mcpack')))}</p>
+    <h3 class="edition">${esc(t.javaTitle)}</h3>
+    <ol class="steps">
+${t.javaSteps(
+    `<a href="${dl('SafariAnimals-fabric.jar')}">SafariAnimals-fabric.jar</a>`,
+    '<a href="https://fabricmc.net/use/installer/">Fabric Loader</a>',
+    '<a href="https://modrinth.com/mod/fabric-api">Fabric API</a>',
+    '<a href="https://modrinth.com/mod/geckolib">GeckoLib</a>',
+  ).map((step) => `      <li>${step}</li>`).join('\n')}
+    </ol>
   </section>
 
   <section id="animals">

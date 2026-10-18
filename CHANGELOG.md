@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0] - 2026-10-18
+Java Edition:
+- Safari Animals is now also a Fabric mod for Minecraft Java 26.3 (needs Fabric API and GeckoLib). It has the same 24 animals, models, textures, animations, items, weapons, blocks and world generation as the Bedrock add-on.
+- Java-native extras: the flint spear sticks in the ground like a trident; the club swings slower and the knife faster; the safari hat is a real helmet.
+- Field Guide on Java: hover over an animal's name in chat to read about it.
+- The release includes the Java jar. CI builds it and runs its game tests on every push.
+
 ## [0.4.0] - 2026-10-18
 Stone age weapons:
 - Flint Spear (flint and sticks): a melee weapon that you can also hold to charge and throw. Thrown spears land as an item and can be picked up again; sometimes the flint head breaks.

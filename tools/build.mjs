@@ -11,6 +11,7 @@ import { packIcon } from '../src/lib/icon.mjs';
 import { langEntries, LOCALES, missingFoods } from '../src/lang.mjs';
 import { guideEntry } from '../src/lib/info.mjs';
 import { render } from './render.mjs';
+import { buildJava } from './java.mjs';
 import { buildGeometry } from '../src/lib/model.mjs';
 import { paintTexture } from '../src/lib/texture.mjs';
 import { buildItem, items, recipes } from '../src/items.mjs';
@@ -117,6 +118,7 @@ export async function build({ quiet = false } = {}) {
   await write(join(RP, 'pack_icon.png'), icon);
 
   const animals = await loadAnimals();
+  const java = { geos: {}, anims: {}, textures: {}, langs: {} };
   const entitySounds = {};
   const report = [];
 
@@ -130,6 +132,8 @@ export async function build({ quiet = false } = {}) {
     const geo = buildGeometry(`geometry.safari.${a.id}`, a.model);
     await write(join(RP, 'models', 'entity', `${a.id}.geo.json`), geo.geometry);
     await write(join(RP, 'textures', 'entity', NS, `${a.id}.png`), await paintTextureCached(geo, a));
+    java.geos[a.id] = geo.geometry;
+    java.textures[a.id] = await paintTextureCached(geo, a);
     for (const v of a.variants ?? []) {
       if (v.texture) {
         await write(join(RP, 'textures', 'entity', NS, `${a.id}_${v.texture}.png`), paintTexture(geo, { ...a.materials, ...v.materials }));
@@ -139,6 +143,7 @@ export async function build({ quiet = false } = {}) {
     // Animation
     const animNames = Object.keys(a.anims);
     await write(join(RP, 'animations', `${a.id}.animation.json`), animationFile(a.id, a.anims));
+    java.anims[a.id] = animationFile(a.id, a.anims);
     await write(join(RP, 'animation_controllers', `${a.id}.animation_controllers.json`), buildAnimationControllers(a, animNames));
     await write(join(RP, 'entity', `${a.id}.entity.json`), buildClientEntity(a, animNames, a.egg));
     const boneNames = a.model.bones.map((b) => b.name);
@@ -159,6 +164,8 @@ export async function build({ quiet = false } = {}) {
     await write(join(RP, 'entity', `${p.id}.entity.json`), buildProjectileClient(p));
     await write(join(RP, 'models', 'entity', `${p.id}.geo.json`), geo.geometry);
     await write(join(RP, 'textures', 'entity', NS, `${p.id}.png`), paintTexture(geo, p.materials));
+    java.geos[p.id] = geo.geometry;
+    java.textures[p.id] = paintTexture(geo, p.materials);
     await write(join(RP, 'render_controllers', `${p.id}.render_controllers.json`), {
       format_version: '1.8.0',
       render_controllers: { [`controller.render.safari.${p.id}`]: { geometry: 'Geometry.default', materials: [{ '*': 'Material.default' }], textures: ['Texture.default'] } },
@@ -245,11 +252,19 @@ export async function build({ quiet = false } = {}) {
     const entries = langEntries(locale, {
       animals, items, blocks, extraEntities: [...projectiles, ...helpers], description: pkg.description, version: pkg.version,
     });
+    java.langs[locale] = entries;
     const text = entries.map(([k, v]) => `${k}=${v}`).join('\n') + '\n';
     for (const pack of [BP, RP]) await write(join(pack, 'texts', `${locale}.lang`), text);
   }
   for (const pack of [BP, RP]) await write(join(pack, 'texts', 'languages.json'), LOCALES);
 
+  // Java edition resources
+  const speciesCount = await buildJava({
+    animals, ...java, items, blocks, recipes: [...recipes, ...blockRecipes], projectiles, icon,
+    OUT: join(ROOT, 'java', 'src', 'generated', 'resources'),
+  });
+
+  if (!quiet) console.log(`Java: ${speciesCount} species written to java/src/generated/resources`);
   if (!quiet) console.log(`Built ${animals.length} animals: ${report.join(', ')}\nItems: ${items.map((i) => i.id).join(', ')}`);
   return { animals, version: pkg.version };
 }
