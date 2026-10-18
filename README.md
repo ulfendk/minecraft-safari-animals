@@ -13,6 +13,7 @@ A Minecraft **Bedrock Edition** add-on with 24 safari and exotic animals: lions,
 - Ride tamed zebras, ostriches and elephants. Elephants carry a chest and a second rider.
 - Special behaviours: lions roar a warning before they attack, gorillas beat their chest, meerkats post a sentry and hide in termite mounds, baboons steal snacks, chimps throw fruit, hyenas steal kills, leopards rest in trees, wildebeest migrate, and vultures gather at carcasses.
 - Savanna features: termite mounds and watering holes. Plus a wearable safari hat.
+- Stone age weapons: a throwable flint spear, a stone club, a flint knife and a sling with pebbles.
 - Thorn bushes: a 1.5-block barrier that hurts land animals that push against it.
 - A Field Guide book that records every species you spot.
 

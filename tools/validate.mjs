@@ -266,7 +266,8 @@ for (const locale of locales) {
   }
 }
 const dataSrc = await readFile(join(BP, 'scripts', 'data.js'), 'utf8');
-const guideData = JSON.parse(dataSrc.slice(dataSrc.indexOf('['), dataSrc.lastIndexOf(']') + 1));
+const animalsStart = dataSrc.indexOf('[', dataSrc.indexOf('ANIMALS'));
+const guideData = JSON.parse(dataSrc.slice(animalsStart, dataSrc.indexOf('\n];', animalsStart) + 2));
 for (const a of guideData) {
   const keys = [
     `safari.guide.entry.${a.id}`,

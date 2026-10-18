@@ -119,6 +119,7 @@ const da = {
   items: {
     field_guide: 'Safari-felthåndbog', safari_hat: 'Safarihat', raw_game_meat: 'Råt vildtkød', cooked_game_meat: 'Stegt vildtkød',
     ostrich_egg: 'Strudseæg', fried_ostrich_egg: 'Stegt strudseæg', zebra_hide: 'Zebraskind', thorn_bush: 'Tornebusk', termite_mound: 'Termitbo',
+    flint_spear: 'Flintspyd', stone_club: 'Stenkølle', flint_knife: 'Flintkniv', sling: 'Slynge', pebble: 'Småsten',
   },
 };
 

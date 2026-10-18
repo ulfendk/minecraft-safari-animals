@@ -1,5 +1,6 @@
 // Non-animal entities: projectiles thrown by animals.
 import { NS } from './lib/constants.mjs';
+import { weaponProjectiles } from './weapons.mjs';
 
 export const projectiles = [
   {
@@ -18,6 +19,7 @@ export const projectiles = [
     },
     materials: { apple: '#c8302a', stem: '#5a3a1e' },
   },
+  ...weaponProjectiles,
 ];
 
 export function buildProjectile(p) {
@@ -29,8 +31,9 @@ export function buildProjectile(p) {
         'minecraft:collision_box': { width: 0.25, height: 0.25 },
         'minecraft:projectile': {
           on_hit: { impact_damage: { damage: p.damage, knockback: true }, remove_on_hit: {} },
-          power: 1.0,
-          gravity: 0.04,
+          power: p.power ?? 1.0,
+          gravity: p.gravity ?? 0.04,
+          ...(p.hitSound ? { hit_sound: p.hitSound } : {}),
           uncertainty_base: 4,
           uncertainty_multiplier: 0,
           anchor: 1,
@@ -53,6 +56,8 @@ export function buildProjectileClient(p) {
         materials: { default: 'entity_alphatest' },
         textures: { default: `textures/entity/${NS}/${p.id}` },
         geometry: { default: `geometry.safari.${p.id}` },
+        // Point along the direction of flight, like an arrow.
+        ...(p.rotate ? { animations: { move: 'animation.safari.projectile.move' }, scripts: { animate: ['move'] } } : {}),
         render_controllers: [`controller.render.safari.${p.id}`],
       },
     },

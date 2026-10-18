@@ -5,8 +5,26 @@
       "loop": true,
       "bones": {
         "head": {
-          "relative_to": { "rotation": "entity" },
-          "rotation": ["query.target_x_rotation", "query.target_y_rotation", 0.0]
+          "relative_to": {
+            "rotation": "entity"
+          },
+          "rotation": [
+            "query.target_x_rotation",
+            "query.target_y_rotation",
+            0.0
+          ]
+        }
+      }
+    },
+    "animation.safari.projectile.move": {
+      "loop": true,
+      "bones": {
+        "body": {
+          "rotation": [
+            "-query.target_x_rotation",
+            "-query.target_y_rotation",
+            0.0
+          ]
         }
       }
     }

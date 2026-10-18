@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0] - 2026-10-18
+Stone age weapons:
+- Flint Spear (flint and sticks): a melee weapon that you can also hold to charge and throw. Thrown spears land as an item and can be picked up again; sometimes the flint head breaks.
+- Stone Club (cobblestone and sticks): hits hard.
+- Flint Knife (flint and a stick): light and quick.
+- Sling (string and leather): shoots pebbles. Pebbles come from cobblestone (4) or gravel (2) and can also be thrown by hand.
+
 ## [0.3.0] - 2026-10-18
 More lifelike animals:
 - All textures have baked shading for more depth: lighter on top, darker down the sides and underneath.

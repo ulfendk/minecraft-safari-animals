@@ -1,5 +1,6 @@
 // Custom items: definitions, pixel-art icons, recipes.
 import { fur, pixelIcon, region } from './lib/texture.mjs';
+import { weaponItems, weaponRecipes } from './weapons.mjs';
 
 const MEAT = {
   '.': null, o: '#5a1f1a', r: '#b5413a', p: '#d9736b', w: '#f0d9c8',
@@ -190,6 +191,8 @@ export const items = [
   },
 ];
 
+items.push(...weaponItems);
+
 export const recipes = [
   {
     'minecraft:recipe_shaped': {
@@ -236,6 +239,8 @@ export const recipes = [
     },
   },
 ];
+
+recipes.push(...weaponRecipes);
 
 export function buildItem(item) {
   const components = {
