@@ -14,6 +14,7 @@ export default {
   role: 'megafauna',
   family: ['elephant'],
   size: [2.2, 2.8],
+  scale: 1.7,
   health: 60,
   speed: 0.2,
   xp: 7,

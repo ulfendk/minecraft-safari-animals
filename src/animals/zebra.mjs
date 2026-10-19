@@ -10,6 +10,7 @@ export default {
   role: 'prey',
   family: ['equine', 'grazer'],
   size: [1.3, 1.5],
+  scale: 1.1,
   health: 22,
   speed: 0.25,
   xp: 3,

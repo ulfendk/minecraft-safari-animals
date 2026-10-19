@@ -8,6 +8,7 @@ export default {
   role: 'prey',
   family: ['antelope', 'grazer'],
   size: [1.2, 1.5],
+  scale: 1.15,
   health: 20,
   speed: 0.26,
   xp: 3,

@@ -43,6 +43,42 @@ public class SafariClientGameTest implements FabricClientGameTest {
 				context.takeScreenshot("safari_group_" + group);
 			}
 
+			// An anaconda wrapped around a pig.
+			world.getServer().runCommand("kill @e[type=!player]");
+			world.getServer().runCommand("summon safari:anaconda 0 -60 0 {Rotation:[150f,0f]}");
+			world.getServer().runCommand("summon minecraft:pig 0 -60 0.5 {NoAI:1b,Rotation:[150f,0f]}");
+			world.getServer().runCommand("effect give @e[type=minecraft:pig] resistance 60 3 true");
+			world.getServer().runCommand("tp @p 0 -58.5 -3.5 0 25");
+			context.waitTicks(10);
+			world.getServer().runOnServer(server -> {
+				var level = server.overworld();
+				var snake = level.getEntitiesOfClass(dk.ulfen.safari.entity.SafariAnimal.class, new net.minecraft.world.phys.AABB(-5, -64, -5, 5, -55, 5), e -> e.isAlive() && e.species().id().equals("anaconda")).getFirst();
+				var pig = level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class, new net.minecraft.world.phys.AABB(-5, -64, -5, 5, -55, 5), e -> e.getType() == net.minecraft.world.entity.EntityTypes.PIG).getFirst();
+				snake.doHurtTarget(level, pig);
+			});
+			context.waitTicks(30);
+			context.takeScreenshot("safari_coil");
+			world.getServer().runCommand("tp @p -3.5 -59 0.5 -90 10");
+			context.waitTicks(5);
+			context.takeScreenshot("safari_coil_side");
+			world.getServer().runCommand("tp @p 0.5 -56 0.5 0 90");
+			context.waitTicks(5);
+			context.takeScreenshot("safari_coil_top");
+
+			// The snakes' threat display: the cobra spreads its hood, the mamba gapes.
+			world.getServer().runCommand("kill @e[type=!player]");
+			world.getServer().runCommand("summon safari:king_cobra -1 -60 0 {NoAI:1b,Rotation:[180f,0f]}");
+			world.getServer().runCommand("summon safari:black_mamba 1.5 -60 0 {NoAI:1b,Rotation:[180f,0f]}");
+			world.getServer().runCommand("tp @p 0.25 -59.4 -2.4 0 8");
+			context.waitTicks(60);
+			world.getServer().runOnServer(server -> {
+				for (var snake : server.overworld().getEntitiesOfClass(dk.ulfen.safari.entity.SafariAnimal.class, new net.minecraft.world.phys.AABB(-5, -64, -5, 5, -55, 5), e -> e.isAlive())) {
+					snake.playAction("threat");
+				}
+			});
+			context.waitTicks(12);
+			context.takeScreenshot("safari_threat");
+
 			// A thrown spear in flight, seen from the side.
 			world.getServer().runCommand("kill @e[type=!player]");
 			world.getServer().runCommand("tp @p 0 -57.5 -4 0 18");

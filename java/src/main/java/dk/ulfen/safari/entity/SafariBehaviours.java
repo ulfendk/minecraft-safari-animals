@@ -81,6 +81,14 @@ public final class SafariBehaviours {
 					level.playSound(null, a, SoundEvents.HOGLIN_ANGRY, SoundSource.NEUTRAL, 2.0F, 0.5F);
 				}
 			}
+			case "king_cobra", "black_mamba" -> {
+				// Rears up when a player comes close: the cobra spreads its hood, the mamba gapes.
+				boolean cobra = a.species().id().equals("king_cobra");
+				if (!playersNear(a, cobra ? 5 : 4).isEmpty() && chance(a, 0.4F)) {
+					a.playAction("threat");
+					level.playSound(null, a, BuiltInRegistries.SOUND_EVENT.getValue(net.minecraft.resources.Identifier.withDefaultNamespace("entity.cat.hiss")), SoundSource.NEUTRAL, 1.5F, cobra ? 0.4F : 0.8F);
+				}
+			}
 			case "gazelle" -> { if (a.getDeltaMovement().horizontalDistance() > 0.25 && chance(a, 0.25F)) a.playAction("pronk"); }
 			case "meerkat" -> sentry(a, level);
 			case "baboon" -> steal(a, level);

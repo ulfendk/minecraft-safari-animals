@@ -9,6 +9,7 @@ export default {
   role: 'predator',
   family: ['big_cat', 'feline'],
   size: [0.9, 0.9],
+  scale: 1.1,
   health: 22,
   speed: 0.3,
   xp: 4,

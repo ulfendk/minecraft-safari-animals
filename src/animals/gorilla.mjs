@@ -9,6 +9,7 @@ export default {
   role: 'megafauna',
   family: ['primate', 'ape'],
   size: [1.3, 1.7],
+  scale: 1.3,
   health: 45,
   speed: 0.22,
   xp: 6,

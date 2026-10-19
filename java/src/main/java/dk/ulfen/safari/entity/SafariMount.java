@@ -42,6 +42,7 @@ public class SafariMount extends AbstractChestedHorse implements SafariCreature 
 
 	public SafariMount(EntityType<? extends SafariMount> type, Level level) {
 		super(type, level);
+		this.refreshDimensions(); // apply the species' size multiplier (scale attribute) to the hitbox
 	}
 
 	public static AttributeSupplier.Builder createAttributes(Species s) {
@@ -49,7 +50,8 @@ public class SafariMount extends AbstractChestedHorse implements SafariCreature 
 			.add(Attributes.MAX_HEALTH, s.health())
 			.add(Attributes.MOVEMENT_SPEED, s.speed())
 			.add(Attributes.JUMP_STRENGTH, s.ride().jump() ? s.ride().jumpStrength() : 0.0)
-			.add(Attributes.KNOCKBACK_RESISTANCE, s.knockbackResistance());
+			.add(Attributes.KNOCKBACK_RESISTANCE, s.knockbackResistance())
+			.add(Attributes.SCALE, s.scale());
 		if (s.attacks()) b.add(Attributes.ATTACK_DAMAGE, s.attackDamage());
 		return b;
 	}

@@ -1,4 +1,4 @@
-import { ItemStack, world } from '@minecraft/server';
+import { ItemStack, system, world } from '@minecraft/server';
 import { ITEMS } from './data.js';
 
 /**
@@ -21,5 +21,20 @@ export function selfTest(message) {
     }
   }
   console.log(`[Safari Animals] selftest found ${JSON.stringify(counts)}`);
-  console.log(missing.length ? `[Safari Animals] selftest FAIL missing: ${missing.join(' ')}` : '[Safari Animals] selftest PASS');
+
+  // An anaconda that bites must coil around its prey (scripts/constrict.js).
+  const dim = world.getDimension('overworld');
+  const snake = dim.getEntities({ type: 'safari:anaconda' })[0];
+  const prey = dim.getEntities({ type: 'safari:capybara' })[0];
+  if (snake && prey) {
+    prey.applyDamage(1, { cause: 'entityAttack', damagingEntity: snake });
+  } else {
+    missing.push('coil test animals');
+  }
+  system.runTimeout(() => {
+    let coiled = false;
+    try { coiled = snake.getProperty('safari:coiling') === true; } catch {}
+    if (snake && prey && !coiled) missing.push('anaconda coil');
+    console.log(missing.length ? `[Safari Animals] selftest FAIL missing: ${missing.join(' ')}` : '[Safari Animals] selftest PASS');
+  }, 10);
 }

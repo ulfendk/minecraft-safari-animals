@@ -6,6 +6,7 @@ import { setupThorns } from './thorns.js';
 import { setupChimps } from './chimps.js';
 import { setupMigration } from './migration.js';
 import { setupSpears } from './spears.js';
+import { setupConstrictors } from './constrict.js';
 import { selfTest } from './selftest.js';
 
 world.afterEvents.worldLoad.subscribe(() => {
@@ -17,6 +18,7 @@ world.afterEvents.worldLoad.subscribe(() => {
   setupChimps();
   setupMigration();
   setupSpears();
+  setupConstrictors();
   console.log('[Safari Animals] loaded');
 });
 

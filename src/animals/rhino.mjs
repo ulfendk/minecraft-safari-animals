@@ -12,6 +12,7 @@ export default {
   role: 'megafauna',
   family: ['rhino'],
   size: [1.6, 1.7],
+  scale: 1.45,
   health: 45,
   speed: 0.22,
   xp: 6,

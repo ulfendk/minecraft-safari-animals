@@ -23,7 +23,7 @@ function baseComponents(a) {
   const c = {
     'minecraft:is_hidden_when_invisible': {},
     'minecraft:type_family': { family: [a.id, 'safari', a.role, ...(a.family ?? []), 'mob'] },
-    'minecraft:collision_box': { width: a.size[0], height: a.size[1] },
+    'minecraft:collision_box': { width: hitbox(a)[0], height: hitbox(a)[1] },
     'minecraft:health': { value: a.health, max: a.health },
     'minecraft:movement': { value: a.speed },
     'minecraft:jump.static': {},
@@ -287,11 +287,19 @@ function lifeGroups(a) {
   return groups;
 }
 
+/** Collision size after the species' size multiplier (very wide boxes path badly, so width is capped). */
+export function hitbox(a) {
+  const k = a.scale ?? 1;
+  const r = (v) => Math.round(v * 100) / 100;
+  return [r(Math.min(a.size[0] * k, Math.max(a.size[0], 2.6))), r(a.size[1] * k)];
+}
+
 /** Horse-style taming and riding (zebra, ostrich, elephant). */
 function rideGroups(a) {
   const r = a.ride;
+  const k = a.scale ?? 1;
   const seats = (r.seats ?? [r.seat]).map((position) => ({
-    position,
+    position: position.map((v) => Math.round(v * k * 100) / 100),
     min_rider_count: 0,
     max_rider_count: (r.seats ?? [r.seat]).length,
   }));
@@ -406,6 +414,13 @@ export function buildEntity(a) {
     };
     extraEvents['safari:hide'] = { add: { component_groups: ['safari:hiding'] }, set_property: { 'safari:hiding': true } };
     extraEvents['safari:unhide'] = { remove: { component_groups: ['safari:hiding'] }, set_property: { 'safari:hiding': false } };
+  }
+
+  // Constrictors wrap around what they bite; scripts/constrict.js holds and squeezes.
+  if (a.constricts) {
+    properties['safari:coiling'] = { type: 'bool', default: false, client_sync: true };
+    extraEvents['safari:coil'] = { set_property: { 'safari:coiling': true } };
+    extraEvents['safari:uncoil'] = { set_property: { 'safari:coiling': false } };
   }
 
   if (a.ride) {

@@ -165,4 +165,30 @@ public class SafariGameTests {
 		if (badger.hasEffect(MobEffects.POISON)) helper.fail("Honey badger was poisoned");
 		helper.succeed();
 	}
+
+	/** Large animals are scaled up: model, hitbox and seat. */
+	@GameTest(maxTicks = 20)
+	public void largeAnimalsAreBigger(GameTestHelper helper) {
+		Mob elephant = spawn(helper, "elephant", new BlockPos(3, 1, 3));
+		if (Math.abs(elephant.getScale() - 1.7F) > 0.01F) helper.fail("Elephant scale is " + elephant.getScale());
+		if (elephant.getBbHeight() < 4.0F) helper.fail("Elephant is only " + elephant.getBbHeight() + " blocks tall");
+		helper.succeed();
+	}
+
+	/** An anaconda that bites wraps itself around its prey and keeps squeezing. */
+	@GameTest(maxTicks = 200)
+	public void anacondaConstricts(GameTestHelper helper) {
+		SafariAnimal snake = (SafariAnimal) spawn(helper, "anaconda", new BlockPos(2, 1, 2));
+		Mob pig = helper.spawn(net.minecraft.world.entity.EntityTypes.PIG, new BlockPos(3, 1, 3));
+		pig.setNoAi(true);
+		pig.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 400, 2)); // survive long enough to check the hold
+		snake.doHurtTarget(helper.getLevel(), pig);
+		if (!snake.isCoiling() || snake.coiled() != pig) helper.fail("Anaconda did not coil around the pig");
+		float health = pig.getHealth();
+		helper.succeedWhen(() -> {
+			if (snake.distanceTo(pig) > 0.5F) helper.fail("Anaconda is not wrapped around the pig: " + snake.distanceTo(pig) + " coiling=" + snake.isCoiling() + " pigHp=" + pig.getHealth());
+			if (!pig.hasEffect(MobEffects.SLOWNESS)) helper.fail("Pig is not held");
+			if (pig.getHealth() >= health) helper.fail("Anaconda has not squeezed yet");
+		});
+	}
 }

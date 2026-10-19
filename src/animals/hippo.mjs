@@ -12,6 +12,7 @@ export default {
   role: 'megafauna',
   family: ['hippo'],
   size: [1.7, 1.4],
+  scale: 1.45,
   health: 50,
   speed: 0.2,
   swimSpeed: 0.12,

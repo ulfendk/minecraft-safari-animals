@@ -8,6 +8,7 @@ export default {
   role: 'prey',
   family: ['bird', 'ostrich'],
   size: [0.9, 2.2],
+  scale: 1.15,
   health: 16,
   speed: 0.3,
   xp: 3,

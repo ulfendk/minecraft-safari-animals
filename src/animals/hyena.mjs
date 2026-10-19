@@ -16,6 +16,7 @@ export default {
   role: 'predator',
   family: ['hyena', 'scavenger'],
   size: [0.8, 1.0],
+  scale: 1.1,
   health: 18,
   speed: 0.28,
   xp: 3,

@@ -5,6 +5,7 @@ import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 
 import { NS } from '../src/lib/constants.mjs';
+import { hitbox } from '../src/lib/behavior.mjs';
 import { eggIcon } from '../src/lib/texture.mjs';
 import { PNG } from 'pngjs';
 
@@ -95,7 +96,7 @@ function speciesRecord(a, animals, animNames) {
   return {
     id: a.id,
     kind: a.ride ? 'mount' : a.movement === 'swim' || a.movement === 'dolphin' ? 'swimmer' : 'animal',
-    width: a.size[0],
+    width: Math.round((hitbox(a)[0] / (a.scale ?? 1)) * 1000) / 1000,
     height: a.size[1],
     health: a.health,
     speed: a.speed,
@@ -123,6 +124,7 @@ function speciesRecord(a, animals, animNames) {
     poisonImmune: !!a.poisonImmune,
     colourChange: !!a.colourChange,
     shocks: !!a.shocks,
+    constricts: !!a.constricts,
     attackEffect: a.attack?.effect ?? null,
     variantTextures: (a.variants ?? []).map((v) => v.texture ?? null),
     climbs: !!a.climbs,
@@ -134,6 +136,7 @@ function speciesRecord(a, animals, animNames) {
     heal: (a.heal ?? []).map(([item, amount]) => ({ item: javaItem(item), amount })),
     variants: a.variants?.length ?? 0,
     babyScale: a.babyScale ?? 0.5,
+    scale: a.scale ?? 1,
     ride: a.ride ? {
       seats: (a.ride.seats ?? [a.ride.seat]).length,
       seatHeight: (a.ride.seats ?? [a.ride.seat])[0][1],

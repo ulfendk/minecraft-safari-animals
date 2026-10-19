@@ -21,14 +21,16 @@ export default {
   role: 'predator',
   family: ['reptile', 'snake'],
   size: [1.0, 0.4],
+  scale: 1.5,
   health: 30,
   speed: 0.18,
   swimSpeed: 0.18,
   movement: 'amphibious',
   xp: 5,
   knockbackResistance: 0.5,
-  // A crushing squeeze: the victim is slowed right down.
+  // Bites, then wraps itself around the prey and squeezes (see constricts).
   attack: { damage: 4, speed: 1.4, effect: 'slowness' },
+  constricts: true,
   hunts: ['capybara', 'flamingo', 'warthog', 'gazelle', 'rabbit', 'chicken', 'turtle'],
   huntInterval: 40,
   huntRange: 12,
@@ -79,5 +81,5 @@ export default {
     tongue: '#c42a3a',
   },
 
-  anims: serpent({ segments: ['head', ...segs.map((s) => s.name)], amp: 10, tongue: 'tongue' }),
+  anims: serpent({ segments: ['head', ...segs.map((s) => s.name)], amp: 10, tongue: 'tongue', coil: true }),
 };

@@ -12,6 +12,7 @@ function moveController(a, available) {
   const run = a.client?.runSpeed ?? 5;
   const candidates = [
     { name: 'sleeping', anim: 'sleep', cond: 'query.is_sleeping' },
+    ...(a.constricts ? [{ name: 'coiling', anim: 'coil', cond: "query.property('safari:coiling')" }] : []),
     ...(a.hidesInShell ? [{ name: 'hiding', anim: 'hide', cond: "query.property('safari:hiding')" }] : []),
     { name: 'flying', anim: 'fly', cond: '!query.is_on_ground && !query.is_in_water' },
     { name: 'swimming', anim: 'swim', cond: 'query.is_in_water' },
@@ -84,7 +85,7 @@ export function buildClientEntity(a, animNames, egg) {
         textures,
         geometry: { default: `geometry.safari.${a.id}` },
         animations,
-        scripts: { animate },
+        scripts: { animate, ...(a.scale && a.scale !== 1 ? { scale: String(a.scale) } : {}) },
         render_controllers: [`controller.render.safari.${a.id}`],
         spawn_egg: { base_color: egg[0], overlay_color: egg[1] },
         enable_attachables: false,

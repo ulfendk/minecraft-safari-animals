@@ -29,7 +29,7 @@ public class SafariRenderer<T extends Mob & SafariCreature> extends GeoEntityRen
 	public SafariRenderer(EntityRendererProvider.Context context, EntityType<? extends T> type) {
 		super(context, new VariantModel<>(BuiltInRegistries.ENTITY_TYPE.getKey(type), SpeciesRegistry.of(type)));
 		this.species = SpeciesRegistry.of(type);
-		this.shadowRadius = Math.min(1.2F, this.species.width() * 0.5F);
+		this.shadowRadius = Math.min(1.8F, this.species.width() * this.species.scale() * 0.5F);
 	}
 
 	@Override

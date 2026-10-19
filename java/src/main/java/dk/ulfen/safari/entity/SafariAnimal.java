@@ -21,6 +21,7 @@ import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -57,6 +58,11 @@ public class SafariAnimal extends Animal implements SafariCreature {
 	private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(SafariAnimal.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> SENTRY = SynchedEntityData.defineId(SafariAnimal.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> HIDING = SynchedEntityData.defineId(SafariAnimal.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> COILING = SynchedEntityData.defineId(SafariAnimal.class, EntityDataSerializers.BOOLEAN);
+	/** How long a constrictor keeps its hold, and how often it squeezes. */
+	private static final int COIL_TICKS = 160, SQUEEZE_EVERY = 20;
+	private @Nullable LivingEntity coiled;
+	private int coilTicks;
 	private int hidingTicks;
 
 	private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
@@ -72,6 +78,7 @@ public class SafariAnimal extends Animal implements SafariCreature {
 		if (s.flies()) this.moveControl = new FlyingMoveControl(this, 20, true);
 		if (s.scavenger()) this.setCanPickUpLoot(true);
 		this.eggTime = this.random.nextInt(6000) + 6000;
+		this.refreshDimensions(); // apply the species' size multiplier (scale attribute) to the hitbox
 	}
 
 	public static AttributeSupplier.Builder createAttributes(Species s) {
@@ -79,7 +86,8 @@ public class SafariAnimal extends Animal implements SafariCreature {
 			.add(Attributes.MAX_HEALTH, s.health())
 			.add(Attributes.MOVEMENT_SPEED, s.speed())
 			.add(Attributes.FOLLOW_RANGE, Math.max(24, s.huntRange() + 8))
-			.add(Attributes.KNOCKBACK_RESISTANCE, s.knockbackResistance());
+			.add(Attributes.KNOCKBACK_RESISTANCE, s.knockbackResistance())
+			.add(Attributes.SCALE, s.scale());
 		if (s.attacks()) b.add(Attributes.ATTACK_DAMAGE, s.attackDamage());
 		if (s.flies()) b.add(Attributes.FLYING_SPEED, s.flySpeed() * 2.5);
 		return b;
@@ -97,6 +105,7 @@ public class SafariAnimal extends Animal implements SafariCreature {
 		builder.define(VARIANT, 0);
 		builder.define(SENTRY, false);
 		builder.define(HIDING, false);
+		builder.define(COILING, false);
 	}
 
 	@Override
@@ -198,6 +207,48 @@ public class SafariAnimal extends Animal implements SafariCreature {
 	}
 
 	@Override
+	public boolean isCoiling() {
+		return this.entityData.get(COILING);
+	}
+
+	public @Nullable LivingEntity coiled() {
+		return this.coiled;
+	}
+
+	/** A constrictor wraps itself around what it bites and holds on, squeezing. */
+	private void startCoil(LivingEntity victim) {
+		this.coiled = victim;
+		this.coilTicks = COIL_TICKS;
+		this.entityData.set(COILING, true);
+		this.setPos(victim.getX(), victim.getY(), victim.getZ());
+	}
+
+	private void stopCoil() {
+		this.coiled = null;
+		this.coilTicks = 0;
+		this.entityData.set(COILING, false);
+	}
+
+	private void tickCoil(ServerLevel level) {
+		LivingEntity victim = this.coiled;
+		if (victim == null) return;
+		if (!victim.isAlive() || victim.level() != level || --this.coilTicks <= 0 || victim.distanceToSqr(this) > 16.0) {
+			stopCoil();
+			return;
+		}
+		setResting(false); // too busy to sleep
+		this.getNavigation().stop();
+		this.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
+		this.setPos(victim.getX(), victim.getY(), victim.getZ());
+		victim.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, 10, 5, false, false));
+		victim.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.JUMP_BOOST, 10, 128, false, false));
+		if (this.coilTicks % SQUEEZE_EVERY == 0) {
+			victim.hurtServer(level, this.damageSources().mobAttack(this), (float) Math.max(1.0, species().attackDamage() * 0.5));
+			this.playSound(net.minecraft.sounds.SoundEvents.SLIME_SQUISH, 1.0F, 0.5F);
+		}
+	}
+
+	@Override
 	public int eatTicks() {
 		return this.eatTicks;
 	}
@@ -224,6 +275,7 @@ public class SafariAnimal extends Animal implements SafariCreature {
 				int colour = SafariDefences.camouflageFor(SafariDefences.blockBelow(this));
 				if (colour >= 0 && colour != getVariant()) setVariant(colour);
 			}
+			tickCoil(level);
 			SafariBehaviours.tick(this, level);
 			layEggs(level);
 		}
@@ -264,7 +316,10 @@ public class SafariAnimal extends Animal implements SafariCreature {
 	public boolean doHurtTarget(ServerLevel level, Entity target) {
 		playAction("attack");
 		boolean hit = super.doHurtTarget(level, target);
-		if (hit) SafariDefences.onBite(this, species(), level, target);
+		if (hit) {
+			SafariDefences.onBite(this, species(), level, target);
+			if (species().constricts() && this.coiled == null && target instanceof LivingEntity victim && victim.isAlive()) startCoil(victim);
+		}
 		return hit;
 	}
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.0] - 2026-10-19
+Bigger animals and new snakes (Bedrock and Java):
+- The large animals are now properly large: elephants (1.7×), giraffes (1.5×), rhinos and hippos (1.45×), crocodiles and anacondas (1.4–1.5×), gorillas and tigers (1.3×), lions (1.25×), and slightly bigger ostriches, wildebeest, zebras, hyenas, leopards and river dolphins. Hitboxes and riding seats grow with them.
+- The green anaconda now wraps itself around its prey: it coils up around the victim, holds it so it can barely move and squeezes it every second until it escapes or dies.
+- King cobra: the longest venomous snake. When you come close it rears up, spreads its hood and growls. It hunts other snakes.
+- Black mamba: Africa's fastest snake, grey with an inky-black mouth that it gapes as a warning. Fast, repeated venomous bites.
+- Honey badgers now hunt venomous snakes (they are immune to the venom).
+
 ## [0.6.0] - 2026-10-18
 15 new animals (Bedrock and Java):
 - Honey badger (fearless and immune to poison), porcupine (quills hurt attackers), Tasmanian devil.

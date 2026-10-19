@@ -8,6 +8,7 @@ export default {
   role: 'prey',
   family: ['giraffe', 'browser'],
   size: [1.3, 3.6],
+  scale: 1.5,
   health: 30,
   speed: 0.22,
   xp: 4,

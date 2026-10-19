@@ -8,6 +8,7 @@ export default {
   role: 'prey',
   family: ['dolphin', 'mammal'],
   size: [0.9, 0.5],
+  scale: 1.2,
   health: 16,
   speed: 0.14,
   swimSpeed: 0.17,

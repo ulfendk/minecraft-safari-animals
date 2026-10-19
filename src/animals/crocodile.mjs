@@ -13,6 +13,7 @@ export default {
   role: 'predator',
   family: ['reptile', 'crocodile'],
   size: [1.2, 0.6],
+  scale: 1.4,
   health: 30,
   speed: 0.18,
   swimSpeed: 0.2,

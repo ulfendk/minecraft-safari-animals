@@ -50,5 +50,6 @@ export function guideEntry(a) {
     tags: tagIds(a),
     food: (a.breed ?? []).map((i) => i.replace(/^.*:/, '')),
     tame: a.ride ? (a.ride.tameItems ?? []).map((i) => i.replace(/^.*:/, '')) : [],
+    ...(a.constricts ? { constricts: true } : {}),
   };
 }

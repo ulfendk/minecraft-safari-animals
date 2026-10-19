@@ -1,17 +1,17 @@
 # Safari Animals
 
-A Minecraft **Bedrock Edition** add-on and **Java Edition** (Fabric) mod with 39 animals from the savanna, the jungle and the Amazon: lions, elephants, giraffes, rhinos, cheetahs, anacondas, piranhas, river dolphins, harpy eagles, kangaroos and more.
+A Minecraft **Bedrock Edition** add-on and **Java Edition** (Fabric) mod with 41 animals from the savanna, the jungle and the Amazon: lions, elephants, giraffes, rhinos, cheetahs, anacondas, king cobras, black mambas, piranhas, river dolphins, harpy eagles, kangaroos and more.
 
 **Download and info: https://ulfendk.github.io/minecraft-safari-animals/** (på dansk: https://ulfendk.github.io/minecraft-safari-animals/da/)
 
 ![All animals](https://ulfendk.github.io/minecraft-safari-animals/img/animals/lion.png)
 
 ## Features
-- 39 animals, each with its own model, texture, animations and sounds, plus babies.
+- 41 animals, each with its own model, texture, animations and sounds, plus babies.
 - A food web: lions, cheetahs, hyenas, wild dogs and crocodiles hunt, and herds flee when they see them.
 - Day and night routines: lions and hyenas nap by day, grazers sleep at night, wild dogs hunt by day.
 - Ride tamed zebras, ostriches and elephants. Elephants carry a chest and a second rider.
-- Special behaviours: lions roar a warning before they attack, gorillas beat their chest, meerkats post a sentry and hide in termite mounds, baboons steal snacks, chimps throw fruit, hyenas steal kills, leopards rest in trees, wildebeest migrate, and vultures gather at carcasses.
+- Special behaviours: lions roar a warning before they attack, gorillas beat their chest, meerkats post a sentry and hide in termite mounds, baboons steal snacks, chimps throw fruit, hyenas steal kills, leopards rest in trees, wildebeest migrate, vultures gather at carcasses, anacondas coil around their prey, and cobras and mambas rear up in a threat display.
 - Savanna features: termite mounds and watering holes. Plus a wearable safari hat.
 - Stone age weapons: a throwable flint spear, a stone club, a flint knife, a sling with pebbles, and a blowgun with (poison) darts.
 - Thorn bushes: a 1.5-block barrier that hurts land animals that push against it.

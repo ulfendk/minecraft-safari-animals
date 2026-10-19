@@ -36,6 +36,7 @@ const DA_EGG = {
   honey_badger: 'Honninggrævlings', porcupine: 'Hulepindsvins', piranha: 'Piraya', turtle: 'Flodskildpadde', tortoise: 'Landskildpadde',
   electric_eel: 'Ål', river_dolphin: 'Delfin', anaconda: 'Anakonda', tarantula: 'Tarantel', scolopender: 'Skolopender',
   poison_dart_frog: 'Pilegiftfrø', capybara: 'Flodsvins', tasmanian_devil: 'Pungdjævle', chameleon: 'Kamæleon', harpy_eagle: 'Harpyørne',
+  king_cobra: 'Kongekobra', black_mamba: 'Mamba',
 };
 
 const UI = {

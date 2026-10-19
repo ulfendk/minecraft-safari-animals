@@ -41,6 +41,14 @@ function displays(now) {
     const swimmers = h.dimension.getPlayers({ location: h.location, maxDistance: 10 }).filter((p) => p.isInWater);
     if (swimmers.length && ready(h, 'yawn', 400, now)) play(h, 'yawn', 'mob.hoglin.angry', 0.5, 2);
   }
+  // Snakes rear up when a player comes close: the cobra spreads its hood, the mamba gapes.
+  for (const [type, range, pitch] of [['safari:king_cobra', 5, 0.4], ['safari:black_mamba', 4, 0.8]]) {
+    for (const s of nearPlayers(type, 16)) {
+      if (isBaby(s)) continue;
+      const close = s.dimension.getPlayers({ location: s.location, maxDistance: range });
+      if (close.length && ready(s, 'threat', 120, now)) play(s, 'threat', 'mob.cat.hiss', pitch, 1.5);
+    }
+  }
   for (const g of nearPlayers('safari:gazelle', 32)) {
     const v = g.getVelocity();
     if (Math.hypot(v.x, v.z) > 0.25 && chance(0.25) && ready(g, 'pronk', 60, now)) play(g, 'pronk');

@@ -279,7 +279,46 @@ export function serpent(o) {
       { [segs[0]]: { rotation: { '0.0': [0, 0, 0], '0.15': [-25, 0, 0], '0.3': [15, 0, 0], '0.6': [0, 0, 0] }, position: { '0.0': [0, 0, 0], '0.2': [0, 1, -4], '0.6': [0, 0, 0] } } },
       o.jaw ? { [o.jaw]: { rotation: { '0.0': [0, 0, 0], '0.15': [40, 0, 0], '0.35': [0, 0, 0] } } } : {},
     )),
+    ...(o.coil ? { coil: coil(segs[0], segs.slice(1), o.tongue) } : {}),
   };
+}
+
+/**
+ * Threat display: the front of the body rears up off the ground (cobras raise about a
+ * third of their length), the head levels out to face the threat, a hood spreads and/or
+ * the mouth gapes, then it sinks back down. o: { segments (head first), raise (how many
+ * body segments lift), angle, segLength, hood: [left, right], jaw, gape, length }.
+ */
+export function serpentThreat(o) {
+  const [head, ...body] = o.segments;
+  const raise = o.raise ?? 2, angle = o.angle ?? 60, len = o.segLength ?? 5, T = o.length ?? 3;
+  const up = r(raise * len * Math.sin(angle * Math.PI / 180));
+  const key = (v) => ({ '0.0': v.map(() => 0), '0.4': v, [r(T - 0.5).toFixed(2)]: v, [T.toFixed(1)]: v.map(() => 0) });
+  return once(T, bones(
+    { [body[0]]: { rotation: key([-angle, 0, 0]), position: key([0, up, 0]) } },
+    { [body[raise]]: { rotation: key([angle, 0, 0]) } },
+    { [head]: { rotation: key([angle - 5, 0, 0]) } },
+    ...(o.hood ? [
+      { [o.hood[0]]: { rotation: key([0, -10, -90]) } },
+      { [o.hood[1]]: { rotation: key([0, 10, 90]) } },
+    ] : []),
+    o.jaw ? { [o.jaw]: { rotation: key([o.gape ?? 50, 0, 0]) } } : {},
+  ));
+}
+
+/**
+ * Constrictor wrapped around its prey (which stands at the snake's origin): the body
+ * winds up in a rising helix ~5.5px across, the head on top looking down at the victim,
+ * squeezing in slow pulses. Fitted for a chain of 5px segments starting at z=0.
+ */
+function coil(head, body, tongue) {
+  const squeeze = (k) => cycle(1.6, 8, (p) => [-16, 55 + k * Math.max(0, sin(p)), 0]);
+  return loop(1.6, bones(
+    { [body[0]]: { rotation: [15.5, -68.9, -33.4], position: [0, 5.8, -5.1] } },
+    Object.fromEntries(body.slice(1).map((b) => [b, { rotation: squeeze(3) }])),
+    { [head]: { rotation: [-30, -100, 0] } },
+    tongue ? { [tongue]: { scale: { '0.0': [1, 1, 0], '1.0': [1, 1, 0], '1.2': [1, 1, 1], '1.4': [1, 1, 0], '1.6': [1, 1, 0] } } } : {},
+  ));
 }
 
 /** Eight-legged walkers: legs swing in alternating sets (L1 R2 L3 R4 vs R1 L2 R3 L4). */

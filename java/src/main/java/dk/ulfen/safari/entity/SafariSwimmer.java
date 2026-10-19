@@ -38,13 +38,15 @@ public class SafariSwimmer extends WaterAnimal implements SafariCreature {
 		super(type, level);
 		this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.02F, 0.1F, true);
 		this.lookControl = new SmoothSwimmingLookControl(this, 10);
+		this.refreshDimensions(); // apply the species' size multiplier (scale attribute) to the hitbox
 	}
 
 	public static AttributeSupplier.Builder createAttributes(Species s) {
 		AttributeSupplier.Builder b = WaterAnimal.createMobAttributes()
 			.add(Attributes.MAX_HEALTH, s.health())
 			.add(Attributes.MOVEMENT_SPEED, s.swimSpeed() * 8)
-			.add(Attributes.FOLLOW_RANGE, Math.max(16, s.huntRange() + 6));
+			.add(Attributes.FOLLOW_RANGE, Math.max(16, s.huntRange() + 6))
+			.add(Attributes.SCALE, s.scale());
 		if (s.attacks()) b.add(Attributes.ATTACK_DAMAGE, s.attackDamage());
 		return b;
 	}

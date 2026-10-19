@@ -14,7 +14,7 @@ import net.minecraft.world.phys.Vec3;
 /** Shared by every safari animal, whether it's a plain animal or a rideable mount. */
 public interface SafariCreature extends GeoEntity {
 	/** One-shot animations the server can trigger. */
-	String[] ACTIONS = {"attack", "roar", "trumpet", "chest_beat", "yawn", "pronk", "throw", "pounce"};
+	String[] ACTIONS = {"attack", "roar", "trumpet", "chest_beat", "yawn", "pronk", "throw", "pounce", "threat"};
 
 	Species species();
 
@@ -32,6 +32,10 @@ public interface SafariCreature extends GeoEntity {
 	}
 
 	default boolean isHiding() {
+		return false;
+	}
+
+	default boolean isCoiling() {
 		return false;
 	}
 
@@ -66,6 +70,7 @@ public interface SafariCreature extends GeoEntity {
 	private static String pickMove(Mob e, Species s, double speed) {
 		SafariCreature c = (SafariCreature) e;
 		if (c.isResting() && s.hasAnimation("sleep")) return "sleep";
+		if (c.isCoiling() && s.hasAnimation("coil")) return "coil";
 		if (c.isHiding() && s.hasAnimation("hide")) return "hide";
 		if (s.flies() && !e.onGround() && !e.isInWater() && s.hasAnimation("fly")) return "fly";
 		if (e.isInWater() && !e.onGround() && s.hasAnimation("swim")) return "swim";

@@ -23,8 +23,10 @@ const apply = (m, [x, y, z]) => [
   m[8] * x + m[9] * y + m[10] * z + m[11],
 ];
 
-// Bedrock rotations: +x pitches -z towards -y (the opposite of the right-hand rule here).
-const R = ([x, y, z]) => mul(Rz(-z * deg), mul(Ry(-y * deg), Rx(-x * deg)));
+// Bedrock rotations, in geometry space (x = the animal's left), applied x, then y, then z:
+// x and z are the opposite of the right-hand rule here, y follows it. This matches
+// GeckoLib, which mirrors x on load and then uses (-x, -y, z).
+const R = ([x, y, z]) => mul(Rz(-z * deg), mul(Ry(y * deg), Rx(-x * deg)));
 const aroundPivot = (pivot, rot) => mul(T(pivot), mul(R(rot), T(pivot.map((v) => -v))));
 
 /** Sample a Bedrock keyframe channel (array or { time: value }) at time t. */

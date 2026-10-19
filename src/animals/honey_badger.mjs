@@ -16,7 +16,7 @@ export default {
   xp: 3,
   knockbackResistance: 0.4,
   attack: { damage: 4, speed: 1.4 },
-  hunts: ['meerkat', 'rabbit', 'chicken', 'poison_dart_frog', 'scolopender', 'tarantula'],
+  hunts: ['meerkat', 'rabbit', 'chicken', 'poison_dart_frog', 'scolopender', 'tarantula', 'venomous_snake'],
   huntInterval: 25,
   poisonImmune: true,
   fearless: true,

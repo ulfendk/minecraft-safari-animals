@@ -20,7 +20,7 @@ const [owner, name] = repo.split('/');
 const GROUPS = {
   predator: ['lion', 'tiger', 'leopard', 'cheetah', 'hyena', 'wild_dog', 'crocodile', 'honey_badger', 'tasmanian_devil', 'harpy_eagle'],
   amazon: ['piranha', 'electric_eel', 'river_dolphin', 'anaconda', 'tarantula', 'scolopender', 'poison_dart_frog', 'capybara'],
-  reptile: ['tortoise', 'turtle', 'chameleon'],
+  reptile: ['tortoise', 'turtle', 'chameleon', 'king_cobra', 'black_mamba', 'anaconda'],
   grazer: ['zebra', 'gazelle', 'wildebeest', 'warthog', 'giraffe'],
   giant: ['elephant', 'rhino', 'hippo'],
   bird: ['ostrich', 'flamingo', 'vulture'],
@@ -54,7 +54,7 @@ for (const a of animals) {
   await writeFile(join(OUT, 'img', 'animals', `${a.id}.png`), render(geo, tex, { yaw: 35, size: 320, hidden: new Set(['saddle', 'chest']) }));
   cards.push({ a, habitats: habitatsOf(a), group: groupOf(a.id) });
 }
-const order = ['lion', 'elephant', 'zebra', 'giraffe', 'rhino', 'hippo', 'cheetah', 'leopard', 'tiger', 'hyena', 'wild_dog', 'gazelle', 'wildebeest', 'warthog', 'ostrich', 'flamingo', 'vulture', 'crocodile', 'meerkat', 'gorilla', 'chimpanzee', 'baboon', 'kangaroo', 'koala', 'tasmanian_devil', 'honey_badger', 'porcupine', 'tortoise', 'chameleon', 'capybara', 'anaconda', 'piranha', 'electric_eel', 'river_dolphin', 'turtle', 'poison_dart_frog', 'tarantula', 'scolopender', 'harpy_eagle'];
+const order = ['lion', 'elephant', 'zebra', 'giraffe', 'rhino', 'hippo', 'cheetah', 'leopard', 'tiger', 'hyena', 'wild_dog', 'gazelle', 'wildebeest', 'warthog', 'ostrich', 'flamingo', 'vulture', 'crocodile', 'meerkat', 'gorilla', 'chimpanzee', 'baboon', 'kangaroo', 'koala', 'tasmanian_devil', 'honey_badger', 'porcupine', 'tortoise', 'chameleon', 'capybara', 'anaconda', 'king_cobra', 'black_mamba', 'piranha', 'electric_eel', 'river_dolphin', 'turtle', 'poison_dart_frog', 'tarantula', 'scolopender', 'harpy_eagle'];
 cards.sort((x, y) => order.indexOf(x.a.id) - order.indexOf(y.a.id));
 
 for (const item of [...items, ...blocks.map((b) => ({ ...b, icon: b.texture }))]) {
