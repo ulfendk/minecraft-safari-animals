@@ -269,6 +269,30 @@ fetch('https://api.github.com/repos/${owner}/${name}/releases/latest')
     document.getElementById('version').innerHTML = '${t.latestVersion}: <strong>' + rel.tag_name.replace(/^v/, '') + '</strong> · ${t.released} ' + date;
   })
   .catch(() => {});
+
+// Reload when a new release has been published. The site is redeployed with every release
+// and writes version.json; compare it with the version this page was built with.
+const PAGE_VERSION = '${version}';
+let reloading = false;
+function checkForUpdate() {
+  if (reloading || document.hidden) return;
+  fetch('${up}version.json?t=' + Date.now(), { cache: 'no-store' })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((v) => {
+      if (!v || !v.version || v.version === PAGE_VERSION) return;
+      // Reload once per new version: if the cached page is still the old one, don't loop.
+      let tried = null;
+      try { tried = sessionStorage.getItem('safari-reloaded-for'); } catch {}
+      if (tried === v.version) return;
+      try { sessionStorage.setItem('safari-reloaded-for', v.version); } catch {}
+      reloading = true;
+      location.reload();
+    })
+    .catch(() => {});
+}
+setInterval(checkForUpdate, 10 * 60 * 1000);
+checkForUpdate();
+document.addEventListener('visibilitychange', checkForUpdate);
 </script>
 </body>
 </html>
@@ -282,4 +306,5 @@ for (const [lang, L] of Object.entries(LANGUAGES)) {
   await writeFile(join(dir, 'index.html'), page(lang));
 }
 await writeFile(join(OUT, '.nojekyll'), '');
+await writeFile(join(OUT, 'version.json'), JSON.stringify({ version }) + '\n');
 console.log(`Site written to ${OUT}/ (${animals.length} animals, ${Object.keys(LANGUAGES).join(' + ')}, repo ${repo})`);
