@@ -7,6 +7,7 @@ import { setupChimps } from './chimps.js';
 import { setupMigration } from './migration.js';
 import { setupSpears } from './spears.js';
 import { setupConstrictors } from './constrict.js';
+import { setupHunting } from './hunting.js';
 import { selfTest } from './selftest.js';
 
 world.afterEvents.worldLoad.subscribe(() => {
@@ -19,6 +20,7 @@ world.afterEvents.worldLoad.subscribe(() => {
   setupMigration();
   setupSpears();
   setupConstrictors();
+  setupHunting();
   console.log('[Safari Animals] loaded');
 });
 

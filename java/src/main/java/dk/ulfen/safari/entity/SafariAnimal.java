@@ -65,6 +65,7 @@ public class SafariAnimal extends Animal implements SafariCreature {
 	private int coilTicks;
 	private int hidingTicks;
 
+	private static final EntityDataAccessor<Boolean> CARCASS = SynchedEntityData.defineId(SafariAnimal.class, EntityDataSerializers.BOOLEAN);
 	private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 	private int eatTicks;
 	private int eggTime;
@@ -101,6 +102,7 @@ public class SafariAnimal extends Animal implements SafariCreature {
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 		super.defineSynchedData(builder);
+		builder.define(CARCASS, false);
 		builder.define(RESTING, false);
 		builder.define(VARIANT, 0);
 		builder.define(SENTRY, false);
@@ -172,6 +174,17 @@ public class SafariAnimal extends Animal implements SafariCreature {
 	}
 
 	// ---------------------------------------------------------------- state
+
+	@Override
+	public boolean isCarcass() {
+		return this.entityData.get(CARCASS);
+	}
+
+	@Override
+	public void tick() {
+		super.tick();
+		if (!this.level().isClientSide()) this.entityData.set(CARCASS, this.entityTags().contains(HUNTING_CARCASS));
+	}
 
 	@Override
 	public boolean isResting() {
@@ -264,7 +277,7 @@ public class SafariAnimal extends Animal implements SafariCreature {
 		super.aiStep();
 		if (this.eatTicks > 0) this.eatTicks--;
 		if (this.isResting()) this.getNavigation().stop();
-		if (this.level() instanceof ServerLevel level) {
+		if (this.level() instanceof ServerLevel level && !this.isCarcass()) {
 			// Shell animals stay tucked in for a while after being hurt.
 			if (this.hidingTicks > 0) {
 				this.getNavigation().stop();

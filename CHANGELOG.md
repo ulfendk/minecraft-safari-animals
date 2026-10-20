@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.8.0] - 2026-10-20
+Works with Realistic Hunting (Bedrock and Java):
+- With Realistic Hunting 0.3.0 or later installed too, every safari animal is game. Each has organs in its own model, a weight, a minimum calibre and a trophy. A broadside heart shot is perfect, and elephants, hippos and rhinos need a .338.
+- Spooked and wounded animals flee from hunters. A downed animal lies on its side as a carcass until it's field dressed for its meat and hide or rots away, and the safari behaviours leave it alone.
+
 ## [0.7.0] - 2026-10-19
 Bigger animals and new snakes (Bedrock and Java):
 - The large animals are now properly large: elephants (1.7×), giraffes (1.5×), rhinos and hippos (1.45×), crocodiles and anacondas (1.4–1.5×), gorillas and tigers (1.3×), lions (1.25×), and slightly bigger ostriches, wildebeest, zebras, hyenas, leopards and river dolphins. Hitboxes and riding seats grow with them.

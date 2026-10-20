@@ -2,6 +2,7 @@
 // same specs as the Bedrock packs. GeckoLib reads the Bedrock geometry and
 // animation formats directly, so models and animations are shared as-is.
 import { mkdir, rm, writeFile } from 'node:fs/promises';
+import { huntingProfile } from '../src/hunting.mjs';
 import { dirname, join } from 'node:path';
 
 import { NS } from '../src/lib/constants.mjs';
@@ -269,6 +270,16 @@ export async function buildJava({ animals, geos, anims, textures, items, blocks,
     species.push(speciesRecord(a, animals, Object.keys(a.anims)));
   }
   await write(join(D, 'species.json'), species);
+  // Realistic Hunting picks these up from every mod's hunting/targets/ (see src/hunting.mjs).
+  await write(join(R, 'hunting', 'targets', `${NS}.json`), animals.map((a) => {
+    const { bedrock, icon, entry, ...p } = huntingProfile(a, { name: `entity.${NS}.${a.id}` });
+    const s = a.sounds ?? {};
+    return {
+      ...p,
+      sounds: { warn: javaSound(s.ambient), death: javaSound(s.death), pitch: s.pitch ?? [1, 1] },
+      loot: p.loot.map((l) => ({ ...l, item: javaItem(l.item) })),
+    };
+  }));
 
   // Thrown spear uses a GeckoLib model; pebbles and fruit render as flat items.
   for (const p of projectiles.filter((x) => x.rotate)) {

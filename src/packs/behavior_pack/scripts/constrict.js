@@ -3,6 +3,7 @@
 // every second until it dies, escapes or the snake lets go.
 import { system, world } from '@minecraft/server';
 import { ANIMALS } from './data.js';
+import { isCarcass } from './util.js';
 
 const CONSTRICTORS = new Set(ANIMALS.filter((a) => a.constricts).map((a) => `safari:${a.id}`));
 const HOLD_TICKS = 160;
@@ -25,7 +26,7 @@ function squeeze(id, entry) {
   const health = victim.getComponent('minecraft:health');
   entry.ticks -= STEP;
   const away = Math.hypot(victim.location.x - snake.location.x, victim.location.z - snake.location.z);
-  if (entry.ticks <= 0 || !health || health.currentValue <= 0 || victim.dimension.id !== snake.dimension.id || away > 4) {
+  if (entry.ticks <= 0 || isCarcass(snake) || isCarcass(victim) || !health || health.currentValue <= 0 || victim.dimension.id !== snake.dimension.id || away > 4) {
     return release(id, entry);
   }
   snake.teleport(victim.location, { keepVelocity: false });
@@ -41,7 +42,7 @@ export function setupConstrictors() {
   world.afterEvents.entityHurt.subscribe(({ hurtEntity, damageSource }) => {
     const snake = damageSource.damagingEntity;
     if (!snake || !CONSTRICTORS.has(snake.typeId) || damageSource.cause !== 'entityAttack') return;
-    if (coils.has(snake.id) || !hurtEntity.isValid) return;
+    if (coils.has(snake.id) || !hurtEntity.isValid || isCarcass(snake) || isCarcass(hurtEntity)) return;
     if ([...coils.values()].some((c) => c.victim.id === hurtEntity.id)) return;
     coils.set(snake.id, { snake, victim: hurtEntity, ticks: HOLD_TICKS });
     snake.triggerEvent('safari:coil');

@@ -3,7 +3,7 @@
 	"id": "safari",
 	"version": "${version}",
 	"name": "Safari Animals",
-	"description": "Lions, elephants, zebras, giraffes and 20 more safari animals, plus stone age weapons.",
+	"description": "Lions, elephants, zebras, giraffes and 37 more safari animals, plus stone age weapons. Works with Realistic Hunting.",
 	"authors": ["ulfendk"],
 	"contact": {
 		"homepage": "https://ulfendk.github.io/minecraft-safari-animals/",

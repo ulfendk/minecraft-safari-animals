@@ -1,7 +1,7 @@
 // Behaviours that entity JSON alone can't express: calls and displays,
 // meerkat sentries, baboon food thieves, vultures gathering at carcasses.
 import { ItemStack, system, world } from '@minecraft/server';
-import { chance, isBaby, nearPlayers, ready } from './util.js';
+import { chance, isBaby, isCarcass, nearPlayers, ready } from './util.js';
 
 const TICK = 40; // run every 2 seconds
 
@@ -95,6 +95,7 @@ function hideInMound(sentry) {
       }
   if (!mound) return;
   for (const m of sentry.dimension.getEntities({ type: 'safari:meerkat', location: sentry.location, maxDistance: 10 })) {
+    if (isCarcass(m)) continue;
     m.teleport({ x: mound.x + 0.5 + (Math.random() - 0.5), y: mound.y, z: mound.z + 1.2 });
     m.addEffect('invisibility', 200, { showParticles: false });
     m.addEffect('slowness', 200, { amplifier: 5, showParticles: false });

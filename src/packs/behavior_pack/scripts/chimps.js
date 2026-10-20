@@ -1,6 +1,6 @@
 // Chimps throw fruit at whoever hurts one of their group.
 import { system, world } from '@minecraft/server';
-import { isBaby } from './util.js';
+import { isBaby, isCarcass } from './util.js';
 
 const angry = new Map(); // chimp id -> { target, until }
 
@@ -9,7 +9,7 @@ function onHurt({ hurtEntity, damageSource }) {
   if (hurtEntity?.typeId !== 'safari:chimpanzee' || attacker?.typeId !== 'minecraft:player') return;
   const until = system.currentTick + 300;
   for (const c of hurtEntity.dimension.getEntities({ type: 'safari:chimpanzee', location: hurtEntity.location, maxDistance: 12 })) {
-    angry.set(c.id, { target: attacker, until });
+    if (!isCarcass(c)) angry.set(c.id, { target: attacker, until });
   }
 }
 
@@ -17,7 +17,7 @@ function throwFruit() {
   const now = system.currentTick;
   for (const [id, { target, until }] of angry) {
     const chimp = world.getEntity(id);
-    if (!chimp || now > until || !target?.isValid) {
+    if (!chimp || now > until || !target?.isValid || isCarcass(chimp)) {
       angry.delete(id);
       continue;
     }

@@ -1,6 +1,18 @@
 import { world } from '@minecraft/server';
 
-/** All entities of a safari type that are near at least one player (cheap enough to poll). */
+/**
+ * True while Realistic Hunting has made the animal a carcass (safari:hunt_state 4): it
+ * lies still until it's field dressed or rots, and the safari behaviours leave it alone.
+ */
+export function isCarcass(entity) {
+  try {
+    return entity.getProperty('safari:hunt_state') === 4;
+  } catch {
+    return false;
+  }
+}
+
+/** All live (not carcass) entities of a safari type near at least one player (cheap enough to poll). */
 export function nearPlayers(typeId, radius = 48) {
   const out = new Map();
   for (const player of world.getPlayers()) {
@@ -10,7 +22,7 @@ export function nearPlayers(typeId, radius = 48) {
     } catch {
       continue;
     }
-    for (const e of found) out.set(e.id, e);
+    for (const e of found) if (!isCarcass(e)) out.set(e.id, e);
   }
   return [...out.values()];
 }

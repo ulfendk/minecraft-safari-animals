@@ -25,6 +25,8 @@ export default {
   loot: [],
   sounds: { ambient: 'mob.panda.idle', hurt: 'mob.panda.hurt', death: 'mob.panda.death', pitch: [0.5, 0.6], interval: 20 },
   egg: ['#2b2b2e', '#9a9aa0'],
+  // Realistic Hunting: the heart sits high in the upright chest, above the long arms.
+  hunt: { torso: { heart: [[0.15, 0.45], [0.62, 0.86], 0.4], lungs: [[0.05, 0.6], [0.45, 0.95], 0.75] } },
 
   model: ape({ chestW: 12, chestH: 13, chestD: 7, hipW: 10, hipH: 9, hipD: 6, armW: 4, armH: 17, legW: 4, legH: 10, headW: 8, headH: 8, headD: 6, crest: true, faceColor: '#1c1b1d', eyeColor: '#8a5a2a', pupilColor: '#000000' }),
 

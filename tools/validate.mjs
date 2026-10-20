@@ -3,6 +3,7 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { PNG } from 'pngjs';
+import { checkHunting } from './check-hunting.mjs';
 
 const BP = 'build/behavior_pack';
 const RP = 'build/resource_pack';
@@ -277,6 +278,9 @@ for (const a of guideData) {
   ];
   for (const k of keys) if (!english.has(k)) err(`Field Guide (${a.id}) uses missing lang key ${k}`);
 }
+
+// Realistic Hunting profiles: every animal's hit model must give a perfect broadside heart shot.
+for (const f of await checkHunting()) err(`Hunting: ${f}`);
 
 // Manifests
 for (const pack of [BP, RP]) {

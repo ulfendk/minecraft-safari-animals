@@ -238,6 +238,19 @@ export const extras = {
 };
 
 /** Wrap per-species animations into a Bedrock animation file. */
+/**
+ * Lying dead on its side: a Realistic Hunting carcass (see src/hunting.mjs). The root is
+ * rolled 90 degrees and lifted by half the model's width so it rests on the ground.
+ */
+export function deadPose(model) {
+  let half = 1;
+  for (const b of model.bones) for (const c of b.cubes ?? []) half = Math.max(half, Math.abs(c.origin[0]), Math.abs(c.origin[0] + c.size[0]));
+  return { loop: 'hold_on_last_frame', animation_length: 0.5, bones: { root: {
+    rotation: { '0.0': [0, 0, 0], '0.5': [0, 0, 90] },
+    position: { '0.0': [0, 0, 0], '0.5': [0, Math.round(half * 0.8 * 10) / 10, 0] },
+  } } };
+}
+
 export function animationFile(id, anims) {
   const out = {};
   for (const [name, a] of Object.entries(anims)) out[`animation.safari.${id}.${name}`] = a;

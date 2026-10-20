@@ -389,10 +389,96 @@ function rideGroups(a) {
 }
 
 /** Several features add damage-sensor rules; merge them into one list. */
-function addDamageTrigger(components, trigger) {
+function addDamageTrigger(components, trigger, first = false) {
   const ds = components['minecraft:damage_sensor'] ?? { triggers: [] };
-  ds.triggers = [...(Array.isArray(ds.triggers) ? ds.triggers : [ds.triggers]), trigger];
+  const old = Array.isArray(ds.triggers) ? ds.triggers : [ds.triggers];
+  ds.triggers = first ? [trigger, ...old] : [...old, trigger];
   components['minecraft:damage_sensor'] = ds;
+}
+
+/** Realistic Hunting states, set by the hunting add-on's scripts (see src/hunting.mjs). */
+const HUNT = { calm: 0, alert: 1, flee: 2, wounded: 3, carcass: 4 };
+
+/**
+ * Realistic Hunting hooks. Nothing here does anything on its own: when the hunting add-on
+ * is installed, its scripts set safari:hunt_state (spooked animals run from hunters) and
+ * fire safari:hunt_carcass when an animal is brought down. A carcass loses everything a
+ * living animal does (AI and navigation, which live in the safari:hunt_alive group, and
+ * the day/night schedule), lies still, can't be hurt and rots away after 20 minutes
+ * unless it's field dressed with a knife.
+ */
+function huntingHooks(a, components, groups, events, properties) {
+  const state = `${NS}:hunt_state`;
+  const stateIs = (operator, value) => ({ test: 'int_property', subject: 'self', domain: state, operator, value });
+  properties[state] = { type: 'int', range: [0, 4], default: 0, client_sync: true };
+  components['minecraft:type_family'].family.push('hunting_target');
+
+  // Spooked or wounded: run from hunters, their dogs and the place a shot came from.
+  const avoid = components['minecraft:behavior.avoid_mob_type'] ?? { priority: 1, remove_target: true, entity_types: [] };
+  avoid.priority = 1;
+  avoid.entity_types.push({
+    filters: { all_of: [{ any_of: [fam('player'), fam('hunting_scare'), fam('hunting_dog')] }, stateIs('>=', HUNT.flee), stateIs('<=', HUNT.wounded)] },
+    max_dist: 96,
+    walk_speed_multiplier: 1.6,
+    sprint_speed_multiplier: a.fleeSpeed ?? 1.8,
+  });
+  components['minecraft:behavior.avoid_mob_type'] = avoid;
+
+  // The environment sensor stays: it swaps day and night groups (not for a carcass), and
+  // gives animals from before this version their safari:hunt_alive group.
+  const sensor = components['minecraft:environment_sensor'];
+  const navigation = Object.keys(components).find((k) => k.startsWith('minecraft:navigation.'));
+  if (!navigation) throw new Error(`${a.id}: no navigation component`);
+  sensor.triggers = [
+    ...sensor.triggers.map((t) => ({ ...t, filters: { all_of: [t.filters, stateIs('!=', HUNT.carcass)] } })),
+    { filters: { all_of: [stateIs('!=', HUNT.carcass), { test: 'has_component', subject: 'self', operator: '!=', value: navigation }] }, event: `${NS}:hunt_revive` },
+  ];
+  const alive = {};
+  for (const key of Object.keys(components)) {
+    if (/^minecraft:(behavior\.|navigation\.|ambient_sound_interval|healable)/.test(key)) {
+      alive[key] = components[key];
+      delete components[key];
+    }
+  }
+  groups[`${NS}:hunt_alive`] = alive;
+  const swims = ['swim', 'dolphin'].includes(a.movement);
+  groups[`${NS}:hunt_carcass`] = {
+    // The hunting add-on field dresses on interaction with a knife; this just shows the button.
+    'minecraft:interact': { interactions: [{ on_interact: { event: `${NS}:hunt_field_dress`, target: 'self' }, swing: true, interact_text: 'action.interact.hunting.field_dress' }] },
+    'minecraft:timer': { looping: false, time: 1200, time_down_event: { event: `${NS}:hunt_rot`, target: 'self' } },
+    'minecraft:pushable': { is_pushable: false, is_pushable_by_piston: true },
+    ...(swims ? {
+      'minecraft:physics': { has_gravity: true },
+      'minecraft:buoyant': { base_buoyancy: 1.0, apply_gravity: true, simulate_waves: true, big_wave_probability: 0.03, big_wave_speed: 10.0, liquid_blocks: ['minecraft:water', 'minecraft:flowing_water'] },
+      'minecraft:breathable': { total_supply: 15, suffocate_time: 0, breathes_air: true, breathes_water: true },
+    } : {}),
+  };
+  // A young animal stays small when it's a carcass.
+  groups[`${NS}:hunt_young`] = { 'minecraft:is_baby': {}, 'minecraft:scale': { value: a.babyScale ?? 0.5 } };
+  groups[`${NS}:hunt_despawn`] = { 'minecraft:instant_despawn': {} };
+  groups[`${NS}:hunt_lured`] = {
+    'minecraft:behavior.nearest_attackable_target': {
+      priority: 2, must_see: false, reselect_targets: true, within_radius: 80,
+      entity_types: [{ filters: fam('hunting_lure'), max_dist: 80 }],
+    },
+    'minecraft:behavior.move_towards_target': { priority: 2, speed_multiplier: 1.0, within_radius: 80 },
+  };
+
+  events['minecraft:entity_spawned'].sequence.unshift({ add: { component_groups: [`${NS}:hunt_alive`] } });
+  for (const e of [`${NS}:entity_born`, `${NS}:spawn_adult`, `${NS}:spawn_tame`]) events[e]?.add.component_groups.unshift(`${NS}:hunt_alive`);
+  const life = Object.keys(groups).filter((g) => ![`${NS}:hunt_carcass`, `${NS}:hunt_young`, `${NS}:hunt_despawn`].includes(g) && !g.startsWith(`${NS}:variant_`));
+  events[`${NS}:hunt_carcass`] = {
+    sequence: [
+      { filters: { test: 'is_baby', subject: 'self', value: true }, add: { component_groups: [`${NS}:hunt_young`] } },
+      { remove: { component_groups: life }, add: { component_groups: [`${NS}:hunt_carcass`] }, set_property: { [state]: HUNT.carcass } },
+    ],
+  };
+  events[`${NS}:hunt_revive`] = { add: { component_groups: [`${NS}:hunt_alive`] } };
+  events[`${NS}:hunt_field_dress`] = {};
+  events[`${NS}:hunt_rot`] = { add: { component_groups: [`${NS}:hunt_despawn`] } };
+  events[`${NS}:hunt_lure`] = { add: { component_groups: [`${NS}:hunt_lured`] } };
+  events[`${NS}:hunt_unlure`] = { remove: { component_groups: [`${NS}:hunt_lured`] } };
+  addDamageTrigger(components, { on_damage: { filters: stateIs('==', HUNT.carcass) }, deals_damage: 'no' }, true);
 }
 
 export function buildEntity(a) {
@@ -485,6 +571,7 @@ export function buildEntity(a) {
     });
   }
   Object.assign(events, extraEvents, a.extraEvents ?? {});
+  huntingHooks(a, components, groups, events, properties);
 
   return {
     format_version: '1.21.90',

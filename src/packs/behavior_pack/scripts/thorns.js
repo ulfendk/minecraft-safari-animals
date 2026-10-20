@@ -1,6 +1,7 @@
 // Thorn bushes hurt and push back land animals that press against them.
 // Players are only slowed down, so thorns work as a fence around a camp.
 import { system, world } from '@minecraft/server';
+import { isCarcass } from './util.js';
 
 const THORN = 'safari:thorn_bush';
 const OFFSETS = [[0, 0], [0.8, 0], [-0.8, 0], [0, 0.8], [0, -0.8]];
@@ -36,7 +37,7 @@ function tick() {
       if (checked.has(e.id)) continue;
       checked.add(e.id);
       try {
-        if (e.getComponent('minecraft:can_fly')) continue; // flyers go over the top
+        if (e.getComponent('minecraft:can_fly') || isCarcass(e)) continue; // flyers go over the top
         const thorn = touchingThorn(e);
         if (!thorn) continue;
         if (e.typeId === 'minecraft:player') {

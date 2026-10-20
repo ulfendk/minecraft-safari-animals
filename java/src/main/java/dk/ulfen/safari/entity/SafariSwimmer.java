@@ -1,5 +1,8 @@
 package dk.ulfen.safari.entity;
 
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import java.util.List;
 
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -32,6 +35,7 @@ import org.jspecify.annotations.Nullable;
 
 /** Fish, eels and river dolphins. Fish can't leave the water; dolphins must surface to breathe. */
 public class SafariSwimmer extends WaterAnimal implements SafariCreature {
+	private static final EntityDataAccessor<Boolean> CARCASS = SynchedEntityData.defineId(SafariSwimmer.class, EntityDataSerializers.BOOLEAN);
 	private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
 	public SafariSwimmer(EntityType<? extends SafariSwimmer> type, Level level) {
@@ -49,6 +53,12 @@ public class SafariSwimmer extends WaterAnimal implements SafariCreature {
 			.add(Attributes.SCALE, s.scale());
 		if (s.attacks()) b.add(Attributes.ATTACK_DAMAGE, s.attackDamage());
 		return b;
+	}
+
+	@Override
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(CARCASS, false);
 	}
 
 	@Override
@@ -110,6 +120,17 @@ public class SafariSwimmer extends WaterAnimal implements SafariCreature {
 	}
 
 	// ---------------------------------------------------------------- state (swimmers don't sleep or graze)
+
+	@Override
+	public boolean isCarcass() {
+		return this.entityData.get(CARCASS);
+	}
+
+	@Override
+	public void tick() {
+		super.tick();
+		if (!this.level().isClientSide()) this.entityData.set(CARCASS, this.entityTags().contains(HUNTING_CARCASS));
+	}
 
 	@Override
 	public boolean isResting() {

@@ -11,6 +11,7 @@ const anim = (id, name) => `animation.safari.${id}.${name}`;
 function moveController(a, available) {
   const run = a.client?.runSpeed ?? 5;
   const candidates = [
+    { name: 'dead', anim: 'dead', cond: "query.property('safari:hunt_state') == 4" },
     { name: 'sleeping', anim: 'sleep', cond: 'query.is_sleeping' },
     ...(a.constricts ? [{ name: 'coiling', anim: 'coil', cond: "query.property('safari:coiling')" }] : []),
     ...(a.hidesInShell ? [{ name: 'hiding', anim: 'hide', cond: "query.property('safari:hiding')" }] : []),

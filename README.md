@@ -16,6 +16,7 @@ A Minecraft **Bedrock Edition** add-on and **Java Edition** (Fabric) mod with 41
 - Stone age weapons: a throwable flint spear, a stone club, a flint knife, a sling with pebbles, and a blowgun with (poison) darts.
 - Thorn bushes: a 1.5-block barrier that hurts land animals that push against it.
 - A Field Guide book that records every species you spot.
+- **Works with [Realistic Hunting](https://github.com/ulfendk/minecraft-hunting):** with both installed, every animal is game. Each has organs placed in its own model, a weight, a minimum calibre and a trophy, so a broadside heart shot is perfect and an elephant needs a .338. A downed animal lies on its side as a carcass until it's field dressed.
 
 ## Install
 1. Download `SafariAnimals.mcaddon` from the [latest release](https://github.com/ulfendk/minecraft-safari-animals/releases/latest).
@@ -56,11 +57,12 @@ The Java edition reuses everything generated from the specs (GeckoLib reads the 
 | `src/lib/` | Generators: model + UV packing, procedural textures, animations, entity JSON |
 | `src/packs/` | Hand-written pack files, including the Script API code in `behavior_pack/scripts/` |
 | `src/items.mjs`, `src/blocks.mjs` | Custom items, blocks, recipes and world generation |
-| `tools/` | Build, validation, preview renderer, packaging, website, server test, Java resources |
+| `src/hunting.mjs` | Realistic Hunting profiles: game data and the hit model with organs, per animal |
+| `tools/` | Build, validation, preview renderer, packaging, website, server test, Java resources; `tools/vendor/hunting-kit/` is copied from Realistic Hunting by `node tools/sync-hunting-kit.mjs` |
 | `java/` | The Fabric mod (Java edition) |
 
 ### Adding an animal
-Copy a similar spec in `src/animals/` (the body builders in `src/lib/bodies.mjs` help). Run `npm run preview <id>` and look at `build/preview/<id>.png`, then add a line to `src/guide.mjs`.
+Copy a similar spec in `src/animals/` (the body builders in `src/lib/bodies.mjs` help). Run `npm run preview <id>` and look at `build/preview/<id>.png`, then add a line to `src/guide.mjs`. Give it a weight in `src/hunting.mjs` and run `node tools/check-hunting.mjs <id>` (also part of `npm run validate`); a `hunt:` entry in the spec moves organs or changes its game data.
 
 ### Releases
 Bump `version` in `package.json`, add a section to `CHANGELOG.md`, then push a tag such as `v0.2.0`. The release workflow builds and tests the packs, publishes a GitHub Release with the files, and updates the website.

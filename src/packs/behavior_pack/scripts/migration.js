@@ -1,7 +1,7 @@
 // Wildebeest migration: by day, herds follow an invisible waypoint that keeps
 // moving ahead of them in the direction of this day's migration.
 import { system, world } from '@minecraft/server';
-import { nearPlayers } from './util.js';
+import { isCarcass, nearPlayers } from './util.js';
 
 const LEG = 40; // blocks per waypoint
 const markers = new Map(); // marker id -> { legs }
@@ -29,7 +29,7 @@ function step() {
     const marker = world.getEntity(m);
     const state = markers.get(m);
     if (!marker?.isValid) { markers.delete(m); continue; }
-    const followers = marker.dimension.getEntities({ type: 'safari:wildebeest', location: marker.location, maxDistance: 96 });
+    const followers = marker.dimension.getEntities({ type: 'safari:wildebeest', location: marker.location, maxDistance: 96 }).filter((w) => !isCarcass(w));
     if (!daytime || !followers.length || state.legs >= 4) {
       for (const w of followers) w.triggerEvent('safari:stop_migration');
       marker.remove();
@@ -57,7 +57,7 @@ function step() {
     const marker = w.dimension.spawnEntity('safari:migration_marker', at);
     markers.set(marker.id, { legs: 0 });
     for (const member of w.dimension.getEntities({ type: 'safari:wildebeest', location: w.location, maxDistance: 24 })) {
-      member.triggerEvent('safari:start_migration');
+      if (!isCarcass(member)) member.triggerEvent('safari:start_migration');
     }
     break; // one new migration per check
   }

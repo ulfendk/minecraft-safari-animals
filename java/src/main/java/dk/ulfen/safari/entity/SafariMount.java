@@ -37,6 +37,7 @@ import org.jspecify.annotations.Nullable;
 public class SafariMount extends AbstractChestedHorse implements SafariCreature {
 	private static final EntityDataAccessor<Boolean> RESTING = SynchedEntityData.defineId(SafariMount.class, EntityDataSerializers.BOOLEAN);
 
+	private static final EntityDataAccessor<Boolean> CARCASS = SynchedEntityData.defineId(SafariMount.class, EntityDataSerializers.BOOLEAN);
 	private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 	private int eatTicks;
 
@@ -64,6 +65,7 @@ public class SafariMount extends AbstractChestedHorse implements SafariCreature 
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 		super.defineSynchedData(builder);
+		builder.define(CARCASS, false);
 		builder.define(RESTING, false);
 	}
 
@@ -164,6 +166,17 @@ public class SafariMount extends AbstractChestedHorse implements SafariCreature 
 	}
 
 	// ---------------------------------------------------------------- state
+
+	@Override
+	public boolean isCarcass() {
+		return this.entityData.get(CARCASS);
+	}
+
+	@Override
+	public void tick() {
+		super.tick();
+		if (!this.level().isClientSide()) this.entityData.set(CARCASS, this.entityTags().contains(HUNTING_CARCASS));
+	}
 
 	@Override
 	public boolean isResting() {

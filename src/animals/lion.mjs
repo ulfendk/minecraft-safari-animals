@@ -32,6 +32,8 @@ export default {
   sounds: { ambient: 'mob.polarbear.warning', hurt: 'mob.polarbear.hurt', death: 'mob.polarbear.death', pitch: [0.6, 0.7], interval: 25 },
   egg: ['#c99a55', '#6b3f1d'],
   client: { visibility: { mane: 'query.variant == 0 && !query.is_baby' }, idle: ['idle', 'snarl'] },
+  // Realistic Hunting: lionesses (variant 1) have no mane.
+  hunt: { maleBones: ['mane'] },
 
   model: felid({
     bodyW: 10, bodyH: 9, bodyL: 20, legH: 11, legW: 4, headW: 8, headH: 7, headD: 6, muzzleW: 4, muzzleH: 4, muzzleD: 3,
