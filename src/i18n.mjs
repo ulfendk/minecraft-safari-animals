@@ -7,6 +7,7 @@ export const LANGUAGES = {
 };
 
 const en = {
+  allMods: 'All our mods',
   title: 'Safari Animals – Minecraft add-on and mod',
   description: (n) => `${n} animals for Minecraft Bedrock and Java Edition: lions, elephants, giraffes, anacondas, piranhas, river dolphins and more. Free download.`,
   tagline: (n) => `${n} animals from the savanna, the jungle and the Amazon for Minecraft Bedrock and Java Edition. Lions hunt zebras, piranhas patrol the rivers, and meerkats keep watch.`,
@@ -61,6 +62,7 @@ const en = {
 };
 
 const da = {
+  allMods: 'Alle vores mods',
   title: 'Safari Animals – tilføjelse og mod til Minecraft',
   description: (n) => `${n} dyr til Minecraft Bedrock og Java Edition: løver, elefanter, giraffer, anakondaer, pirayaer, amazonasdelfiner og meget mere. Gratis download.`,
   tagline: (n) => `${n} dyr fra savannen, junglen og Amazonas til Minecraft Bedrock og Java Edition. Løver jager zebraer, pirayaer patruljerer floderne, og surikater holder vagt.`,
