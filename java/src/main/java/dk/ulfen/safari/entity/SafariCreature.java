@@ -14,7 +14,7 @@ import net.minecraft.world.phys.Vec3;
 /** Shared by every safari animal, whether it's a plain animal or a rideable mount. */
 public interface SafariCreature extends GeoEntity {
 	/** One-shot animations the server can trigger. */
-	String[] ACTIONS = {"attack", "roar", "trumpet", "chest_beat", "yawn", "pronk", "throw", "pounce", "threat"};
+	String[] ACTIONS = {"attack", "roar", "trumpet", "chest_beat", "yawn", "pronk", "throw", "pounce", "threat", "rear"};
 
 	/**
 	 * Entity tag Realistic Hunting puts on an animal it has brought down (a carcass that

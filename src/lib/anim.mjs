@@ -229,6 +229,24 @@ export const extras = {
   /** Gazelle pronk: all four legs stiff, body bounces. */
   pronk: ({ body = 'body' } = {}) =>
     once(0.6, bones({ [body]: { position: { '0.0': [0, 0, 0], '0.3': [0, 6, 0], '0.6': [0, 0, 0] } } })),
+  /**
+   * Bear threat display: rears up on its hind legs (the body pitches up around the hip),
+   * the front legs dangle from the raised shoulders, the head levels out and roars.
+   * hip/shoulder: [y, z] model points, as returned by bodies.ursid().rear.
+   */
+  rear: ({ body = 'body', head = 'head', jaw = 'jaw', hip, shoulder, angle = 65, length = 3 } = {}) => {
+    const t = (angle * Math.PI) / 180;
+    const dy = shoulder[0] - hip[0], dz = shoulder[1] - hip[1];
+    const lift = [0, r(dy * Math.cos(t) - dz * Math.sin(t) - dy), r(dy * Math.sin(t) + dz * Math.cos(t) - dz)];
+    const key = (v) => ({ '0.0': v.map(() => 0), '0.5': v, [r(length - 0.6).toFixed(2)]: v, [length.toFixed(1)]: v.map(() => 0) });
+    const arm = { rotation: key([-angle * 0.6, 0, 0]), position: key(lift) };
+    return once(length, bones(
+      { [body]: { rotation: key([-angle, 0, 0]) } },
+      { [head]: { rotation: key([angle - 20, 0, 0]) } },
+      { [jaw]: { rotation: key([35, 0, 0]) } },
+      { leg_fl: arm, leg_fr: { ...arm, rotation: key([-angle * 0.5, 0, 0]) } },
+    ));
+  },
   /** Big mouth yawn (hippo threat display). */
   yawn: ({ jaw = 'jaw', head = 'head' } = {}) =>
     once(2.0, bones(

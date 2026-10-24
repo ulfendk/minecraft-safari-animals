@@ -39,6 +39,7 @@ public record Species(
 	boolean colourChange,
 	boolean shocks,
 	boolean constricts,
+	boolean crushesShells,
 	String attackEffect,
 	List<String> variantTextures,
 	boolean climbs,

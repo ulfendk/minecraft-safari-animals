@@ -144,6 +144,20 @@ public class SafariGameTests {
 		helper.succeed();
 	}
 
+	/** A jaguar's bite goes straight through a hiding tortoise's shell. */
+	@GameTest(maxTicks = 20)
+	public void jaguarCrushesShells(GameTestHelper helper) {
+		SafariAnimal tortoise = (SafariAnimal) spawn(helper, "tortoise", new BlockPos(3, 1, 3));
+		Mob jaguar = spawn(helper, "jaguar", new BlockPos(1, 1, 1));
+		tortoise.hurtServer(helper.getLevel(), helper.getLevel().damageSources().generic(), 1.0F);
+		if (!tortoise.isHiding()) helper.fail("Tortoise did not hide");
+		float before = tortoise.getHealth();
+		tortoise.setInvulnerableTime(0);
+		tortoise.hurtServer(helper.getLevel(), helper.getLevel().damageSources().mobAttack(jaguar), 6.0F);
+		if (before - tortoise.getHealth() < 4.0F) helper.fail("Jaguar bite was blocked by the shell: " + (before - tortoise.getHealth()));
+		helper.succeed();
+	}
+
 	/** A chameleon on sand turns sand-coloured. */
 	@GameTest(maxTicks = 100)
 	public void chameleonCamouflage(GameTestHelper helper) {

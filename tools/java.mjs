@@ -19,7 +19,7 @@ const BEDROCK_TO_JAVA_SOUNDS = {
   'mob.hoglin.hurt': 'entity.hoglin.hurt', 'mob.hoglin.ambient': 'entity.hoglin.ambient',
   'mob.hoglin.death': 'entity.hoglin.death', 'mob.hoglin.angry': 'entity.hoglin.angry',
   'mob.polarbear.warning': 'entity.polar_bear.warning', 'mob.polarbear.hurt': 'entity.polar_bear.hurt',
-  'mob.polarbear.death': 'entity.polar_bear.death',
+  'mob.polarbear.death': 'entity.polar_bear.death', 'mob.polarbear.idle': 'entity.polar_bear.ambient',
   'mob.cat.hiss': 'entity.cat.hiss', 'mob.cat.hit': 'entity.cat.hurt', 'mob.ocelot.death': 'entity.ocelot.death',
   'mob.cat.straymeow': 'entity.cat.stray_ambient',
   'mob.fox.screech': 'entity.fox.screech', 'mob.fox.ambient': 'entity.fox.ambient', 'mob.fox.hurt': 'entity.fox.hurt',
@@ -44,7 +44,7 @@ const BEDROCK_TO_JAVA_SOUNDS = {
   'mob.frog.ambient': 'entity.frog.ambient', 'mob.frog.hurt': 'entity.frog.hurt', 'mob.frog.death': 'entity.frog.death',
   'mob.sniffer.idle': 'entity.sniffer.idle', 'mob.sniffer.hurt': 'entity.sniffer.hurt', 'mob.sniffer.death': 'entity.sniffer.death',
 };
-const VANILLA_PREY = new Set(['pig', 'chicken', 'parrot', 'rabbit', 'sheep', 'cow']);
+const VANILLA_PREY = new Set(['pig', 'chicken', 'parrot', 'rabbit', 'sheep', 'cow', 'salmon', 'cod']);
 const ITEM_RENAMES = { deadbush: 'dead_bush' };
 
 const javaItem = (id) => {
@@ -126,6 +126,7 @@ function speciesRecord(a, animals, animNames) {
     colourChange: !!a.colourChange,
     shocks: !!a.shocks,
     constricts: !!a.constricts,
+    crushesShells: (a.family ?? []).includes('shell_crusher'),
     attackEffect: a.attack?.effect ?? null,
     variantTextures: (a.variants ?? []).map((v) => v.texture ?? null),
     climbs: !!a.climbs,

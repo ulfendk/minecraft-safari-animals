@@ -2,7 +2,7 @@ import { reptile } from '../lib/anim.mjs';
 import { all, bone, face, legs4 } from '../lib/parts.mjs';
 import { fur, mottle, region, underside } from '../lib/texture.mjs';
 
-const teeth = (d) => [
+export const teeth = (d) => [
   ...Array.from({ length: Math.floor(d / 2) }, (_, k) => ({ face: 'left', x: 2 * k, y: 1, color: '#efe8d0' })),
   ...Array.from({ length: Math.floor(d / 2) }, (_, k) => ({ face: 'right', x: d - 1 - 2 * k, y: 1, color: '#efe8d0' })),
 ];

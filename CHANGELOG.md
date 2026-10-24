@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.9.0] - 2026-10-24
+Bears and a jaguar (Bedrock and Java):
+- Grizzly bear: big, brown and silver-tipped, with a shoulder hump. Lives in taiga and forests, catches fish and loves honey and berries. Come close and it rears up on its hind legs and roars; stay right next to it and it charges.
+- Spectacled bear: black with cream "glasses", a shy fruit-eating climber of the jungle.
+- Sun bear: the smallest bear, with a golden patch on its chest. Climbs, likes honey and is up at night.
+- Sloth bear: shaggy, with a white V on its chest and a long pale snout. Lives on the savanna, is up at night and attacks if you walk right up to it.
+- All bears rear up and roar as a warning when you come close.
+- Jaguar: a stocky jungle and swamp cat with dark-centred rosettes. About one in six is black. Its bite goes straight through the shell of a hiding turtle or tortoise, and it hunts capybaras, caimans, turtles and monkeys.
+- Spectacled caiman: a small crocodilian of jungle rivers and swamps, with a bony ridge between its eyes. It eats fish and frogs and leaves people alone unless they bother it. Jaguars hunt it.
+- New habitat: taiga. Website: a Bears filter.
+- Works with Realistic Hunting: the new animals are game too.
+
 ## [0.8.0] - 2026-10-20
 Works with Realistic Hunting (Bedrock and Java):
 - With Realistic Hunting 0.3.0 or later installed too, every safari animal is game. Each has organs in its own model, a weight, a minimum calibre and a trophy. A broadside heart shot is perfect, and elephants, hippos and rhinos need a .338.

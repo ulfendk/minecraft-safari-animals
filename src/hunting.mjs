@@ -11,13 +11,13 @@ import { NS } from './lib/constants.mjs';
 
 /** Live weight range in kg. */
 const WEIGHT = {
-  anaconda: [30, 100], baboon: [15, 30], black_mamba: [1.5, 3], capybara: [35, 65], chameleon: [0.1, 0.2],
+  anaconda: [30, 100], caiman: [6, 40], baboon: [15, 30], black_mamba: [1.5, 3], capybara: [35, 65], chameleon: [0.1, 0.2],
   cheetah: [35, 65], chimpanzee: [30, 60], crocodile: [200, 500], electric_eel: [10, 20], elephant: [2500, 6000],
-  flamingo: [2, 4], gazelle: [15, 35], giraffe: [700, 1300], gorilla: [100, 200], harpy_eagle: [4, 9],
-  hippo: [1300, 2500], honey_badger: [6, 14], hyena: [45, 80], kangaroo: [20, 85], king_cobra: [4, 9],
+  flamingo: [2, 4], gazelle: [15, 35], giraffe: [700, 1300], gorilla: [100, 200], grizzly_bear: [180, 360], harpy_eagle: [4, 9],
+  hippo: [1300, 2500], honey_badger: [6, 14], hyena: [45, 80], jaguar: [55, 120], kangaroo: [20, 85], king_cobra: [4, 9],
   koala: [4, 14], leopard: [30, 90], lion: [120, 250], meerkat: [0.6, 1], ostrich: [60, 150], piranha: [1, 3],
   poison_dart_frog: [0.002, 0.005], porcupine: [10, 25], rhino: [800, 2300], river_dolphin: [90, 200],
-  scolopender: [0.05, 0.1], tarantula: [0.05, 0.1], tasmanian_devil: [5, 12], tiger: [100, 300],
+  scolopender: [0.05, 0.1], sloth_bear: [55, 145], spectacled_bear: [60, 155], sun_bear: [27, 65], tarantula: [0.05, 0.1], tasmanian_devil: [5, 12], tiger: [100, 300],
   tortoise: [40, 250], turtle: [5, 20], vulture: [4, 8], warthog: [50, 150], wild_dog: [18, 36],
   wildebeest: [120, 270], zebra: [200, 400],
 };

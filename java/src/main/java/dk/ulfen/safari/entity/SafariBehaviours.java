@@ -37,6 +37,10 @@ public final class SafariBehaviours {
 	private static final Set<String> MEERKAT_DANGER = Set.of(
 		"safari:lion", "safari:leopard", "safari:hyena", "safari:cheetah", "safari:wild_dog", "minecraft:player");
 	/** Chimps angry with a player: chimp -> (player, until tick). */
+	/** How close a player can come before a bear rears up (blocks), and the pitch of its roar. */
+	private static final Map<String, Map.Entry<Integer, Float>> BEAR_WARNINGS = Map.of(
+		"grizzly_bear", Map.entry(8, 0.7F), "sloth_bear", Map.entry(6, 0.95F),
+		"spectacled_bear", Map.entry(5, 1.0F), "sun_bear", Map.entry(4, 1.3F));
 	private static final Map<UUID, Map.Entry<UUID, Long>> ANGRY_CHIMPS = new HashMap<>();
 
 	private SafariBehaviours() {}
@@ -87,6 +91,14 @@ public final class SafariBehaviours {
 				if (!playersNear(a, cobra ? 5 : 4).isEmpty() && chance(a, 0.4F)) {
 					a.playAction("threat");
 					level.playSound(null, a, BuiltInRegistries.SOUND_EVENT.getValue(net.minecraft.resources.Identifier.withDefaultNamespace("entity.cat.hiss")), SoundSource.NEUTRAL, 1.5F, cobra ? 0.4F : 0.8F);
+				}
+			}
+			case "grizzly_bear", "sloth_bear", "spectacled_bear", "sun_bear" -> {
+				// Rears up on its hind legs and roars when a player comes close.
+				Map.Entry<Integer, Float> warn = BEAR_WARNINGS.get(a.species().id());
+				if (!playersNear(a, warn.getKey()).isEmpty() && chance(a, 0.3F)) {
+					a.playAction("rear");
+					level.playSound(null, a, SoundEvents.POLAR_BEAR_WARNING, SoundSource.NEUTRAL, 2.0F, warn.getValue());
 				}
 			}
 			case "gazelle" -> { if (a.getDeltaMovement().horizontalDistance() > 0.25 && chance(a, 0.25F)) a.playAction("pronk"); }

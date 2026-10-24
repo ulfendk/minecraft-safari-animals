@@ -308,7 +308,9 @@ public class SafariAnimal extends Animal implements SafariCreature {
 		setResting(false);
 		Species s = species();
 		if (s.hidesInShell()) {
-			if (isHiding()) damage *= 0.2F;
+			// A jaguar's bite goes straight through the shell.
+			boolean crushed = source.getEntity() instanceof SafariAnimal attacker && attacker.species().crushesShells();
+			if (isHiding() && !crushed) damage *= 0.2F;
 			this.hidingTicks = 120;
 			this.entityData.set(HIDING, true);
 		}

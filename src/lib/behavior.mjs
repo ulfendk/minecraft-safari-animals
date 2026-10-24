@@ -495,7 +495,11 @@ export function buildEntity(a) {
     addDamageTrigger(components, { on_damage: { event: 'safari:hide', target: 'self' }, deals_damage: 'yes' });
     groups['safari:hiding'] = {
       'minecraft:movement': { value: 0 },
-      'minecraft:damage_sensor': { triggers: [{ cause: 'all', damage_multiplier: 0.2 }] },
+      // A jaguar's bite (family shell_crusher) goes straight through the shell.
+      'minecraft:damage_sensor': { triggers: [
+        { cause: 'all', on_damage: { filters: fam('shell_crusher') }, damage_multiplier: 1 },
+        { cause: 'all', damage_multiplier: 0.2 },
+      ] },
       'minecraft:timer': { looping: false, time: 6, time_down_event: { event: 'safari:unhide', target: 'self' } },
     };
     extraEvents['safari:hide'] = { add: { component_groups: ['safari:hiding'] }, set_property: { 'safari:hiding': true } };

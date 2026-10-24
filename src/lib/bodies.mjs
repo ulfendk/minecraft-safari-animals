@@ -151,3 +151,66 @@ export function ape({ faceColor = '#3a3030', eyeColor = '#e8e0d0', pupilColor = 
   ];
   return { bones };
 }
+
+/**
+ * Bears: a heavy barrel body on thick legs, a low-slung head with a blunt muzzle and small
+ * round ears, a stub tail and long claws on the front paws. All sizes in pixels.
+ * Returns a model spec with bones: root, body, head, jaw, ear_l, ear_r, tail, legs, plus
+ * `rear` (the hip and shoulder points for extras.rear).
+ * Materials used: fur, muzzle, nose, paw, claw, ear, jaw, fang; with options: shag.
+ * hump: a shoulder hump (grizzly). shag: a shaggy ruff over the neck and shoulders (sloth bear).
+ */
+export function ursid({
+  bodyW = 10, bodyH = 9, bodyL = 18, legH = 8, legW = 4,
+  headW = 7, headH = 6, headD = 6, muzzleW = 4, muzzleH = 3, muzzleD = 3,
+  hump = 0, shag = 0, earSize = 2, eyeColor = '#1a1210',
+} = {}) {
+  const bottom = legH - 1;
+  const top = bottom + bodyH;
+  const zf = -bodyL / 2;
+  const zb = bodyL / 2;
+  const hy = top - headH; // head bottom: bears carry their heads low
+  const hzf = zf - headD - 1; // head front, on a short thick neck
+  const hip = [bottom + 1, zb - 1 - legW / 2]; // over the hind legs, where the body pivots to rear up
+  const bones = [
+    { name: 'root', pivot: [0, 0, 0] },
+    {
+      name: 'body', parent: 'root', pivot: [0, hip[0], hip[1]],
+      cubes: [
+        { origin: [-bodyW / 2, bottom, zf], size: [bodyW, bodyH, bodyL], mat: 'fur' },
+        ...(hump ? [{ origin: [-bodyW / 2 + 1, top, zf + 1], size: [bodyW - 2, hump, Math.round(bodyL / 3)], mat: 'fur' }] : []),
+        ...(shag ? [{ origin: [-bodyW / 2 - 1, top - 4, zf - 1], size: [bodyW + 2, 4 + shag, 7], mat: 'shag' }] : []),
+      ],
+    },
+    {
+      name: 'head', parent: 'body', pivot: [0, top - 2, zf],
+      cubes: [
+        {
+          origin: [-headW / 2, hy, hzf], size: [headW, headH, headD], mat: 'fur',
+          marks: frontEyes(headW, { gap: muzzleW, down: Math.max(1, headH - muzzleH - 2), color: eyeColor }),
+        },
+        {
+          origin: [-muzzleW / 2, hy + 1, hzf - muzzleD], size: [muzzleW, muzzleH - 1, muzzleD], mat: 'muzzle',
+          marks: [{ face: 'front', x: muzzleW / 2 - 1, y: 0, w: 2, color: '#16110f' }, { face: 'top', x: muzzleW / 2 - 1, y: 0, w: 2, color: '#16110f' }],
+        },
+        { origin: [-headW / 2 + 1, hy - 1, hzf + headD - 1], size: [headW - 2, headH, 3], mat: 'fur' },
+        { origin: [-muzzleW / 2, hy + 1, hzf - muzzleD], size: [1, 1, 1], mat: 'fang', inflate: -0.1 },
+        { origin: [muzzleW / 2 - 1, hy + 1, hzf - muzzleD], size: [1, 1, 1], mat: 'fang', inflate: -0.1 },
+      ],
+    },
+    {
+      name: 'jaw', parent: 'head', pivot: [0, hy + 1, hzf + 1],
+      cubes: [{ origin: [-muzzleW / 2, hy, hzf - muzzleD], size: [muzzleW, 1, muzzleD + 1], mat: 'jaw', inflate: -0.05 }],
+    },
+  ];
+  const earZ = hzf + Math.floor(headD / 2) - 1;
+  bones.push(
+    { name: 'ear_l', parent: 'head', pivot: [headW / 2 - 1, hy + headH, earZ + 0.5], cubes: [{ origin: [headW / 2 - earSize + 0.5, hy + headH - 0.5, earZ], size: [earSize, earSize, 1], mat: 'ear' }] },
+    { name: 'ear_r', parent: 'head', pivot: [-headW / 2 + 1, hy + headH, earZ + 0.5], cubes: [{ origin: [-headW / 2 - 0.5, hy + headH - 0.5, earZ], size: [earSize, earSize, 1], mat: 'ear' }] },
+    { name: 'tail', parent: 'body', pivot: [0, top - 2, zb], rotation: [20, 0, 0], cubes: [{ origin: [-1, top - 4, zb], size: [2, 2, 1], mat: 'fur' }] },
+  );
+  // Thick legs; the front paws carry long pale claws.
+  bones.push(...legs4({ x: bodyW / 2, front: zf + 1, back: zb - 1 - legW, w: legW, h: legH, foot: 1, mat: 'fur', footMat: 'paw' }).map((b) =>
+    b.name.startsWith('leg_f') ? { ...b, cubes: [...b.cubes, { origin: [b.cubes[0].origin[0], 0, b.cubes[0].origin[2] - 1], size: [legW, 1, 1], mat: 'claw' }] } : b));
+  return { bones, rear: { hip, shoulder: [legH, zf + 1 + legW / 2] } };
+}

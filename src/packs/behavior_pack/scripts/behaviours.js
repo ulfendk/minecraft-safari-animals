@@ -30,7 +30,9 @@ function calls(now) {
   }
 }
 
-/** Gorillas warn players who come close by beating their chest. Hippos yawn at swimmers. */
+const BEARS = [['safari:grizzly_bear', 8, 0.7], ['safari:sloth_bear', 6, 0.95], ['safari:spectacled_bear', 5, 1.0], ['safari:sun_bear', 4, 1.3]];
+
+/** Gorillas warn players who come close by beating their chest, bears rear up. Hippos yawn at swimmers. */
 function displays(now) {
   for (const g of nearPlayers('safari:gorilla', 16)) {
     if (isBaby(g)) continue;
@@ -47,6 +49,14 @@ function displays(now) {
       if (isBaby(s)) continue;
       const close = s.dimension.getPlayers({ location: s.location, maxDistance: range });
       if (close.length && ready(s, 'threat', 120, now)) play(s, 'threat', 'mob.cat.hiss', pitch, 1.5);
+    }
+  }
+  // Bears rear up on their hind legs and roar when a player comes close.
+  for (const [type, range, pitch] of BEARS) {
+    for (const b of nearPlayers(type, 16)) {
+      if (isBaby(b)) continue;
+      const close = b.dimension.getPlayers({ location: b.location, maxDistance: range });
+      if (close.length && ready(b, 'rear', 200, now)) play(b, 'rear', 'mob.polarbear.warning', pitch, 2);
     }
   }
   for (const g of nearPlayers('safari:gazelle', 32)) {

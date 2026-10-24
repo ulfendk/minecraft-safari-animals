@@ -79,6 +79,20 @@ public class SafariClientGameTest implements FabricClientGameTest {
 			context.waitTicks(12);
 			context.takeScreenshot("safari_threat");
 
+			// Bears rear up on their hind legs.
+			world.getServer().runCommand("kill @e[type=!player]");
+			world.getServer().runCommand("summon safari:grizzly_bear -2.5 -60 0 {NoAI:1b,Rotation:[90f,0f]}");
+			world.getServer().runCommand("summon safari:sun_bear 1.5 -60 0 {NoAI:1b,Rotation:[90f,0f]}");
+			world.getServer().runCommand("tp @p -0.5 -58.5 -6 0 10");
+			context.waitTicks(60);
+			world.getServer().runOnServer(server -> {
+				for (var bear : server.overworld().getEntitiesOfClass(dk.ulfen.safari.entity.SafariAnimal.class, new net.minecraft.world.phys.AABB(-5, -64, -5, 5, -55, 5), e -> e.isAlive())) {
+					bear.playAction("rear");
+				}
+			});
+			context.waitTicks(20);
+			context.takeScreenshot("safari_rear");
+
 			// A thrown spear in flight, seen from the side.
 			world.getServer().runCommand("kill @e[type=!player]");
 			world.getServer().runCommand("tp @p 0 -57.5 -4 0 18");

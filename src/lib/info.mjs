@@ -4,7 +4,7 @@ import { guide } from '../guide.mjs';
 
 export const BIOME_NAMES = {
   savanna: 'Savanna', jungle: 'Jungle', desert: 'Desert', swamp: 'Swamp', mangrove: 'Mangrove swamp',
-  river: 'Rivers', beach: 'Beaches', mesa: 'Badlands', plains: 'Plains', forest: 'Forest',
+  river: 'Rivers', beach: 'Beaches', mesa: 'Badlands', plains: 'Plains', forest: 'Forest', taiga: 'Taiga',
 };
 
 export const TAGS = {
