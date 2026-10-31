@@ -233,16 +233,21 @@ export const extras = {
    * Bear threat display: rears up on its hind legs (the body pitches up around the hip),
    * the front legs dangle from the raised shoulders, the head levels out and roars.
    * hip/shoulder: [y, z] model points, as returned by bodies.ursid().rear.
+   * headLift: [up, back] pixels (world space) that move the head out of the chest, which
+   * faces forwards once the body is upright, and onto the shoulders.
    */
-  rear: ({ body = 'body', head = 'head', jaw = 'jaw', hip, shoulder, angle = 65, length = 3 } = {}) => {
+  rear: ({ body = 'body', head = 'head', jaw = 'jaw', hip, shoulder, headLift = [0, 0], angle = 65, length = 3 } = {}) => {
     const t = (angle * Math.PI) / 180;
     const dy = shoulder[0] - hip[0], dz = shoulder[1] - hip[1];
     const lift = [0, r(dy * Math.cos(t) - dz * Math.sin(t) - dy), r(dy * Math.sin(t) + dz * Math.cos(t) - dz)];
+    // The head's position channel is in the pitched body's frame: rotate the world offset into it.
+    const [up, back] = headLift;
+    const headPos = [0, r(up * Math.cos(t) + back * Math.sin(t)), r(back * Math.cos(t) - up * Math.sin(t))];
     const key = (v) => ({ '0.0': v.map(() => 0), '0.5': v, [r(length - 0.6).toFixed(2)]: v, [length.toFixed(1)]: v.map(() => 0) });
     const arm = { rotation: key([-angle * 0.6, 0, 0]), position: key(lift) };
     return once(length, bones(
       { [body]: { rotation: key([-angle, 0, 0]) } },
-      { [head]: { rotation: key([angle - 20, 0, 0]) } },
+      { [head]: { rotation: key([angle - 20, 0, 0]), position: key(headPos) } },
       { [jaw]: { rotation: key([35, 0, 0]) } },
       { leg_fl: arm, leg_fr: { ...arm, rotation: key([-angle * 0.5, 0, 0]) } },
     ));

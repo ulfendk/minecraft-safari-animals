@@ -156,7 +156,7 @@ export function ape({ faceColor = '#3a3030', eyeColor = '#e8e0d0', pupilColor = 
  * Bears: a heavy barrel body on thick legs, a low-slung head with a blunt muzzle and small
  * round ears, a stub tail and long claws on the front paws. All sizes in pixels.
  * Returns a model spec with bones: root, body, head, jaw, ear_l, ear_r, tail, legs, plus
- * `rear` (the hip and shoulder points for extras.rear).
+ * `rear` (the hip and shoulder points and the head lift for extras.rear).
  * Materials used: fur, muzzle, nose, paw, claw, ear, jaw, fang; with options: shag.
  * hump: a shoulder hump (grizzly). shag: a shaggy ruff over the neck and shoulders (sloth bear).
  */
@@ -212,5 +212,5 @@ export function ursid({
   // Thick legs; the front paws carry long pale claws.
   bones.push(...legs4({ x: bodyW / 2, front: zf + 1, back: zb - 1 - legW, w: legW, h: legH, foot: 1, mat: 'fur', footMat: 'paw' }).map((b) =>
     b.name.startsWith('leg_f') ? { ...b, cubes: [...b.cubes, { origin: [b.cubes[0].origin[0], 0, b.cubes[0].origin[2] - 1], size: [legW, 1, 1], mat: 'claw' }] } : b));
-  return { bones, rear: { hip, shoulder: [legH, zf + 1 + legW / 2] } };
+  return { bones, rear: { hip, shoulder: [legH, zf + 1 + legW / 2], headLift: [headH - 2, headD - 1] } };
 }

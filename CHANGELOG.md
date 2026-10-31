@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.9.1] - 2026-10-31
+Fix (Bedrock and Java):
+- Bears no longer bury their heads in their chests when they rear up on their hind legs: the head now sits on the shoulders, so you see the roaring face.
+
 ## [0.9.0] - 2026-10-24
 Bears and a jaguar (Bedrock and Java):
 - Grizzly bear: big, brown and silver-tipped, with a shoulder hump. Lives in taiga and forests, catches fish and loves honey and berries. Come close and it rears up on its hind legs and roars; stay right next to it and it charges.
