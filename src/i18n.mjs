@@ -125,7 +125,7 @@ const da = {
     scolopender: 'Kæmpeskolopender', poison_dart_frog: 'Pilegiftfrø', capybara: 'Flodsvin', tasmanian_devil: 'Tasmansk pungdjævel',
     chameleon: 'Kamæleon', harpy_eagle: 'Harpyørn', king_cobra: 'Kongekobra', black_mamba: 'Sort mamba',
     jaguar: 'Jaguar', grizzly_bear: 'Grizzlybjørn', spectacled_bear: 'Brillebjørn', sun_bear: 'Malajbjørn', sloth_bear: 'Læbebjørn', caiman: 'Brillekaiman',
-    bighorn_sheep: 'Tykhornsfår', mountain_goat: 'Sneged', alpine_ibex: 'Stenbuk', chamois: 'Gemse', yak: 'Yak', snow_leopard: 'Sneleopard', musk_ox: 'Moskusokse', bison: 'Amerikansk bison', aurochs: 'Urokse',
+    bighorn_sheep: 'Tykhornsfår', mountain_goat: 'Sneged', alpine_ibex: 'Stenbuk', chamois: 'Gemse', yak: 'Yak', snow_leopard: 'Sneleopard', musk_ox: 'Moskusokse', bison: 'Amerikansk bison', aurochs: 'Urokse', gaur: 'Gaur',
   },
   guide: {
     honey_badger: 'Lille, frygtløs og næsten umulig at stoppe. Den flygter aldrig, er ligeglad med slangegift og plyndrer bistader for bikager.',
@@ -160,6 +160,7 @@ const da = {
     musk_ox: 'En pjusket okse fra den frosne tundra, lige så stor som en yak, med en pels der hænger helt ned til jorden og horn, der krummer ned forbi kinderne. Den er arrig: Kommer du for tæt på, stormer den frem, og hele flokken følger med.',
     bison: 'Præriens kæmpe: en uldden pukkel og kappe over forparten, et lavt hoved med skæg og korte sorte horn. Bisonen ser rolig ud, men den er uberegnelig – kommer du for tæt på, sænker den hovedet og stormer frem, og hele flokken buldrer efter.',
     aurochs: 'Stamfaderen til al kvæg: en sort tyr med en høj skulderpukkel, næsten lige så høj som et næsehorn, med en lys stribe ned ad ryggen og store horn, der svinger fremad. Den er vild og frygtløs, stormer mod alle, den ser komme, og resten af flokken følger med.',
+    gaur: 'Verdens største vilde kvæg fra Indiens jungler: en mørk tyr med en høj kam over skuldrene, hvide strømper og tykke horn, der krummer op og ind. Den er hidsig – kommer du for tæt på, stormer den frem, og flokken følger med.',
     lion: 'Løveflokke sover i dagens hede og jager zebraer og antiloper om natten. Kun hannerne har manke. Kommer du for tæt på, brøler løven en advarsel – og så angriber den.',
     elephant: 'Blide kæmper, der vandrer i flok. Vind en elefants tillid med meloner, giv den sadel og kiste på, og rid sammen med en ven.',
     zebra: 'Stribede flokdyr fra savannen. Tæm en zebra som en hest ved at ride på den, til den stoler på dig, og sadl den så op.',

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.13.0] - 2026-11-01
+Gaur (Bedrock and Java):
+- Gaur: the biggest wild cattle, from the jungles of India. A dark bull with a high ridge over the shoulders, white stockings, a grey boss between the horns and thick horns that curve up and in. It is the tallest of the cattle, a little taller than a rhino at the shoulder.
+- Short-tempered: come within six blocks and it charges, and the herd joins in. Herds of 2–5 live in jungles.
+- Works with Realistic Hunting: the gaur is game too.
+
 ## [0.12.1] - 2026-11-01
 Fix (Bedrock and Java):
 - Bison horns come out of the sides of the head and curve up at the tips, clear of the forehead hair.
