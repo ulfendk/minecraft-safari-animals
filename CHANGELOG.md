@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.11.2] - 2026-11-01
+Fix (Bedrock and Java):
+- The musk ox has a much shorter neck: it carries its head low, in front of its shoulder hump.
+
 ## [0.11.1] - 2026-11-01
 Fix (Bedrock and Java):
 - Chamois and alpine ibex have shorter necks, so their heads sit closer to their shoulders.

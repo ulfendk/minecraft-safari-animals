@@ -6,7 +6,7 @@ import { fur, mottle, region } from '../lib/texture.mjs';
 // A shaggy coat that hangs nearly to the ground, and horns that meet in a heavy boss on the
 // forehead, sweep down past the cheeks and hook up and forward at the tips.
 const model = caprid({
-  bodyW: 12, bodyH: 11, bodyL: 18, legH: 8, legW: 4, neckW: 7, neckH: 5, headW: 6, headH: 6, headD: 6, muzzleD: 2,
+  bodyW: 12, bodyH: 11, bodyL: 18, legH: 8, legW: 4, neckW: 7, neckH: 2, headW: 6, headH: 6, headD: 6, muzzleD: 2,
   hump: 3, skirt: 6, tail: 2,
   horns: ({ top, back, side }) => [
     { origin: [-side, top - 1, back - 4], size: [2 * side, 2, 3], mat: 'horn' },
@@ -59,7 +59,7 @@ export default {
     muzzle: { base: '#5a4c3e', layers: [fur(0.06)] },
     ear: '#3b2e24',
     tail: '#2e241c',
-    horn: { base: '#cfc4ad', layers: [region('#3a342e', ({ p }) => p[1] < 18.5)] },
+    horn: { base: '#cfc4ad', layers: [region('#3a342e', ({ p }) => p[1] < 15.5)] },
     hoof: '#1a1614',
   },
 
