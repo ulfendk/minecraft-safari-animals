@@ -21,14 +21,14 @@ const GROUPS = {
   predator: ['lion', 'tiger', 'jaguar', 'leopard', 'cheetah', 'hyena', 'wild_dog', 'crocodile', 'honey_badger', 'tasmanian_devil', 'harpy_eagle'],
   amazon: ['piranha', 'electric_eel', 'river_dolphin', 'anaconda', 'caiman', 'tarantula', 'scolopender', 'poison_dart_frog', 'capybara'],
   reptile: ['tortoise', 'turtle', 'chameleon', 'king_cobra', 'black_mamba', 'anaconda', 'caiman'],
-  grazer: ['zebra', 'gazelle', 'wildebeest', 'warthog', 'bighorn_sheep', 'mountain_goat', 'alpine_ibex', 'chamois', 'yak', 'giraffe'],
+  grazer: ['zebra', 'gazelle', 'wildebeest', 'warthog', 'giraffe'],
   giant: ['elephant', 'rhino', 'hippo'],
   bird: ['ostrich', 'flamingo', 'vulture'],
   primate: ['gorilla', 'chimpanzee', 'baboon'],
   marsupial: ['kangaroo', 'koala', 'tasmanian_devil'],
   small: ['meerkat', 'porcupine'],
   bear: ['grizzly_bear', 'spectacled_bear', 'sun_bear', 'sloth_bear'],
-  mountain: ['bighorn_sheep', 'mountain_goat', 'alpine_ibex', 'chamois', 'yak'],
+  mountain: ['snow_leopard', 'bighorn_sheep', 'mountain_goat', 'alpine_ibex', 'chamois', 'yak', 'musk_ox'],
 };
 const groupOf = (id) => Object.entries(GROUPS).find(([, ids]) => ids.includes(id))?.[0] ?? 'other';
 
@@ -56,7 +56,7 @@ for (const a of animals) {
   await writeFile(join(OUT, 'img', 'animals', `${a.id}.png`), render(geo, tex, { yaw: 35, size: 320, hidden: new Set(['saddle', 'chest']) }));
   cards.push({ a, habitats: habitatsOf(a), group: groupOf(a.id) });
 }
-const order = ['lion', 'elephant', 'zebra', 'giraffe', 'rhino', 'hippo', 'cheetah', 'leopard', 'tiger', 'jaguar', 'grizzly_bear', 'spectacled_bear', 'sun_bear', 'sloth_bear', 'hyena', 'wild_dog', 'gazelle', 'wildebeest', 'warthog', 'ostrich', 'flamingo', 'vulture', 'crocodile', 'meerkat', 'gorilla', 'chimpanzee', 'baboon', 'kangaroo', 'koala', 'tasmanian_devil', 'honey_badger', 'porcupine', 'tortoise', 'chameleon', 'capybara', 'anaconda', 'caiman', 'king_cobra', 'black_mamba', 'piranha', 'electric_eel', 'river_dolphin', 'turtle', 'poison_dart_frog', 'tarantula', 'scolopender', 'harpy_eagle'];
+const order = ['lion', 'elephant', 'zebra', 'giraffe', 'rhino', 'hippo', 'cheetah', 'leopard', 'tiger', 'jaguar', 'grizzly_bear', 'spectacled_bear', 'sun_bear', 'sloth_bear', 'hyena', 'wild_dog', 'gazelle', 'wildebeest', 'warthog', 'snow_leopard', 'bighorn_sheep', 'mountain_goat', 'alpine_ibex', 'chamois', 'yak', 'musk_ox', 'ostrich', 'flamingo', 'vulture', 'crocodile', 'meerkat', 'gorilla', 'chimpanzee', 'baboon', 'kangaroo', 'koala', 'tasmanian_devil', 'honey_badger', 'porcupine', 'tortoise', 'chameleon', 'capybara', 'anaconda', 'caiman', 'king_cobra', 'black_mamba', 'piranha', 'electric_eel', 'river_dolphin', 'turtle', 'poison_dart_frog', 'tarantula', 'scolopender', 'harpy_eagle'];
 cards.sort((x, y) => order.indexOf(x.a.id) - order.indexOf(y.a.id));
 
 for (const item of [...items, ...blocks.map((b) => ({ ...b, icon: b.texture }))]) {

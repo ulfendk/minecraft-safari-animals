@@ -28,6 +28,8 @@ export const guide = {
   alpine_ibex: 'A wild goat with enormous ridged horns that sweep back over its shoulders. It walks up near-vertical cliffs as if they were flat ground, and falls never hurt it.',
   chamois: 'A small, nimble goat-antelope with a black-and-white face and hooked horns. It is very shy: when it spots you, it whistles a warning and the whole herd bolts.',
   yak: 'A huge, long-haired ox of the high mountains, with a hairy skirt down to its knees. Tame one with wheat, saddle it and it carries you and a pair of packs over the snow.',
+  snow_leopard: 'The ghost of the mountains: a smoky-grey cat with dark rosettes, huge furry paws and a tail almost as long as its body. It stalks wild sheep and goats on the steepest slopes.',
+  musk_ox: 'A shaggy ox of the frozen tundra, as big as a yak, with a coat that hangs to the ground and horns that hook down past its cheeks. It is ill-tempered: come close and it charges, and the whole herd joins in.',
   wild_dog: 'Painted hunters that live in big, chattering packs. They hunt by day and attack anyone who crosses their path, so build a thorn hedge around your camp.',
   kangaroo: 'Hops across savannas and badlands at great speed. Get too pushy and it leans back on its tail and kicks.',
   koala: 'A sleepy tree-hugger that dozes through the day and munches leaves at night. It climbs anything.',

@@ -17,6 +17,7 @@ const BIOME_TAGS = {
   // Meadows, stony peaks and windswept hills; the snowy slopes, groves and icy peaks above them.
   mountain: ['meadow', 'stony_peaks', 'extreme_hills'],
   peaks: ['snowy_slopes', 'grove', 'jagged_peaks', 'frozen_peaks'],
+  tundra: 'ice_plains',
 };
 
 /** Prefix vanilla items with minecraft: and our own with the namespace. */

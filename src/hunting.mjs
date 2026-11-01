@@ -15,9 +15,9 @@ const WEIGHT = {
   cheetah: [35, 65], chimpanzee: [30, 60], crocodile: [200, 500], electric_eel: [10, 20], elephant: [2500, 6000],
   flamingo: [2, 4], gazelle: [15, 35], giraffe: [700, 1300], gorilla: [100, 200], grizzly_bear: [180, 360], harpy_eagle: [4, 9],
   hippo: [1300, 2500], honey_badger: [6, 14], hyena: [45, 80], jaguar: [55, 120], kangaroo: [20, 85], king_cobra: [4, 9],
-  koala: [4, 14], leopard: [30, 90], lion: [120, 250], meerkat: [0.6, 1], mountain_goat: [45, 140], ostrich: [60, 150], piranha: [1, 3],
+  koala: [4, 14], leopard: [30, 90], lion: [120, 250], meerkat: [0.6, 1], mountain_goat: [45, 140], musk_ox: [180, 410], ostrich: [60, 150], piranha: [1, 3],
   poison_dart_frog: [0.002, 0.005], porcupine: [10, 25], rhino: [800, 2300], river_dolphin: [90, 200],
-  scolopender: [0.05, 0.1], sloth_bear: [55, 145], spectacled_bear: [60, 155], sun_bear: [27, 65], tarantula: [0.05, 0.1], tasmanian_devil: [5, 12], tiger: [100, 300],
+  scolopender: [0.05, 0.1], sloth_bear: [55, 145], snow_leopard: [25, 55], spectacled_bear: [60, 155], sun_bear: [27, 65], tarantula: [0.05, 0.1], tasmanian_devil: [5, 12], tiger: [100, 300],
   tortoise: [40, 250], turtle: [5, 20], vulture: [4, 8], warthog: [50, 150], wild_dog: [18, 36],
   wildebeest: [120, 270], yak: [300, 1000], zebra: [200, 400],
 };
@@ -35,9 +35,9 @@ const FISH_SENSES = { sight: 1.0, hearing: 1.3, smell: 0.6, alertTime: 6, herd: 
 
 const volume = (c) => c.size[0] * c.size[1] * c.size[2];
 
-/** Bounding box { origin, size } of a bone's main cubes (leaving out spikes, quills, fins). */
+/** Bounding box { origin, size } of a bone's main cubes (leaving out spikes, quills, fins and long hair). */
 function mainBox(bone) {
-  const cubes = (bone?.cubes ?? []).filter((c) => !c.rotation && volume(c) > 0);
+  const cubes = (bone?.cubes ?? []).filter((c) => !c.rotation && !c.hair && volume(c) > 0);
   if (!cubes.length) return null;
   const big = Math.max(...cubes.map(volume));
   const main = cubes.filter((c) => volume(c) >= big * 0.25);

@@ -39,7 +39,7 @@ export default {
   role: 'megafauna',
   family: ['bovine', 'grazer'],
   size: [1.3, 1.6],
-  scale: 1.2,
+  scale: 1.6,
   health: 34,
   speed: 0.2,
   xp: 5,

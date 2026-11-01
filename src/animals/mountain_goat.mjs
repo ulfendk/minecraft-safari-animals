@@ -5,7 +5,7 @@ import { fur, mottle, region } from '../lib/texture.mjs';
 
 // Short black daggers of horns, curving slightly back.
 const model = caprid({
-  bodyW: 8, bodyH: 9, bodyL: 14, legH: 9, legW: 3, neckW: 5, neckH: 9, headW: 4, headH: 4, headD: 6, muzzleD: 2,
+  bodyW: 8, bodyH: 9, bodyL: 14, legH: 9, legW: 3, neckW: 5, neckH: 6, headW: 4, headH: 4, headD: 6, muzzleD: 2,
   beard: 3, hump: 2, skirt: 2,
   horns: ({ top, back }) => hornArc([[1, top + 0.5, back - 2.5], [1, top + 1.5, back - 2.2], [1, top + 2.5, back - 1.7], [1, top + 3.3, back - 1]], { size: 1 }),
 });

@@ -246,7 +246,7 @@ export function caprid({
       cubes: [
         { origin: [-bodyW / 2, bottom, zf], size: [bodyW, bodyH, bodyL], mat: 'hide' },
         ...(hump ? [{ origin: [-bodyW / 2 + 1, top, zf + 1], size: [bodyW - 2, hump, Math.round(bodyL / 3)], mat: 'hide' }] : []),
-        ...(skirt ? [{ origin: [-bodyW / 2 - 0.5, bottom - skirt, zf + 1], size: [bodyW + 1, skirt + 3, bodyL - 2], mat: 'skirt' }] : []),
+        ...(skirt ? [{ origin: [-bodyW / 2 - 0.5, bottom - skirt, zf + 1], size: [bodyW + 1, skirt + 3, bodyL - 2], mat: 'skirt', hair: true }] : []),
       ],
     },
     {

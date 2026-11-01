@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.11.0] - 2026-11-01
+Snow leopard and musk ox (Bedrock and Java):
+- Snow leopard: a smoky-grey cat with dark rosettes and a very long, thick tail. It lives on the mountains and snowy peaks and hunts bighorn sheep, mountain goats, ibex and chamois.
+- Musk ox: a shaggy tundra ox as big as a yak, with a coat that hangs to the ground and horns that hook down past its cheeks. It is ill-tempered: come close and it charges, and the whole herd joins in.
+- New habitat: tundra (snowy plains and ice spikes).
+- Yaks are bigger, and the mountain goat's neck is shorter.
+- Website: the Mountains filter now shows the mountain animals (they were filed under Grazers).
+- Works with Realistic Hunting: the new animals are game too.
+
 ## [0.10.0] - 2026-11-01
 Mountain animals (Bedrock and Java):
 - Bighorn sheep: brown with a white rump and massive curled horns. Rams rear up on their hind legs and crash their horns together, and butt back if you hit them. Lives in mountains and badlands.

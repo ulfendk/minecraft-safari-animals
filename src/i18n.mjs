@@ -125,7 +125,7 @@ const da = {
     scolopender: 'Kæmpeskolopender', poison_dart_frog: 'Pilegiftfrø', capybara: 'Flodsvin', tasmanian_devil: 'Tasmansk pungdjævel',
     chameleon: 'Kamæleon', harpy_eagle: 'Harpyørn', king_cobra: 'Kongekobra', black_mamba: 'Sort mamba',
     jaguar: 'Jaguar', grizzly_bear: 'Grizzlybjørn', spectacled_bear: 'Brillebjørn', sun_bear: 'Malajbjørn', sloth_bear: 'Læbebjørn', caiman: 'Brillekaiman',
-    bighorn_sheep: 'Tykhornsfår', mountain_goat: 'Sneged', alpine_ibex: 'Stenbuk', chamois: 'Gemse', yak: 'Yak',
+    bighorn_sheep: 'Tykhornsfår', mountain_goat: 'Sneged', alpine_ibex: 'Stenbuk', chamois: 'Gemse', yak: 'Yak', snow_leopard: 'Sneleopard', musk_ox: 'Moskusokse',
   },
   guide: {
     honey_badger: 'Lille, frygtløs og næsten umulig at stoppe. Den flygter aldrig, er ligeglad med slangegift og plyndrer bistader for bikager.',
@@ -156,6 +156,8 @@ const da = {
     alpine_ibex: 'En vild ged med enorme, riflede horn, der buer bagud over skuldrene. Den går op ad næsten lodrette klipper, som var de flad jord, og den slår sig aldrig, når den falder.',
     chamois: 'En lille, adræt bjergged med sort-hvidt ansigt og krogede horn. Den er meget sky: Får den øje på dig, piber den en advarsel, og hele flokken stikker af.',
     yak: 'En kæmpe, langhåret okse fra de høje bjerge med et pjusket skørt helt ned til knæene. Tæm den med hvede, sadl den op, så bærer den dig og et par oppakninger hen over sneen.',
+    snow_leopard: 'Bjergenes spøgelse: en røggrå kat med mørke rosetter, store lodne poter og en hale næsten lige så lang som kroppen. Den lister sig ind på vilde får og geder på de stejleste skråninger.',
+    musk_ox: 'En pjusket okse fra den frosne tundra, lige så stor som en yak, med en pels der hænger helt ned til jorden og horn, der krummer ned forbi kinderne. Den er arrig: Kommer du for tæt på, stormer den frem, og hele flokken følger med.',
     lion: 'Løveflokke sover i dagens hede og jager zebraer og antiloper om natten. Kun hannerne har manke. Kommer du for tæt på, brøler løven en advarsel – og så angriber den.',
     elephant: 'Blide kæmper, der vandrer i flok. Vind en elefants tillid med meloner, giv den sadel og kiste på, og rid sammen med en ven.',
     zebra: 'Stribede flokdyr fra savannen. Tæm en zebra som en hest ved at ride på den, til den stoler på dig, og sadl den så op.',
@@ -188,7 +190,7 @@ const da = {
   },
   habitats: {
     Savanna: 'Savanne', Jungle: 'Jungle', Desert: 'Ørken', Swamp: 'Sump', 'Mangrove swamp': 'Mangrovesump',
-    Rivers: 'Floder', Beaches: 'Strande', Badlands: 'Badlands', Plains: 'Sletter', Forest: 'Skov', Taiga: 'Tajga', Mountains: 'Bjerge', 'Snowy peaks': 'Snedækkede tinder',
+    Rivers: 'Floder', Beaches: 'Strande', Badlands: 'Badlands', Plains: 'Sletter', Forest: 'Skov', Taiga: 'Tajga', Mountains: 'Bjerge', 'Snowy peaks': 'Snedækkede tinder', Tundra: 'Tundra',
   },
   items: {
     field_guide: 'Safari-felthåndbog', safari_hat: 'Safarihat', raw_game_meat: 'Råt vildtkød', cooked_game_meat: 'Stegt vildtkød',

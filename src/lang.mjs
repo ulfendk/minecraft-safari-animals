@@ -38,7 +38,7 @@ const DA_EGG = {
   poison_dart_frog: 'Pilegiftfrø', capybara: 'Flodsvins', tasmanian_devil: 'Pungdjævle', chameleon: 'Kamæleon', harpy_eagle: 'Harpyørne',
   king_cobra: 'Kongekobra', black_mamba: 'Mamba',
   jaguar: 'Jaguar', grizzly_bear: 'Grizzlybjørne', spectacled_bear: 'Brillebjørne', sun_bear: 'Malajbjørne', sloth_bear: 'Læbebjørne', caiman: 'Brillekaiman',
-  bighorn_sheep: 'Tykhornsfår', mountain_goat: 'Snegede', alpine_ibex: 'Stenbukke', chamois: 'Gemse', yak: 'Yak',
+  bighorn_sheep: 'Tykhornsfår', mountain_goat: 'Snegede', alpine_ibex: 'Stenbukke', chamois: 'Gemse', yak: 'Yak', snow_leopard: 'Sneleopard', musk_ox: 'Moskusokse',
 };
 
 const UI = {
