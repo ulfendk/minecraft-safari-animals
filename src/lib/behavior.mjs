@@ -177,7 +177,7 @@ function baseComponents(a) {
   // How it reacts when hurt.
   if (a.attack) {
     c['minecraft:attack'] = { damage: a.attack.damage, ...(a.attack.effect ? { effect_name: a.attack.effect, effect_duration: 4 } : {}) };
-    c['minecraft:behavior.melee_box_attack'] = {
+    c['minecraft:behavior.melee_attack'] = {
       priority: 3,
       speed_multiplier: a.attack.speed ?? 1.3,
       track_target: true,
@@ -527,13 +527,17 @@ export function buildEntity(a) {
     if (a.ride.jumpStrength) components['minecraft:horse.jump_strength'] = { value: a.ride.jumpStrength };
   }
 
-  // Swap between active and resting at dawn/dusk.
+  // Swap between active and resting at dawn/dusk. The sensor checks every tick, so the
+  // safari:resting property makes it fire only on the change: re-adding the active group
+  // every tick resets the animal's AI, and an attack never gets to land.
   const sleeps = a.sleeps ?? 'night';
   const activeByDay = sleeps !== 'day';
+  const resting = `${NS}:resting`;
+  properties[resting] = { type: 'bool', default: false };
   components['minecraft:environment_sensor'] = {
     triggers: [
-      { filters: { test: 'is_daytime', value: activeByDay }, event: `${NS}:become_active` },
-      { filters: { test: 'is_daytime', value: !activeByDay }, event: `${NS}:become_resting` },
+      { filters: { all_of: [{ test: 'is_daytime', value: activeByDay }, { test: 'bool_property', domain: resting, value: true }] }, event: `${NS}:become_active` },
+      { filters: { all_of: [{ test: 'is_daytime', value: !activeByDay }, { test: 'bool_property', domain: resting, value: false }] }, event: `${NS}:become_resting` },
     ],
   };
 
@@ -556,8 +560,8 @@ export function buildEntity(a) {
     [`${NS}:entity_born`]: { add: { component_groups: [`${NS}:baby`, `${NS}:active`] } },
     [`${NS}:spawn_adult`]: { add: { component_groups: [...adult, `${NS}:active`] } },
     [`${NS}:grow_up`]: { remove: { component_groups: [`${NS}:baby`] }, add: { component_groups: adult } },
-    [`${NS}:become_active`]: { remove: { component_groups: [`${NS}:resting`] }, add: { component_groups: [`${NS}:active`] } },
-    [`${NS}:become_resting`]: { remove: { component_groups: [`${NS}:active`] }, add: { component_groups: [`${NS}:resting`] } },
+    [`${NS}:become_active`]: { remove: { component_groups: [`${NS}:resting`] }, add: { component_groups: [`${NS}:active`] }, set_property: { [resting]: false } },
+    [`${NS}:become_resting`]: { remove: { component_groups: [`${NS}:active`] }, add: { component_groups: [`${NS}:resting`] }, set_property: { [resting]: true } },
     [`${NS}:on_eat`]: {},
   };
   if (a.ride) {

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.1] - 2026-11-01
+Fix (Bedrock):
+- Animals hurt what they attack again. Charging rhinos, gaurs, bison and musk oxen now hurt the player, predators hurt and kill their prey, and animals that are attacked fight back. The day/night switch fired on every tick and kept resetting the animals, so their attacks never landed.
+
+Tests:
+- The Bedrock server test checks that a wild dog, lion, rhino and gaur hurt what they attack; the Java game tests check the gaur.
+
 ## [0.13.0] - 2026-11-01
 Gaur (Bedrock and Java):
 - Gaur: the biggest wild cattle, from the jungles of India. A dark bull with a high ridge over the shoulders, white stockings, a grey boss between the horns and thick horns that curve up and in. It is the tallest of the cattle, a little taller than a rhino at the shoulder.

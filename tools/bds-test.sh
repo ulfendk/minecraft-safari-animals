@@ -70,13 +70,15 @@ for f in build/behavior_pack/entities/*.json; do
   send summon "safari:$id" $((x + 1)) $y $((z + 1))
   n=$((n + 1))
 done
+# Predators now land their attacks; keep the summoned animals alive for the count.
+send effect @e[family=safari] resistance 120 4 true
 send setblock 40 -60 40 safari:thorn_bush
 send time set night
 sleep 10
 send time set day
 sleep 10
 send scriptevent safari:selftest "$ids"
-sleep 3
+sleep 14
 
 LOG=$(docker logs "$NAME" 2>&1)
 echo "$LOG" | grep -iE "safari|error|warn|\[Scripting\]" | grep -vE "send-command|^\s*$" | tail -100 || true

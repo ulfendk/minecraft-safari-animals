@@ -90,6 +90,19 @@ public class SafariGameTests {
 		});
 	}
 
+	/** An animal that goes for something actually hurts it: the charge lands and deals its damage. */
+	@GameTest(maxTicks = 200)
+	public void angryAnimalHurtsTarget(GameTestHelper helper) {
+		Mob gaur = spawn(helper, "gaur", new BlockPos(2, 1, 2));
+		Mob pig = helper.spawn(net.minecraft.world.entity.EntityTypes.PIG, new BlockPos(6, 1, 6));
+		pig.setNoAi(true);
+		float health = pig.getHealth();
+		gaur.setTarget(pig);
+		helper.succeedWhen(() -> {
+			if (pig.getHealth() >= health) helper.fail("Gaur did not hurt the pig (target " + gaur.getTarget() + ", dist " + gaur.distanceTo(pig) + ")");
+		});
+	}
+
 	/** A thrown spear damages what it hits. */
 	@GameTest(maxTicks = 100)
 	public void spearHits(GameTestHelper helper) {
