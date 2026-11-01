@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.12.1] - 2026-11-01
+Fix (Bedrock and Java):
+- Bison horns come out of the sides of the head and curve up at the tips, clear of the forehead hair.
+- The aurochs has a bigger shoulder hump and shorter legs, so it stands a little lower.
+
 ## [0.12.0] - 2026-11-01
 American bison and aurochs (Bedrock and Java):
 - American bison: a woolly hump and cape over the forequarters, a low bearded head and short black horns. Herds roam the plains (and a few the tundra). Unpredictable: walk too close and it charges, and the herd follows.

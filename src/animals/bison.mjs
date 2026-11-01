@@ -10,8 +10,9 @@ const base = caprid({
   hump: 5, beard: 4, tail: 7, earL: 1,
   horns: ({ top, back, side }) => [
     // A bushy mop of hair on the forehead.
-    { origin: [-side - 0.5, top - 3, back - 5], size: [2 * side + 1, 4, 5], mat: 'mane', hair: true },
-    ...hornArc([[side + 0.5, top - 2, back - 3], [side + 1.5, top - 1.5, back - 3], [side + 2, top - 0.5, back - 3.5]], { size: [2, 2, 1] }),
+    { origin: [-side + 0.5, top - 2, back - 5], size: [2 * side - 1, 3, 5], mat: 'mane', hair: true },
+    // Short, thick horns out of the sides of the head that curve up and in at the tips.
+    ...hornArc([[side + 0.5, top - 2.5, back - 3.5], [side + 2, top - 2.5, back - 3.5], [side + 3, top - 1.5, back - 3.5], [side + 3, top, back - 3.5], [side + 2.5, top + 1, back - 3.5]], { size: [2, 2, 2, 1, 1] }),
   ],
 });
 const model = {

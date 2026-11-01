@@ -31,7 +31,7 @@ export const guide = {
   snow_leopard: 'The ghost of the mountains: a smoky-grey cat with dark rosettes, huge furry paws and a tail almost as long as its body. It stalks wild sheep and goats on the steepest slopes.',
   musk_ox: 'A shaggy ox of the frozen tundra, as big as a yak, with a coat that hangs to the ground and horns that hook down past its cheeks. It is ill-tempered: come close and it charges, and the whole herd joins in.',
   bison: 'The giant of the prairie: a woolly hump and cape over the forequarters, a low, bearded head and short black horns. Bison look calm, but they are unpredictable — walk too close and one lowers its head and charges, and the herd comes thundering after it.',
-  aurochs: 'The wild ancestor of all cattle: a long-legged black bull as tall as a rhino at the shoulder, with a pale stripe down its back and huge horns that sweep forward. It is fierce and fearless, charges anyone it sees coming, and the rest of the herd joins in.',
+  aurochs: 'The wild ancestor of all cattle: a black bull with a high shoulder hump, nearly as tall as a rhino, with a pale stripe down its back and huge horns that sweep forward. It is fierce and fearless, charges anyone it sees coming, and the rest of the herd joins in.',
   wild_dog: 'Painted hunters that live in big, chattering packs. They hunt by day and attack anyone who crosses their path, so build a thorn hedge around your camp.',
   kangaroo: 'Hops across savannas and badlands at great speed. Get too pushy and it leans back on its tail and kicks.',
   koala: 'A sleepy tree-hugger that dozes through the day and munches leaves at night. It climbs anything.',
