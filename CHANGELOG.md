@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.0] - 2026-11-01
+American bison and aurochs (Bedrock and Java):
+- American bison: a woolly hump and cape over the forequarters, a low bearded head and short black horns. Herds roam the plains (and a few the tundra). Unpredictable: walk too close and it charges, and the herd follows.
+- Aurochs: the wild ancestor of cattle, a long-legged black bull with a pale stripe down its back and huge forward-sweeping horns. It lives in forests and on the plains, charges anyone within eight blocks, and the herd joins in. Drops beef.
+- Both are as big as a rhino at the shoulder, bigger than yaks and musk oxen, and are listed under Giants on the website.
+- Works with Realistic Hunting: the new animals are game too.
+
 ## [0.11.2] - 2026-11-01
 Fix (Bedrock and Java):
 - The musk ox has a much shorter neck: it carries its head low, in front of its shoulder hump.

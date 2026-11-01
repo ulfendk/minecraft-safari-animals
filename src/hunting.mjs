@@ -11,7 +11,7 @@ import { NS } from './lib/constants.mjs';
 
 /** Live weight range in kg. */
 const WEIGHT = {
-  alpine_ibex: [40, 120], anaconda: [30, 100], caiman: [6, 40], baboon: [15, 30], bighorn_sheep: [55, 140], black_mamba: [1.5, 3], capybara: [35, 65], chameleon: [0.1, 0.2], chamois: [25, 50],
+  alpine_ibex: [40, 120], anaconda: [30, 100], aurochs: [600, 1000], bison: [400, 1000], caiman: [6, 40], baboon: [15, 30], bighorn_sheep: [55, 140], black_mamba: [1.5, 3], capybara: [35, 65], chameleon: [0.1, 0.2], chamois: [25, 50],
   cheetah: [35, 65], chimpanzee: [30, 60], crocodile: [200, 500], electric_eel: [10, 20], elephant: [2500, 6000],
   flamingo: [2, 4], gazelle: [15, 35], giraffe: [700, 1300], gorilla: [100, 200], grizzly_bear: [180, 360], harpy_eagle: [4, 9],
   hippo: [1300, 2500], honey_badger: [6, 14], hyena: [45, 80], jaguar: [55, 120], kangaroo: [20, 85], king_cobra: [4, 9],

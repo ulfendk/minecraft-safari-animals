@@ -224,7 +224,7 @@ function dropLoot(baboon) {
 const CARCASS = new Set([
   'safari:zebra', 'safari:gazelle', 'safari:wildebeest', 'safari:warthog', 'safari:giraffe', 'safari:elephant',
   'safari:rhino', 'safari:hippo', 'safari:kangaroo', 'safari:bighorn_sheep', 'safari:mountain_goat', 'safari:alpine_ibex',
-  'safari:chamois', 'safari:yak', 'safari:musk_ox', 'minecraft:cow', 'minecraft:horse', 'minecraft:sheep',
+  'safari:chamois', 'safari:yak', 'safari:musk_ox', 'safari:bison', 'safari:aurochs', 'minecraft:cow', 'minecraft:horse', 'minecraft:sheep',
 ]);
 
 const HUNTERS = new Set(['safari:lion', 'safari:leopard', 'safari:cheetah', 'safari:wild_dog', 'safari:tiger', 'safari:crocodile', 'minecraft:player']);

@@ -125,7 +125,7 @@ const da = {
     scolopender: 'Kæmpeskolopender', poison_dart_frog: 'Pilegiftfrø', capybara: 'Flodsvin', tasmanian_devil: 'Tasmansk pungdjævel',
     chameleon: 'Kamæleon', harpy_eagle: 'Harpyørn', king_cobra: 'Kongekobra', black_mamba: 'Sort mamba',
     jaguar: 'Jaguar', grizzly_bear: 'Grizzlybjørn', spectacled_bear: 'Brillebjørn', sun_bear: 'Malajbjørn', sloth_bear: 'Læbebjørn', caiman: 'Brillekaiman',
-    bighorn_sheep: 'Tykhornsfår', mountain_goat: 'Sneged', alpine_ibex: 'Stenbuk', chamois: 'Gemse', yak: 'Yak', snow_leopard: 'Sneleopard', musk_ox: 'Moskusokse',
+    bighorn_sheep: 'Tykhornsfår', mountain_goat: 'Sneged', alpine_ibex: 'Stenbuk', chamois: 'Gemse', yak: 'Yak', snow_leopard: 'Sneleopard', musk_ox: 'Moskusokse', bison: 'Amerikansk bison', aurochs: 'Urokse',
   },
   guide: {
     honey_badger: 'Lille, frygtløs og næsten umulig at stoppe. Den flygter aldrig, er ligeglad med slangegift og plyndrer bistader for bikager.',
@@ -158,6 +158,8 @@ const da = {
     yak: 'En kæmpe, langhåret okse fra de høje bjerge med et pjusket skørt helt ned til knæene. Tæm den med hvede, sadl den op, så bærer den dig og et par oppakninger hen over sneen.',
     snow_leopard: 'Bjergenes spøgelse: en røggrå kat med mørke rosetter, store lodne poter og en hale næsten lige så lang som kroppen. Den lister sig ind på vilde får og geder på de stejleste skråninger.',
     musk_ox: 'En pjusket okse fra den frosne tundra, lige så stor som en yak, med en pels der hænger helt ned til jorden og horn, der krummer ned forbi kinderne. Den er arrig: Kommer du for tæt på, stormer den frem, og hele flokken følger med.',
+    bison: 'Præriens kæmpe: en uldden pukkel og kappe over forparten, et lavt hoved med skæg og korte sorte horn. Bisonen ser rolig ud, men den er uberegnelig – kommer du for tæt på, sænker den hovedet og stormer frem, og hele flokken buldrer efter.',
+    aurochs: 'Stamfaderen til al kvæg: en højbenet sort tyr, der er lige så høj over skulderen som et næsehorn, med en lys stribe ned ad ryggen og store horn, der svinger fremad. Den er vild og frygtløs, stormer mod alle, den ser komme, og resten af flokken følger med.',
     lion: 'Løveflokke sover i dagens hede og jager zebraer og antiloper om natten. Kun hannerne har manke. Kommer du for tæt på, brøler løven en advarsel – og så angriber den.',
     elephant: 'Blide kæmper, der vandrer i flok. Vind en elefants tillid med meloner, giv den sadel og kiste på, og rid sammen med en ven.',
     zebra: 'Stribede flokdyr fra savannen. Tæm en zebra som en hest ved at ride på den, til den stoler på dig, og sadl den så op.',

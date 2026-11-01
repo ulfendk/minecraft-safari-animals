@@ -1,17 +1,17 @@
 # Safari Animals
 
-A Minecraft **Bedrock Edition** add-on and **Java Edition** (Fabric) mod with 54 animals from the savanna, the jungle, the Amazon and the mountains: lions, elephants, giraffes, rhinos, cheetahs, jaguars, snow leopards, bears, bighorn sheep, ibex, yaks, musk oxen, caimans, anacondas, king cobras, black mambas, piranhas, river dolphins, harpy eagles, kangaroos and more.
+A Minecraft **Bedrock Edition** add-on and **Java Edition** (Fabric) mod with 56 animals from the savanna, the jungle, the Amazon and the mountains: lions, elephants, giraffes, rhinos, cheetahs, jaguars, snow leopards, bears, bighorn sheep, ibex, yaks, musk oxen, bison, aurochs, caimans, anacondas, king cobras, black mambas, piranhas, river dolphins, harpy eagles, kangaroos and more.
 
 **Download and info: https://ulfendk.github.io/minecraft-safari-animals/** (på dansk: https://ulfendk.github.io/minecraft-safari-animals/da/)
 
 ![All animals](https://ulfendk.github.io/minecraft-safari-animals/img/animals/lion.png)
 
 ## Features
-- 54 animals, each with its own model, texture, animations and sounds, plus babies.
+- 56 animals, each with its own model, texture, animations and sounds, plus babies.
 - A food web: lions, cheetahs, hyenas, wild dogs and crocodiles hunt, and herds flee when they see them.
 - Day and night routines: lions and hyenas nap by day, grazers sleep at night, wild dogs hunt by day.
 - Ride tamed zebras, ostriches, yaks and elephants. Yaks carry packs, elephants a chest and a second rider.
-- Special behaviours: lions roar a warning before they attack, gorillas beat their chest, meerkats post a sentry and hide in termite mounds, baboons steal snacks, chimps throw fruit, hyenas steal kills, leopards rest in trees, wildebeest migrate, vultures gather at carcasses, anacondas coil around their prey, cobras and mambas rear up in a threat display, bears stand up on their hind legs and roar, jaguars bite straight through turtle shells, bighorn rams clash horns, ibex walk up cliffs, chamois whistle an alarm and musk ox herds charge together.
+- Special behaviours: lions roar a warning before they attack, gorillas beat their chest, meerkats post a sentry and hide in termite mounds, baboons steal snacks, chimps throw fruit, hyenas steal kills, leopards rest in trees, wildebeest migrate, vultures gather at carcasses, anacondas coil around their prey, cobras and mambas rear up in a threat display, bears stand up on their hind legs and roar, jaguars bite straight through turtle shells, bighorn rams clash horns, ibex walk up cliffs, chamois whistle an alarm musk ox herds charge together, and bison and aurochs herds stampede at anyone who comes too close.
 - Savanna features: termite mounds and watering holes. Plus a wearable safari hat.
 - Stone age weapons: a throwable flint spear, a stone club, a flint knife, a sling with pebbles, and a blowgun with (poison) darts.
 - Thorn bushes: a 1.5-block barrier that hurts land animals that push against it.
