@@ -5,7 +5,7 @@ import { fur, gradient, mottle, region, underside } from '../lib/texture.mjs';
 
 // Thin black horns that go straight up and hook back at the tip.
 const model = caprid({
-  bodyW: 6, bodyH: 6, bodyL: 12, legH: 10, legW: 2, neckW: 3, neckH: 9, headW: 4, headH: 4, headD: 5, muzzleD: 2,
+  bodyW: 6, bodyH: 6, bodyL: 12, legH: 10, legW: 2, neckW: 3, neckH: 6, headW: 4, headH: 4, headD: 5, muzzleD: 2,
   horns: ({ top, back }) => hornArc([[1, top + 0.5, back - 2.5], [1, top + 1.5, back - 2.5], [1, top + 2.5, back - 2.5], [1, top + 3.5, back - 2], [1, top + 3.5, back - 1], [1, top + 2.7, back - 0.5]], { size: 1 }),
 });
 
@@ -58,7 +58,7 @@ export default {
     face: {
       base: '#efe8dc',
       layers: [
-        region('#1e1916', all(face('left', 'right'), ({ p }) => p[1] < 21.5 && p[1] > 19.5)),
+        region('#1e1916', all(face('left', 'right'), ({ p }) => p[1] < 18.5 && p[1] > 16.5)),
         region('#1e1916', all(face('front'), ({ i, fw }) => i === 0 || i === fw - 1)),
         fur(0.04),
       ],

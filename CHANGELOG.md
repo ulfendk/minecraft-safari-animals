@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.11.1] - 2026-11-01
+Fix (Bedrock and Java):
+- Chamois and alpine ibex have shorter necks, so their heads sit closer to their shoulders.
+
 ## [0.11.0] - 2026-11-01
 Snow leopard and musk ox (Bedrock and Java):
 - Snow leopard: a smoky-grey cat with dark rosettes and a very long, thick tail. It lives on the mountains and snowy peaks and hunts bighorn sheep, mountain goats, ibex and chamois.

@@ -5,7 +5,7 @@ import { fur, gradient, mottle, region, underside } from '../lib/texture.mjs';
 
 // Long horns sweeping up and back in a wide arc, with knobbly ridges along the front.
 const model = caprid({
-  bodyW: 8, bodyH: 8, bodyL: 14, legH: 10, legW: 2, neckW: 4, neckH: 9, headW: 4, headH: 4, headD: 6, muzzleD: 2,
+  bodyW: 8, bodyH: 8, bodyL: 14, legH: 10, legW: 2, neckW: 4, neckH: 6, headW: 4, headH: 4, headD: 6, muzzleD: 2,
   beard: 2,
   horns: ({ top, back, side }) => hornArc(
     sideArc({ x: side - 1, centre: [top - 6, back + 1], radius: 7, from: -15, to: 80, steps: 11, spread: 1.5 }),
