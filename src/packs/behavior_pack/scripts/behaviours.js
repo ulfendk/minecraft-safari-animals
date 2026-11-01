@@ -1,5 +1,6 @@
 // Behaviours that entity JSON alone can't express: calls and displays,
-// meerkat sentries, baboon food thieves, vultures gathering at carcasses.
+// meerkat sentries, baboon food thieves, vultures gathering at carcasses, bighorn
+// rams clashing and chamois alarm whistles.
 import { ItemStack, system, world } from '@minecraft/server';
 import { chance, isBaby, isCarcass, nearPlayers, ready } from './util.js';
 
@@ -63,6 +64,42 @@ function displays(now) {
     const v = g.getVelocity();
     if (Math.hypot(v.x, v.z) > 0.25 && chance(0.25) && ready(g, 'pronk', 60, now)) play(g, 'pronk');
   }
+}
+
+/** Bighorn rams rear up and clash horns; chamois whistle a warning when a person comes near. */
+function mountains(now) {
+  for (const ram of nearPlayers('safari:bighorn_sheep', 32)) {
+    if (isBaby(ram) || !chance(0.04) || !ready(ram, 'clash', 600, now)) continue;
+    const rival = ram.dimension.getEntities({ type: 'safari:bighorn_sheep', location: ram.location, maxDistance: 5 })
+      .find((o) => o.id !== ram.id && !isBaby(o) && !isCarcass(o));
+    if (rival && ready(rival, 'clash', 600, now)) clash(ram, rival);
+  }
+  for (const c of nearPlayers('safari:chamois', 24)) {
+    if (isBaby(c) || !c.dimension.getPlayers({ location: c.location, maxDistance: 12 }).length || !ready(c, 'whistle', 200, now)) continue;
+    play(c, 'alert', 'mob.goat.ambient.screamer', 1.8, 1.5);
+    // One whistle per herd.
+    for (const n of c.dimension.getEntities({ type: 'safari:chamois', location: c.location, maxDistance: 12 })) ready(n, 'whistle', 200, now);
+  }
+}
+
+/** Two rams face each other, rear up together and crash down horns first. */
+function clash(a, b) {
+  try {
+    a.teleport(a.location, { facingLocation: b.location });
+    b.teleport(b.location, { facingLocation: a.location });
+  } catch {
+    return;
+  }
+  play(a, 'clash', 'mob.goat.prepare_ram', 0.8, 1);
+  play(b, 'clash');
+  system.runTimeout(() => {
+    try {
+      const at = { x: (a.location.x + b.location.x) / 2, y: a.location.y + 1, z: (a.location.z + b.location.z) / 2 };
+      a.dimension.playSound('mob.goat.ram_impact', at, { pitch: 0.7, volume: 2 });
+    } catch {
+      // A ram wandered out of the loaded area.
+    }
+  }, 17); // the horns meet 0.85 s into the animation
 }
 
 /** In every meerkat group one member stands guard and squeaks when danger comes near. */
@@ -186,7 +223,8 @@ function dropLoot(baboon) {
 /** Vultures arrive when a big animal dies out in the open. */
 const CARCASS = new Set([
   'safari:zebra', 'safari:gazelle', 'safari:wildebeest', 'safari:warthog', 'safari:giraffe', 'safari:elephant',
-  'safari:rhino', 'safari:hippo', 'safari:kangaroo', 'minecraft:cow', 'minecraft:horse', 'minecraft:sheep',
+  'safari:rhino', 'safari:hippo', 'safari:kangaroo', 'safari:bighorn_sheep', 'safari:mountain_goat', 'safari:alpine_ibex',
+  'safari:chamois', 'safari:yak', 'minecraft:cow', 'minecraft:horse', 'minecraft:sheep',
 ]);
 
 const HUNTERS = new Set(['safari:lion', 'safari:leopard', 'safari:cheetah', 'safari:wild_dog', 'safari:tiger', 'safari:crocodile', 'minecraft:player']);
@@ -224,7 +262,7 @@ function onDeath({ deadEntity, damageSource }) {
 export function setupBehaviours() {
   system.runInterval(() => {
     const now = system.currentTick;
-    for (const step of [calls, displays, sentries, thieves, treeRest]) {
+    for (const step of [calls, displays, mountains, sentries, thieves, treeRest]) {
       try {
         step(now);
       } catch (e) {

@@ -14,6 +14,9 @@ const BIOME_TAGS = {
   beach: 'beach',
   mesa: 'mesa',
   plains: 'plains',
+  // Meadows, stony peaks and windswept hills; the snowy slopes, groves and icy peaks above them.
+  mountain: ['meadow', 'stony_peaks', 'extreme_hills'],
+  peaks: ['snowy_slopes', 'grove', 'jagged_peaks', 'frozen_peaks'],
 };
 
 /** Prefix vanilla items with minecraft: and our own with the namespace. */
@@ -604,7 +607,7 @@ function herd(a, s) {
 
 export function buildSpawnRules(a) {
   const conditions = (a.spawn ?? []).map((s) => {
-    const biomes = s.biomes.map((b) => ({ test: 'has_biome_tag', operator: '==', value: BIOME_TAGS[b] ?? b }));
+    const biomes = s.biomes.flatMap((b) => [BIOME_TAGS[b] ?? b].flat()).map((value) => ({ test: 'has_biome_tag', operator: '==', value }));
     const cond = {
       'minecraft:spawns_on_surface': {},
       ...(s.blocks ? { 'minecraft:spawns_on_block_filter': s.blocks.map(itemId) } : {}),

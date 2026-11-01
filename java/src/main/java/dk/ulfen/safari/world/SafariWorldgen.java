@@ -35,6 +35,8 @@ public final class SafariWorldgen {
 			case "plains" -> BiomeSelectors.tag(ConventionalBiomeTags.IS_PLAINS);
 			case "forest" -> BiomeSelectors.tag(BiomeTags.IS_FOREST);
 			case "taiga" -> BiomeSelectors.tag(BiomeTags.IS_TAIGA);
+			case "mountain" -> BiomeSelectors.includeByKey(Biomes.MEADOW, Biomes.STONY_PEAKS).or(BiomeSelectors.tag(BiomeTags.IS_HILL));
+			case "peaks" -> BiomeSelectors.includeByKey(Biomes.SNOWY_SLOPES, Biomes.GROVE, Biomes.JAGGED_PEAKS, Biomes.FROZEN_PEAKS);
 			default -> throw new IllegalArgumentException("Unknown biome group " + name);
 		};
 	}

@@ -1,5 +1,5 @@
 // Parametric body plans shared by several species.
-import { frontEyes, legs4 } from './parts.mjs';
+import { eyes, frontEyes, legs4, nostrils } from './parts.mjs';
 
 /**
  * Big cats and hyenas. All sizes in pixels; widths should be even.
@@ -214,3 +214,88 @@ export function ursid({
     b.name.startsWith('leg_f') ? { ...b, cubes: [...b.cubes, { origin: [b.cubes[0].origin[0], 0, b.cubes[0].origin[2] - 1], size: [legW, 1, 1], mat: 'claw' }] } : b));
   return { bones, rear: { hip, shoulder: [legH, zf + 1 + legW / 2], headLift: [headH - 2, headD - 1] } };
 }
+
+/**
+ * Goats, sheep, ibex, chamois and yaks: a compact body on slim legs, a short upright neck
+ * and a long face. Horns are passed in as cubes (see hornArc) because every species has
+ * its own: horns is a list of cubes, or a function that gets the head's edges
+ * ({ top, bottom, front, back, side }, model pixels) and returns them.
+ * Returns { bones, rear }, rear being the hip and shoulder points for extras.clash().
+ * Materials used: hide, face, muzzle, ear, tail, hoof, horn; with options: beard, skirt.
+ * beard: a goatee under the chin (px long). hump: a shoulder hump. skirt: a curtain of long
+ * hair hanging from the flanks (yak). extra: more bones (saddle, chest).
+ */
+export function caprid({
+  bodyW = 8, bodyH = 8, bodyL = 14, legH = 10, legW = 2,
+  neckW = 4, neckH = 7, headW = 4, headH = 4, headD = 6, muzzleD = 2,
+  earL = 2, tail = 2, beard = 0, hump = 0, skirt = 0, horns = [], extra = [],
+} = {}) {
+  const bottom = legH - 1;
+  const top = bottom + bodyH;
+  const zf = -bodyL / 2;
+  const zb = bodyL / 2;
+  const neckTop = top - 3 + neckH;
+  const hz = zf - 2 - headD; // head front
+  const hy = neckTop - headH + 1; // head bottom
+  const hip = [bottom + 1, zb - 1 - legW / 2];
+  const edges = { top: neckTop + 1, bottom: hy, front: hz, back: hz + headD, side: headW / 2 };
+  const bones = [
+    { name: 'root', pivot: [0, 0, 0] },
+    {
+      name: 'body', parent: 'root', pivot: [0, hip[0], hip[1]],
+      cubes: [
+        { origin: [-bodyW / 2, bottom, zf], size: [bodyW, bodyH, bodyL], mat: 'hide' },
+        ...(hump ? [{ origin: [-bodyW / 2 + 1, top, zf + 1], size: [bodyW - 2, hump, Math.round(bodyL / 3)], mat: 'hide' }] : []),
+        ...(skirt ? [{ origin: [-bodyW / 2 - 0.5, bottom - skirt, zf + 1], size: [bodyW + 1, skirt + 3, bodyL - 2], mat: 'skirt' }] : []),
+      ],
+    },
+    {
+      name: 'neck', parent: 'body', pivot: [0, top - 2, zf + 2],
+      cubes: [{ origin: [-neckW / 2, top - 3, zf - 3], size: [neckW, neckH, 5], mat: 'hide' }],
+    },
+    {
+      name: 'head', parent: 'neck', pivot: [0, neckTop - 1, zf - 2],
+      cubes: [
+        { origin: [-headW / 2, hy, hz], size: [headW, headH, headD], mat: 'face', marks: eyes(headD, { back: 2, down: 1, color: '#16110d' }) },
+        {
+          origin: [-(headW - 2) / 2, hy, hz - muzzleD], size: [headW - 2, Math.max(2, headH - 2), muzzleD], mat: 'muzzle',
+          marks: nostrils(headW - 2, { gap: 0, color: '#1a1410' }),
+        },
+        ...(beard ? [{ origin: [-1, hy - beard, hz + 1], size: [2, beard, 2], mat: 'beard' }] : []),
+        ...(typeof horns === 'function' ? horns(edges) : horns),
+      ],
+    },
+    { name: 'ear_l', parent: 'head', pivot: [headW / 2, neckTop - 1, hz + headD - 1.5], rotation: [0, 0, -15], cubes: [{ origin: [headW / 2, neckTop - 1.5, hz + headD - 2], size: [earL, 1, 1], mat: 'ear' }] },
+    { name: 'ear_r', parent: 'head', pivot: [-headW / 2, neckTop - 1, hz + headD - 1.5], rotation: [0, 0, 15], cubes: [{ origin: [-headW / 2 - earL, neckTop - 1.5, hz + headD - 2], size: [earL, 1, 1], mat: 'ear' }] },
+    { name: 'tail', parent: 'body', pivot: [0, top - 1, zb], rotation: [15, 0, 0], cubes: [{ origin: [-1, top - 1 - tail, zb], size: [2, tail, 1], mat: 'tail' }] },
+    ...legs4({ x: bodyW / 2 - 0.5, front: zf + 1, back: zb - 1 - legW, w: legW, h: legH, foot: 1 }),
+    ...extra,
+  ];
+  return { bones, rear: { hip, shoulder: [legH, zf + 1 + legW / 2] } };
+}
+
+/**
+ * A pair of horns as a chain of small cubes along `path`, a list of [x, y, z] points
+ * (centres) for the left horn; the right horn mirrors it. size: cube edge, or a list
+ * with one entry per point so horns can taper.
+ */
+export function hornArc(path, { size = 2, mat = 'horn' } = {}) {
+  const cubes = [];
+  path.forEach(([x, y, z], i) => {
+    const s = Array.isArray(size) ? size[Math.min(i, size.length - 1)] : size;
+    for (const sx of [x, -x]) cubes.push({ origin: [r2(sx - s / 2), r2(y - s / 2), r2(z - s / 2)], size: [s, s, s], mat });
+  });
+  return cubes;
+}
+
+/** Points along a circle in the side (y-z) plane: angle 0 is straight up, 90 straight back. */
+export function sideArc({ x, centre: [cy, cz], radius, from, to, steps, spread = 0, shrink = 0 }) {
+  return Array.from({ length: steps }, (_, i) => {
+    const t = steps === 1 ? 0 : i / (steps - 1);
+    const a = ((from + (to - from) * t) * Math.PI) / 180;
+    const rad = radius * (1 - shrink * t);
+    return [x + spread * t, cy + rad * Math.cos(a), cz + rad * Math.sin(a)];
+  });
+}
+
+const r2 = (n) => Math.round(n * 4) / 4;

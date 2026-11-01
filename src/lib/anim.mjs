@@ -252,6 +252,29 @@ export const extras = {
       { leg_fl: arm, leg_fr: { ...arm, rotation: key([-angle * 0.5, 0, 0]) } },
     ));
   },
+  /**
+   * Bighorn head clash: rears up on its hind legs, drops forward and slams its horns down.
+   * hip/shoulder: [y, z] model points, as returned by bodies.caprid().rear.
+   */
+  clash: ({ body = 'body', neck = 'neck', hip, shoulder, angle = 35 } = {}) => {
+    const t = (angle * Math.PI) / 180;
+    const dy = shoulder[0] - hip[0], dz = shoulder[1] - hip[1];
+    const lift = [0, r(dy * Math.cos(t) - dz * Math.sin(t) - dy), r(dy * Math.sin(t) + dz * Math.cos(t) - dz)];
+    const zero = [0, 0, 0];
+    const key = (up, hit) => ({ '0.0': zero, '0.4': up, '0.7': up, '0.85': hit, '1.1': hit, '1.5': zero });
+    const arm = { rotation: key([-angle, 0, 0], [10, 0, 0]), position: key(lift, zero) };
+    return once(1.5, bones(
+      { [body]: { rotation: key([-angle, 0, 0], [6, 0, 0]) } },
+      { [neck]: { rotation: key([angle * 0.7, 0, 0], [40, 0, 0]) } },
+      { leg_fl: arm, leg_fr: arm },
+    ));
+  },
+  /** Head up, ears pricked: an alarm call. */
+  alert: ({ neck = 'neck', ears = [] } = {}) =>
+    once(2, bones(
+      { [neck]: { rotation: { '0.0': [0, 0, 0], '0.3': [-20, 0, 0], '1.7': [-20, 0, 0], '2.0': [0, 0, 0] } } },
+      Object.fromEntries(ears.map((e, i) => [e, { rotation: { '0.0': [0, 0, 0], '0.3': [0, 0, (i % 2 ? 1 : -1) * 25], '1.7': [0, 0, (i % 2 ? 1 : -1) * 25], '2.0': [0, 0, 0] } }])),
+    )),
   /** Big mouth yawn (hippo threat display). */
   yawn: ({ jaw = 'jaw', head = 'head' } = {}) =>
     once(2.0, bones(

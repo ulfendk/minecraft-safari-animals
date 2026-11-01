@@ -72,6 +72,7 @@ public class SafariAnimal extends Animal implements SafariCreature {
 	int behaviourCooldown;
 	@Nullable ItemStack stolen;
 	int stolenUntil;
+	int clashAt;
 
 	public SafariAnimal(EntityType<? extends SafariAnimal> type, Level level) {
 		super(type, level);

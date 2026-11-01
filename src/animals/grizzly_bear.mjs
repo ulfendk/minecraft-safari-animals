@@ -19,7 +19,7 @@ export default {
   attack: { damage: 9, speed: 1.4 },
   // Rears up as a warning when you come close, and charges if you stay right next to it.
   hostile: { range: 4 },
-  hunts: ['salmon', 'cod', 'rabbit'],
+  hunts: ['salmon', 'cod', 'rabbit', 'caprine'],
   huntInterval: 60,
   sleeps: 'night',
   breed: ['salmon', 'sweet_berries', 'honeycomb'],

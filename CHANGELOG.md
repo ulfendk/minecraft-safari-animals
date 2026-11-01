@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.10.0] - 2026-11-01
+Mountain animals (Bedrock and Java):
+- Bighorn sheep: brown with a white rump and massive curled horns. Rams rear up on their hind legs and crash their horns together, and butt back if you hit them. Lives in mountains and badlands.
+- Mountain goat: shaggy and white with a beard and short black horns. Lives on the snowy peaks and stands its ground with its horns.
+- Alpine ibex: long ridged horns that sweep back over its shoulders. It walks straight up cliffs (and walls).
+- Chamois: a small goat-antelope with a black-and-white face and hooked horns. It whistles a warning and the herd bolts when a person comes near.
+- Yak: a huge, long-haired mountain ox. Tame it with wheat, saddle it and ride it, and it carries a pair of packs.
+- None of the mountain animals take fall damage. Grizzly bears hunt the wild sheep and goats.
+- New habitats: mountains (meadows, stony peaks, windswept hills) and snowy peaks (snowy slopes, groves, jagged and frozen peaks). Website: a Mountains filter.
+- Works with Realistic Hunting: the new animals are game too.
+
 ## [0.9.1] - 2026-10-31
 Fix (Bedrock and Java):
 - Bears no longer bury their heads in their chests when they rear up on their hind legs: the head now sits on the shoulders, so you see the roaring face.

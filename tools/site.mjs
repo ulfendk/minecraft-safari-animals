@@ -21,13 +21,14 @@ const GROUPS = {
   predator: ['lion', 'tiger', 'jaguar', 'leopard', 'cheetah', 'hyena', 'wild_dog', 'crocodile', 'honey_badger', 'tasmanian_devil', 'harpy_eagle'],
   amazon: ['piranha', 'electric_eel', 'river_dolphin', 'anaconda', 'caiman', 'tarantula', 'scolopender', 'poison_dart_frog', 'capybara'],
   reptile: ['tortoise', 'turtle', 'chameleon', 'king_cobra', 'black_mamba', 'anaconda', 'caiman'],
-  grazer: ['zebra', 'gazelle', 'wildebeest', 'warthog', 'giraffe'],
+  grazer: ['zebra', 'gazelle', 'wildebeest', 'warthog', 'bighorn_sheep', 'mountain_goat', 'alpine_ibex', 'chamois', 'yak', 'giraffe'],
   giant: ['elephant', 'rhino', 'hippo'],
   bird: ['ostrich', 'flamingo', 'vulture'],
   primate: ['gorilla', 'chimpanzee', 'baboon'],
   marsupial: ['kangaroo', 'koala', 'tasmanian_devil'],
   small: ['meerkat', 'porcupine'],
   bear: ['grizzly_bear', 'spectacled_bear', 'sun_bear', 'sloth_bear'],
+  mountain: ['bighorn_sheep', 'mountain_goat', 'alpine_ibex', 'chamois', 'yak'],
 };
 const groupOf = (id) => Object.entries(GROUPS).find(([, ids]) => ids.includes(id))?.[0] ?? 'other';
 

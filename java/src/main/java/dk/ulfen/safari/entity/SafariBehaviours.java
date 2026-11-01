@@ -63,6 +63,10 @@ public final class SafariBehaviours {
 
 	public static void tick(SafariAnimal a, ServerLevel level) {
 		if (a.stolen != null && a.tickCount >= a.stolenUntil) dropStolen(a, level);
+		if (a.clashAt > 0 && a.tickCount >= a.clashAt) {
+			a.clashAt = 0;
+			level.playSound(null, a, SoundEvents.GOAT_RAM_IMPACT, SoundSource.NEUTRAL, 2.0F, 0.7F);
+		}
 		if (a.isBaby() || --a.behaviourCooldown > 0) return;
 		a.behaviourCooldown = 40;
 
@@ -102,6 +106,8 @@ public final class SafariBehaviours {
 				}
 			}
 			case "gazelle" -> { if (a.getDeltaMovement().horizontalDistance() > 0.25 && chance(a, 0.25F)) a.playAction("pronk"); }
+			case "bighorn_sheep" -> clash(a, level);
+			case "chamois" -> whistle(a, level);
 			case "meerkat" -> sentry(a, level);
 			case "baboon" -> steal(a, level);
 			case "chimpanzee" -> throwFruit(a, level);
@@ -123,6 +129,38 @@ public final class SafariBehaviours {
 			for (SafariAnimal c : level.getEntitiesOfClass(SafariAnimal.class, a.getBoundingBox().inflate(12), c -> c.getType() == a.getType())) {
 				ANGRY_CHIMPS.put(c.getUUID(), Map.entry(player.getUUID(), until));
 			}
+		}
+	}
+
+	/** Two bighorn rams face each other, rear up together and crash down horns first. */
+	private static void clash(SafariAnimal a, ServerLevel level) {
+		if (a.isResting() || !chance(a, 0.04F)) return;
+		SafariAnimal rival = level.getEntitiesOfClass(SafariAnimal.class, a.getBoundingBox().inflate(5),
+			o -> o != a && o.getType() == a.getType() && !o.isBaby() && !o.isResting() && !o.isCarcass()).stream().findFirst().orElse(null);
+		if (rival == null) return;
+		face(a, rival);
+		face(rival, a);
+		a.playAction("clash");
+		rival.playAction("clash");
+		level.playSound(null, a, SoundEvents.GOAT_PREPARE_RAM, SoundSource.NEUTRAL, 1.0F, 0.8F);
+		a.clashAt = a.tickCount + 17; // the horns meet 0.85 s into the animation
+		a.behaviourCooldown = rival.behaviourCooldown = 600;
+	}
+
+	private static void face(SafariAnimal a, SafariAnimal other) {
+		float yaw = (float) (Math.toDegrees(Math.atan2(other.getZ() - a.getZ(), other.getX() - a.getX())) - 90);
+		a.setYRot(yaw);
+		a.setYBodyRot(yaw);
+		a.setYHeadRot(yaw);
+	}
+
+	/** A chamois that sees a person whistles a warning, once for the whole herd. */
+	private static void whistle(SafariAnimal a, ServerLevel level) {
+		if (playersNear(a, 12).isEmpty()) return;
+		a.playAction("alert");
+		level.playSound(null, a, SoundEvents.GOAT_SCREAMING_AMBIENT, SoundSource.NEUTRAL, 1.5F, 1.8F);
+		for (SafariAnimal c : level.getEntitiesOfClass(SafariAnimal.class, a.getBoundingBox().inflate(12), m -> m.getType() == a.getType())) {
+			c.behaviourCooldown = 200;
 		}
 	}
 
