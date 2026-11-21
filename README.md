@@ -67,5 +67,9 @@ Copy a similar spec in `src/animals/` (the body builders in `src/lib/bodies.mjs`
 ### Releases
 Bump `version` in `package.json`, add a section to `CHANGELOG.md`, then push a tag such as `v0.2.0`. The release workflow builds and tests the packs, publishes a GitHub Release with the files, and updates the website.
 
+## Support
+
+If you enjoy our mods, you can support us on [GitHub Sponsors](https://github.com/sponsors/ulfendk) or [Buy Me a Coffee](https://buymeacoffee.com/ulfendk).
+
 ## License
 MIT. Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft.
