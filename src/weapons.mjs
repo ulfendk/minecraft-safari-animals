@@ -78,10 +78,10 @@ export const weaponItems = [
     icon: spearIcon,
     components: {
       ...melee(5, 150),
-      // Hold to charge, release to throw.
-      'minecraft:throwable': { do_swing_animation: false, launch_power_scale: 1.0, max_draw_duration: 1.0, max_launch_power: 2.2, min_draw_duration: 0.3, scale_power_by_draw_duration: true },
-      'minecraft:projectile': { projectile_entity: 'safari:thrown_spear', minimum_critical_power: 1.5 },
+      // Hold to charge, release to throw. A charged minecraft:throwable didn't throw it in
+      // game, so scripts/spears.js does the throw, like Realistic Hunting's harpoon.
       'minecraft:use_modifiers': { use_duration: 3600, movement_modifier: 0.35 },
+      'minecraft:use_animation': 'spear',
       'minecraft:repairable': { repair_items: [{ items: ['minecraft:flint'], repair_amount: 50 }] },
     },
   },

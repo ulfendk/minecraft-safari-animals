@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.13.2] - 2026-11-21
+Fixes (Bedrock):
+- The flint spear can be thrown again: hold use to charge, let go to throw. A thrown spear keeps its wear when you pick it up.
+- Mounts step up a full block like a horse. A ridden elephant, which can't jump, was stuck below every one-block ledge.
+
 ## [0.13.1] - 2026-11-01
 Fix (Bedrock):
 - Animals hurt what they attack again. Charging rhinos, gaurs, bison and musk oxen now hurt the player, predators hurt and kill their prey, and animals that are attacked fight back. The day/night switch fired on every tick and kept resetting the animals, so their attacks never landed.

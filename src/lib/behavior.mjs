@@ -525,6 +525,9 @@ export function buildEntity(a) {
       }],
     };
     if (a.ride.jumpStrength) components['minecraft:horse.jump_strength'] = { value: a.ride.jumpStrength };
+    // Step up a full block like a vanilla horse, ridden or not; without this a mount that
+    // can't jump (the elephant) is stuck below every one-block ledge.
+    components['minecraft:variable_max_auto_step'] = { base_value: 1.0625, controlled_value: 1.0625, jump_prevented_value: 0.5625 };
   }
 
   // Swap between active and resting at dawn/dusk. The sensor checks every tick, so the
